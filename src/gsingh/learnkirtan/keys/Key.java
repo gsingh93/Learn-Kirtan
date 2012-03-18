@@ -13,7 +13,7 @@ public class Key extends JButton implements MouseListener {
 
 	private static final long serialVersionUID = 1L;
 
-	private static int noteCount = 0;
+	private static int noteCount = 40;
 	public int note;
 
 	private Synthesizer synth = null;
@@ -33,11 +33,11 @@ public class Key extends JButton implements MouseListener {
 	}
 
 	public void play() {
-		channel[0].noteOn(10 * note, 60);
+		channel[0].noteOn(note, 60);
 	}
 
 	public void stop() {
-		channel[0].noteOff(10 * note);
+		channel[0].noteOff(note);
 	}
 
 	@Override
