@@ -16,17 +16,20 @@ public class Key extends JButton implements MouseListener {
 	private static int noteCount = 40;
 	public int note;
 
-	private Synthesizer synth = null;
-	MidiChannel channel[];
+	private static Synthesizer synth = null;
 
-	public Key() {
-		note = noteCount++;
+	static {
 		try {
 			synth = MidiSystem.getSynthesizer();
 			synth.open();
 		} catch (MidiUnavailableException e) {
 			e.printStackTrace();
 		}
+	}
+	MidiChannel channel[];
+
+	public Key() {
+		note = noteCount++;
 
 		// Instrument[] instruments = synth.getAvailableInstruments();
 		// for (Instrument instrument : instruments) {
@@ -42,6 +45,7 @@ public class Key extends JButton implements MouseListener {
 
 	public void play() {
 		channel[0].noteOn(note, 60);
+		System.out.println(synth.isOpen());
 	}
 
 	public void stop() {
