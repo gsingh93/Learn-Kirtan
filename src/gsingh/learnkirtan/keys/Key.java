@@ -28,7 +28,15 @@ public class Key extends JButton implements MouseListener {
 			e.printStackTrace();
 		}
 
+		// Instrument[] instruments = synth.getAvailableInstruments();
+		// for (Instrument instrument : instruments) {
+		// System.out.println(instrument.getName());
+		// System.out.println(instrument.getPatch().getBank());
+		// System.out.println(instrument.getPatch().getProgram());
+		// }
+
 		channel = synth.getChannels();
+		channel[0].programChange(20);
 		addMouseListener(this);
 	}
 
