@@ -1,7 +1,6 @@
 package gsingh.learnkirtan;
 
 import gsingh.learnkirtan.keys.BlackKey;
-import gsingh.learnkirtan.keys.Key;
 import gsingh.learnkirtan.keys.WhiteKey;
 
 import java.awt.Container;
@@ -29,66 +28,55 @@ public class Main {
 		constructKeyboard(panel);
 
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.setSize(WHITE_KEY_WIDTH * 7 + WHITE_KEY_WIDTH / 2,
+		frame.setSize(2 * (WHITE_KEY_WIDTH * 7 + WHITE_KEY_WIDTH / 2),
 				WHITE_KEY_HEIGHT);
 		frame.setLocation(250, 100);
 		frame.setVisible(true);
 	}
 
 	void constructKeyboard(Container panel) {
-		Key b;
 		int i = 0;
+		int j = 0;
 
-		b = new WhiteKey();
+		for (int k = 0; k < 2; k++) {
+			addWhiteKey(panel, i++);
+
+			addBlackKey(panel, j++);
+
+			addWhiteKey(panel, i++);
+
+			addBlackKey(panel, j++);
+
+			addWhiteKey(panel, i++);
+
+			addWhiteKey(panel, i++);
+
+			j++;
+			addBlackKey(panel, j++);
+
+			addWhiteKey(panel, i++);
+
+			addBlackKey(panel, j++);
+
+			addWhiteKey(panel, i++);
+
+			addBlackKey(panel, j++);
+			j++;
+
+			addWhiteKey(panel, i++);
+		}
+	}
+
+	void addWhiteKey(Container panel, int i) {
+		WhiteKey b = new WhiteKey();
 		b.setLocation(i++ * WHITE_KEY_WIDTH, 0);
 		panel.add(b, 0, -1);
+	}
 
-		b = new BlackKey();
-		b.setLocation(WHITE_KEY_WIDTH - BLACK_KEY_WIDTH / 2, 0);
-		panel.add(b, 1, -1);
-
-		b = new WhiteKey();
-		b.setLocation(i++ * WHITE_KEY_WIDTH, 0);
-		panel.add(b, 0, -1);
-
-		b = new BlackKey();
-		b.setLocation(WHITE_KEY_WIDTH - BLACK_KEY_WIDTH / 2 + WHITE_KEY_WIDTH,
-				0);
-		panel.add(b, 1, -1);
-
-		b = new WhiteKey();
-		b.setLocation(i++ * WHITE_KEY_WIDTH, 0);
-		panel.add(b, 0, -1);
-
-		b = new WhiteKey();
-		b.setLocation(i++ * WHITE_KEY_WIDTH, 0);
-		panel.add(b, 0, -1);
-
-		b = new BlackKey();
-		b.setLocation(WHITE_KEY_WIDTH - BLACK_KEY_WIDTH / 2 + 3
+	void addBlackKey(Container panel, int factor) {
+		BlackKey b = new BlackKey();
+		b.setLocation(WHITE_KEY_WIDTH - BLACK_KEY_WIDTH / 2 + factor
 				* WHITE_KEY_WIDTH, 0);
 		panel.add(b, 1, -1);
-
-		b = new WhiteKey();
-		b.setLocation(i++ * WHITE_KEY_WIDTH, 0);
-		panel.add(b, 0, -1);
-
-		b = new BlackKey();
-		b.setLocation(WHITE_KEY_WIDTH - BLACK_KEY_WIDTH / 2 + 4
-				* WHITE_KEY_WIDTH, 0);
-		panel.add(b, 1, -1);
-
-		b = new WhiteKey();
-		b.setLocation(i++ * WHITE_KEY_WIDTH, 0);
-		panel.add(b, 0, -1);
-
-		b = new BlackKey();
-		b.setLocation(WHITE_KEY_WIDTH - BLACK_KEY_WIDTH / 2 + 5
-				* WHITE_KEY_WIDTH, 0);
-		panel.add(b, 1, -1);
-
-		b = new WhiteKey();
-		b.setLocation(i++ * WHITE_KEY_WIDTH, 0);
-		panel.add(b, 0, -1);
 	}
 }
