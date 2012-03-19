@@ -25,6 +25,7 @@ import javax.swing.JLayeredPane;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
 
@@ -165,48 +166,78 @@ public class Main implements ActionListener, ItemListener {
 	public void actionPerformed(ActionEvent e) {
 		String command = e.getActionCommand();
 		if (command.equals("create")) {
+			int result = askForSave();
+			if (result != JOptionPane.CANCEL_OPTION) {
+				if (result == JOptionPane.YES_OPTION)
+					save();
+				curFile = null;
+				shabadEditor.setText("");
+			}
 
 		} else if (command.equals("open")) {
-			int returnVal = fc.showOpenDialog(frame);
+			int result = askForSave();
+			if (result != JOptionPane.CANCEL_OPTION) {
+				if (result == JOptionPane.YES_OPTION)
+					save();
+				int returnVal = fc.showOpenDialog(frame);
 
-			BufferedReader br = null;
-			if (returnVal == JFileChooser.APPROVE_OPTION) {
-				curFile = fc.getSelectedFile();
-				try {
-					br = new BufferedReader(new FileReader(curFile));
-					shabadEditor.read(br, "File");
-				} catch (FileNotFoundException e1) {
-					e1.printStackTrace();
-				} catch (IOException e2) {
-					e2.printStackTrace();
-				}
-			}
-		} else if (command.equals("showeditor")) {
-
-		} else if (command.equals("save")) {
-			BufferedWriter bw = null;
-			if (curFile == null) {
-				int returnVal = fc.showSaveDialog(frame);
+				BufferedReader br = null;
 				if (returnVal == JFileChooser.APPROVE_OPTION) {
 					curFile = fc.getSelectedFile();
 					try {
-						bw = new BufferedWriter(new FileWriter(curFile));
-						shabadEditor.write(bw);
+						br = new BufferedReader(new FileReader(curFile));
+						shabadEditor.read(br, "File");
 					} catch (FileNotFoundException e1) {
 						e1.printStackTrace();
 					} catch (IOException e2) {
 						e2.printStackTrace();
 					}
 				}
-			} else {
-				try {
-					bw = new BufferedWriter(new FileWriter(curFile));
-					shabadEditor.write(bw);
-				} catch (FileNotFoundException e1) {
-					e1.printStackTrace();
-				} catch (IOException e2) {
-					e2.printStackTrace();
+			}
+		} else if (command.equals("showeditor")) {
+
+		} else if (command.equals("save")) {
+			save();
+		}
+	}
+
+	public int askForSave() {
+		return JOptionPane.showConfirmDialog(frame,
+				"Would you like to save before proceeding?");
+	}
+
+	public void save() {
+		BufferedWriter bw = null;
+		if (curFile == null) {
+			int returnVal = fc.showSaveDialog(frame);
+			if (returnVal == JFileChooser.APPROVE_OPTION) {
+				curFile = fc.getSelectedFile();
+
+				if (curFile.exists()) {
+					int result = JOptionPane.showConfirmDialog(frame,
+							"Overwrite existing file?", "Confirm Overwrite",
+							JOptionPane.OK_CANCEL_OPTION,
+							JOptionPane.QUESTION_MESSAGE);
+					if (result == JOptionPane.OK_OPTION) {
+						try {
+							bw = new BufferedWriter(new FileWriter(curFile));
+							shabadEditor.write(bw);
+						} catch (FileNotFoundException e1) {
+							e1.printStackTrace();
+						} catch (IOException e2) {
+							e2.printStackTrace();
+						}
+					}
 				}
+			}
+		} else {
+			try {
+				bw = new BufferedWriter(new FileWriter(curFile));
+				shabadEditor.write(bw);
+			} catch (FileNotFoundException e1) {
+				e1.printStackTrace();
+			} catch (IOException e2) {
+				e2.printStackTrace();
 			}
 		}
 	}
