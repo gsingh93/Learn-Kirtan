@@ -11,7 +11,12 @@ import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.KeyEvent;
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLayeredPane;
 import javax.swing.JMenu;
@@ -146,7 +151,27 @@ public class Main implements ActionListener, ItemListener {
 		if (command.equals("create")) {
 
 		} else if (command.equals("open")) {
+			final JFileChooser fc = new JFileChooser();
+			int returnVal = fc.showOpenDialog(frame);
 
+			BufferedReader br = null;
+			if (returnVal == JFileChooser.APPROVE_OPTION) {
+				FileReader fr = null;
+				try {
+					fr = new FileReader(fc.getSelectedFile());
+				} catch (FileNotFoundException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+				br = new BufferedReader(fr);
+			}
+
+			try {
+				shabadEditor.read(br, "File");
+			} catch (IOException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
 		} else if (command.equals("showeditor")) {
 
 		}
