@@ -1,6 +1,7 @@
 package gsingh.learnkirtan;
 
 import gsingh.learnkirtan.keys.BlackKey;
+import gsingh.learnkirtan.keys.Key;
 import gsingh.learnkirtan.keys.WhiteKey;
 
 import java.awt.Container;
@@ -10,10 +11,17 @@ import javax.swing.JLayeredPane;
 
 public class Main {
 
-	public static final int WHITE_KEY_WIDTH = 40;
-	public static final int BLACK_KEY_WIDTH = 20;
-	public static final int WHITE_KEY_HEIGHT = 200;
-	public static final int BLACK_KEY_HEIGHT = 120;
+	final int WHITE_KEY_WIDTH, WHITE_KEY_HEIGHT, BLACK_KEY_WIDTH,
+			BLACK_KEY_HEIGHT;
+	{
+		WHITE_KEY_WIDTH = Key.WHITE_KEY_WIDTH;
+		BLACK_KEY_WIDTH = Key.BLACK_KEY_WIDTH;
+		WHITE_KEY_HEIGHT = Key.WHITE_KEY_HEIGHT;
+		BLACK_KEY_HEIGHT = Key.BLACK_KEY_HEIGHT;
+	}
+
+	public static Key keys[] = new Key[24];
+	private static int index = 0;
 
 	public static void main(String[] args) {
 		new Main();
@@ -32,6 +40,8 @@ public class Main {
 				WHITE_KEY_HEIGHT);
 		frame.setLocation(250, 100);
 		frame.setVisible(true);
+
+		Parser.parseAndPlay();
 	}
 
 	void constructKeyboard(Container panel) {
@@ -40,29 +50,18 @@ public class Main {
 
 		for (int k = 0; k < 2; k++) {
 			addWhiteKey(panel, i++);
-
 			addBlackKey(panel, j++);
-
 			addWhiteKey(panel, i++);
-
 			addBlackKey(panel, j++);
-
 			addWhiteKey(panel, i++);
-
 			addWhiteKey(panel, i++);
-
 			j++;
 			addBlackKey(panel, j++);
-
 			addWhiteKey(panel, i++);
-
 			addBlackKey(panel, j++);
-
 			addWhiteKey(panel, i++);
-
 			addBlackKey(panel, j++);
 			j++;
-
 			addWhiteKey(panel, i++);
 		}
 	}
@@ -71,6 +70,7 @@ public class Main {
 		WhiteKey b = new WhiteKey();
 		b.setLocation(i++ * WHITE_KEY_WIDTH, 0);
 		panel.add(b, 0, -1);
+		keys[index++] = b;
 	}
 
 	void addBlackKey(Container panel, int factor) {
@@ -78,5 +78,6 @@ public class Main {
 		b.setLocation(WHITE_KEY_WIDTH - BLACK_KEY_WIDTH / 2 + factor
 				* WHITE_KEY_WIDTH, 0);
 		panel.add(b, 1, -1);
+		keys[index++] = b;
 	}
 }

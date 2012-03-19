@@ -13,6 +13,11 @@ public class Key extends JButton implements MouseListener {
 
 	private static final long serialVersionUID = 1L;
 
+	public static final int WHITE_KEY_HEIGHT = 200;
+	public static final int WHITE_KEY_WIDTH = 40;
+	public static final int BLACK_KEY_WIDTH = 20;
+	public static final int BLACK_KEY_HEIGHT = 120;
+
 	private static int noteCount = 40;
 	public int note;
 
@@ -43,9 +48,19 @@ public class Key extends JButton implements MouseListener {
 		addMouseListener(this);
 	}
 
+	public void playOnce() {
+		play();
+		try {
+			Thread.sleep(1000);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		stop();
+	}
+
 	public void play() {
 		channel[0].noteOn(note, 60);
-		System.out.println(synth.isOpen());
 	}
 
 	public void stop() {
