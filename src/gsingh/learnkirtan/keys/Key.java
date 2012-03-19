@@ -50,12 +50,7 @@ public class Key extends JButton implements MouseListener {
 
 	public void playOnce() {
 		play();
-		try {
-			Thread.sleep(1000);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		doClick(1000);
 		stop();
 	}
 

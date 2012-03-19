@@ -25,28 +25,20 @@ public class Parser {
 			System.out.println(note);
 			note = note.trim();
 			if (note.equals("Sa")) {
-				keys[10].doClick();
 				keys[10].playOnce();
 			} else if (note.equals("Re")) {
-				keys[12].doClick();
 				keys[12].playOnce();
 			} else if (note.equals("Ga")) {
-				keys[14].doClick();
 				keys[14].playOnce();
 			} else if (note.equals("Ma")) {
-				keys[15].doClick();
 				keys[15].playOnce();
 			} else if (note.equals("Pa")) {
-				keys[17].doClick();
 				keys[17].playOnce();
 			} else if (note.equals("Dha")) {
-				keys[19].doClick();
 				keys[19].playOnce();
 			} else if (note.equals("Ni")) {
-				keys[21].doClick();
 				keys[21].playOnce();
 			} else if (note.equals("Sa.")) {
-				keys[22].doClick();
 				keys[22].playOnce();
 			}
 		}
