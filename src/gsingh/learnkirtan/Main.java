@@ -12,8 +12,11 @@ import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.KeyEvent;
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 
 import javax.swing.JFileChooser;
@@ -29,11 +32,13 @@ public class Main implements ActionListener, ItemListener {
 
 	final int WHITE_KEY_WIDTH, WHITE_KEY_HEIGHT, BLACK_KEY_WIDTH,
 			BLACK_KEY_HEIGHT;
+	final JFileChooser fc;
 	{
 		WHITE_KEY_WIDTH = Key.WHITE_KEY_WIDTH;
 		BLACK_KEY_WIDTH = Key.BLACK_KEY_WIDTH;
 		WHITE_KEY_HEIGHT = Key.WHITE_KEY_HEIGHT;
 		BLACK_KEY_HEIGHT = Key.BLACK_KEY_HEIGHT;
+		fc = new JFileChooser();
 	}
 
 	public static Key keys[] = new Key[24];
@@ -41,6 +46,7 @@ public class Main implements ActionListener, ItemListener {
 
 	JTextArea shabadEditor = null;
 	JFrame frame;
+	File curFile;
 
 	public Main() {
 		frame = new JFrame("Learn Kirtan");
@@ -85,20 +91,30 @@ public class Main implements ActionListener, ItemListener {
 		menuBar.add(fileMenu);
 		menuBar.add(viewMenu);
 
+		// Initialize fileMenu items
 		JMenuItem createItem = new JMenuItem("Create new shabad", KeyEvent.VK_C);
 		JMenuItem openItem = new JMenuItem("Open existing shabad",
 				KeyEvent.VK_O);
+		JMenuItem saveItem = new JMenuItem("Save current shabad", KeyEvent.VK_S);
+
+		// Set listeners
 		createItem.setActionCommand("create");
 		createItem.addActionListener(this);
 		openItem.setActionCommand("open");
 		openItem.addActionListener(this);
+		saveItem.setActionCommand("save");
+		saveItem.addActionListener(this);
 
 		fileMenu.setMnemonic(KeyEvent.VK_F);
 		fileMenu.add(createItem);
 		fileMenu.add(openItem);
+		fileMenu.add(saveItem);
 
+		// Initialize viewMenu items
 		JMenuItem showEditorItem = new JMenuItem("Show shabad editor",
 				KeyEvent.VK_S);
+
+		// Set listeners
 		showEditorItem.setActionCommand("showeditor");
 		showEditorItem.addActionListener(this);
 
@@ -151,29 +167,47 @@ public class Main implements ActionListener, ItemListener {
 		if (command.equals("create")) {
 
 		} else if (command.equals("open")) {
-			final JFileChooser fc = new JFileChooser();
 			int returnVal = fc.showOpenDialog(frame);
 
 			BufferedReader br = null;
 			if (returnVal == JFileChooser.APPROVE_OPTION) {
-				FileReader fr = null;
+				curFile = fc.getSelectedFile();
 				try {
-					fr = new FileReader(fc.getSelectedFile());
+					br = new BufferedReader(new FileReader(curFile));
+					shabadEditor.read(br, "File");
 				} catch (FileNotFoundException e1) {
-					// TODO Auto-generated catch block
 					e1.printStackTrace();
+				} catch (IOException e2) {
+					e2.printStackTrace();
 				}
-				br = new BufferedReader(fr);
-			}
-
-			try {
-				shabadEditor.read(br, "File");
-			} catch (IOException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
 			}
 		} else if (command.equals("showeditor")) {
 
+		} else if (command.equals("save")) {
+			BufferedWriter bw = null;
+			if (curFile == null) {
+				int returnVal = fc.showSaveDialog(frame);
+				if (returnVal == JFileChooser.APPROVE_OPTION) {
+					curFile = fc.getSelectedFile();
+					try {
+						bw = new BufferedWriter(new FileWriter(curFile));
+						shabadEditor.write(bw);
+					} catch (FileNotFoundException e1) {
+						e1.printStackTrace();
+					} catch (IOException e2) {
+						e2.printStackTrace();
+					}
+				}
+			} else {
+				try {
+					bw = new BufferedWriter(new FileWriter(curFile));
+					shabadEditor.write(bw);
+				} catch (FileNotFoundException e1) {
+					e1.printStackTrace();
+				} catch (IOException e2) {
+					e2.printStackTrace();
+				}
+			}
 		}
 	}
 
