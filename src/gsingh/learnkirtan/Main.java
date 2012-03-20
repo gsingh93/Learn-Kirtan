@@ -42,7 +42,7 @@ public class Main implements ActionListener, ItemListener {
 		fc = new JFileChooser();
 	}
 
-	public static Key keys[] = new Key[24];
+	public static Key keys[] = new Key[48];
 	private static int index = 0;
 
 	JTextArea shabadEditor = null;
@@ -69,8 +69,8 @@ public class Main implements ActionListener, ItemListener {
 		frame.add(mainPanel);
 
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.setSize(2 * (WHITE_KEY_WIDTH * 7 + WHITE_KEY_WIDTH / 2),
-				WHITE_KEY_HEIGHT * 3);
+		frame.setSize(3 * (WHITE_KEY_WIDTH * 7) + WHITE_KEY_WIDTH / 2,
+				WHITE_KEY_HEIGHT * 3 - 130);
 		frame.setLocation(250, 100);
 		frame.setVisible(true);
 
@@ -129,7 +129,7 @@ public class Main implements ActionListener, ItemListener {
 		int i = 0;
 		int j = 0;
 
-		for (int k = 0; k < 2; k++) {
+		for (int k = 0; k < 3; k++) {
 			addWhiteKey(panel, i++);
 			addBlackKey(panel, j++);
 			addWhiteKey(panel, i++);

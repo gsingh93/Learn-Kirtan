@@ -13,34 +13,54 @@ public class Parser {
 		Key[] keys = Main.keys;
 		File file = new File("shabad.txt");
 		Scanner scanner = null;
+		int key = 0;
+
 		try {
 			scanner = new Scanner(file);
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}
 
-		while (scanner.hasNext("[A-Za-z.]+ *")) {
-			String note = scanner.next("[A-Za-z.]+ *");
+		while (scanner.hasNext("[A-Za-z.']+ *")) {
+			String note = scanner.next("[A-Za-z.']+");
+
+			String modifiers = "";
+			int index = note.indexOf(".");
+			if (index == -1)
+				index = note.indexOf("'");
+			if (index != -1) {
+				modifiers = note.substring(index);
+				note = note.substring(0, index);
+			}
 
 			System.out.println(note);
-			note = note.trim();
+			System.out.println(modifiers);
 			if (note.equals("Sa")) {
-				keys[10].playOnce();
+				key = 10;
 			} else if (note.equals("Re")) {
-				keys[12].playOnce();
+				key = 12;
 			} else if (note.equals("Ga")) {
-				keys[14].playOnce();
+				key = 14;
 			} else if (note.equals("Ma")) {
-				keys[15].playOnce();
+				key = 15;
 			} else if (note.equals("Pa")) {
-				keys[17].playOnce();
+				key = 17;
 			} else if (note.equals("Dha")) {
-				keys[19].playOnce();
+				key = 19;
 			} else if (note.equals("Ni")) {
-				keys[21].playOnce();
-			} else if (note.equals("Sa.")) {
-				keys[22].playOnce();
+				key = 21;
+			} else {
+				System.out.println("Invalid note.");
 			}
+
+			if (modifiers.contains("'")) {
+				key++;
+			}
+			if (modifiers.contains(".")) {
+				key += 12;
+			}
+
+			keys[key].playOnce();
 		}
 
 	}
