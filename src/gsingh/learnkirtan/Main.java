@@ -5,7 +5,9 @@ import gsingh.learnkirtan.keys.Key;
 import gsingh.learnkirtan.keys.WhiteKey;
 
 import java.awt.Container;
-import java.awt.GridLayout;
+import java.awt.Dimension;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
@@ -19,6 +21,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 
+import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLayeredPane;
@@ -27,18 +30,21 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JSpinner;
 import javax.swing.JTextArea;
 
 public class Main implements ActionListener, ItemListener {
 
 	final int WHITE_KEY_WIDTH, WHITE_KEY_HEIGHT, BLACK_KEY_WIDTH,
 			BLACK_KEY_HEIGHT;
+	final int WIDTH;
 	final JFileChooser fc;
 	{
 		WHITE_KEY_WIDTH = Key.WHITE_KEY_WIDTH;
 		BLACK_KEY_WIDTH = Key.BLACK_KEY_WIDTH;
 		WHITE_KEY_HEIGHT = Key.WHITE_KEY_HEIGHT;
 		BLACK_KEY_HEIGHT = Key.BLACK_KEY_HEIGHT;
+		WIDTH = 3 * (WHITE_KEY_WIDTH * 7) + WHITE_KEY_WIDTH;
 		fc = new JFileChooser();
 	}
 
@@ -54,23 +60,45 @@ public class Main implements ActionListener, ItemListener {
 		initMenu();
 
 		JPanel mainPanel = new JPanel();
+		JPanel controlPanel = new JPanel();
 		JLayeredPane pianoPanel = new JLayeredPane();
 
-		GridLayout layout = new GridLayout(2, 1);
-		mainPanel.setLayout(layout);
+		mainPanel.setLayout(new GridBagLayout());
 
-		// Construct the shabad editor and the keyboard
-		shabadEditor = new JTextArea();
+		GridBagConstraints c = new GridBagConstraints();
+		// Construct each top level component
+		controlPanel.add(new JButton("Play"));
+		controlPanel.add(new JButton("Pause"));
+		controlPanel.add(new JSpinner());
+		shabadEditor = new JTextArea(20, 78);
 		constructKeyboard(pianoPanel);
 
 		// Add the piano panel and shabad editor to the window
-		mainPanel.add(pianoPanel);
-		mainPanel.add(shabadEditor);
+		c.gridx = 0;
+		c.gridy = 0;
+		c.weightx = 1.0;
+		c.anchor = GridBagConstraints.NORTHWEST;
+		mainPanel.add(controlPanel, c);
+
+		c.gridx = 0;
+		c.gridy = 1;
+		c.weightx = 1.0;
+		// c.weighty = 1.0;
+		c.anchor = GridBagConstraints.NORTHWEST;
+		pianoPanel
+				.setPreferredSize(new Dimension(WIDTH - 18, WHITE_KEY_HEIGHT));
+		mainPanel.add(pianoPanel, c);
+
+		c.gridx = 0;
+		c.gridy = 2;
+		c.weightx = 1.0;
+		c.weighty = 1.0;
+		c.anchor = GridBagConstraints.NORTHWEST;
+		mainPanel.add(shabadEditor, c);
 		frame.add(mainPanel);
 
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.setSize(3 * (WHITE_KEY_WIDTH * 7) + WHITE_KEY_WIDTH / 2,
-				WHITE_KEY_HEIGHT * 3 - 130);
+		frame.setSize(WIDTH, WHITE_KEY_HEIGHT * 3 + 140);
 		frame.setLocation(250, 100);
 		frame.setVisible(true);
 
