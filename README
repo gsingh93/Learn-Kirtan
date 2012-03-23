@@ -3,12 +3,20 @@ Software written by Gulshan Singh (gulshan@umich.edu)
 Instructions on use coming soon
 
 TODO:
-Play sound from text file
+
+Implementation:
+Add dialog boxes for errors and messages
+Close old file after opening new one
+Refactor file writing/reading code
+Fixup layout (change how piano is constructed/clicking bugs)
+Improve prefix/suffix matching
+File selection and saving as .sbd
+
+Features:
+Pause and resume play
 Add double notes parsing
 Add long press for notes
 Add option for tempo
 Add option for repeating antra/asthai
 Add option for practicing shabad with keyboard
-Add option for type shabad using keyboard
-Fixup layout (change how piano is constructed)
-Improve prefix/suffix matching
+Add option for typing shabad using keyboard

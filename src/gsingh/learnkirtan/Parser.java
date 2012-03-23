@@ -8,10 +8,9 @@ import java.util.Scanner;
 
 public class Parser {
 
-	public static void parseAndPlay() {
+	public static void parseAndPlay(File file) {
 
 		Key[] keys = Main.keys;
-		File file = new File("shabad.txt");
 		Scanner scanner = null;
 		int key = 0;
 

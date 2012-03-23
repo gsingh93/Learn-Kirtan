@@ -65,10 +65,19 @@ public class Main implements ActionListener, ItemListener {
 
 		mainPanel.setLayout(new GridBagLayout());
 
+		JButton playButton = new JButton("Play");
+		JButton pauseButton = new JButton("Pause");
+
+		playButton.addActionListener(this);
+		playButton.setActionCommand("play");
+
+		pauseButton.addActionListener(this);
+		pauseButton.setActionCommand("pause");
+
 		GridBagConstraints c = new GridBagConstraints();
 		// Construct each top level component
-		controlPanel.add(new JButton("Play"));
-		controlPanel.add(new JButton("Pause"));
+		controlPanel.add(playButton);
+		controlPanel.add(pauseButton);
 		controlPanel.add(new JSpinner());
 		shabadEditor = new JTextArea(20, 78);
 		constructKeyboard(pianoPanel);
@@ -101,15 +110,6 @@ public class Main implements ActionListener, ItemListener {
 		frame.setSize(WIDTH, WHITE_KEY_HEIGHT * 3 + 140);
 		frame.setLocation(250, 100);
 		frame.setVisible(true);
-
-		try {
-			Thread.sleep(1000);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-		Parser.parseAndPlay();
 	}
 
 	void initMenu() {
@@ -193,7 +193,14 @@ public class Main implements ActionListener, ItemListener {
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		String command = e.getActionCommand();
-		if (command.equals("create")) {
+
+		if (command.equals("play")) {
+			if (curFile != null)
+				Parser.parseAndPlay(curFile);
+			else
+				System.out.println("File not selected.");
+		} else if (command.equals("pause")) {
+		} else if (command.equals("create")) {
 			int result = askForSave();
 			if (result != JOptionPane.CANCEL_OPTION) {
 				if (result == JOptionPane.YES_OPTION)
@@ -207,8 +214,10 @@ public class Main implements ActionListener, ItemListener {
 			if (result != JOptionPane.CANCEL_OPTION) {
 				if (result == JOptionPane.YES_OPTION)
 					save();
-				int returnVal = fc.showOpenDialog(frame);
 
+				// TODO: Close previous file
+
+				int returnVal = fc.showOpenDialog(frame);
 				BufferedReader br = null;
 				if (returnVal == JFileChooser.APPROVE_OPTION) {
 					curFile = fc.getSelectedFile();
@@ -255,6 +264,14 @@ public class Main implements ActionListener, ItemListener {
 						} catch (IOException e2) {
 							e2.printStackTrace();
 						}
+					}
+				} else {
+					try {
+						bw = new BufferedWriter(new FileWriter(curFile));
+						shabadEditor.write(bw);
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
 					}
 				}
 			}
