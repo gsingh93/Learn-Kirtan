@@ -4,6 +4,11 @@ Instructions on use coming soon
 
 TODO:
 Play sound from text file
+Add double notes parsing
+Add long press for notes
 Add option for tempo
 Add option for repeating antra/asthai
-Add shabad file loader/editor functionality
+Add option for practicing shabad with keyboard
+Add option for type shabad using keyboard
+Fixup layout (change how piano is constructed)
+Improve prefix/suffix matching

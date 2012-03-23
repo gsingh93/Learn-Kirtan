@@ -24,17 +24,24 @@ public class Parser {
 		while (scanner.hasNext("[A-Za-z.']+ *")) {
 			String note = scanner.next("[A-Za-z.']+");
 
-			String modifiers = "";
+			int count = 0;
+			for (int i = 0; i < 3; i++) {
+				if (note.substring(i, i + 1).matches("[A-Za-z]"))
+					break;
+				count++;
+			}
+			String prefix = note.substring(0, count);
+			String suffix = "";
+			note = note.substring(count);
 			int index = note.indexOf(".");
 			if (index == -1)
 				index = note.indexOf("'");
 			if (index != -1) {
-				modifiers = note.substring(index);
+				suffix = note.substring(index);
 				note = note.substring(0, index);
 			}
 
-			System.out.println(note);
-			System.out.println(modifiers);
+			System.out.println(prefix + note + suffix);
 			if (note.equals("Sa")) {
 				key = 10;
 			} else if (note.equals("Re")) {
@@ -53,14 +60,24 @@ public class Parser {
 				System.out.println("Invalid note.");
 			}
 
-			if (modifiers.contains("'")) {
+			// TODO: Check if notes have valid modifiers
+			if (prefix.contains("'")) {
+				key--;
+			}
+			if (prefix.contains(".")) {
+				key -= 12;
+			}
+			if (suffix.contains("'")) {
 				key++;
 			}
-			if (modifiers.contains(".")) {
+			if (suffix.contains(".")) {
 				key += 12;
 			}
 
-			keys[key].playOnce();
+			if (key > 0 && key < 48)
+				keys[key].playOnce(500);
+			else
+				System.out.println("Invalid note.");
 		}
 
 	}

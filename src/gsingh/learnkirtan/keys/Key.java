@@ -48,9 +48,9 @@ public class Key extends JButton implements MouseListener {
 		addMouseListener(this);
 	}
 
-	public void playOnce() {
+	public void playOnce(int time) {
 		play();
-		doClick(1000);
+		doClick(time);
 		stop();
 	}
 
