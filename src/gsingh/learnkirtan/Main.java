@@ -210,8 +210,12 @@ public class Main implements ActionListener, ItemListener {
 
 		if (command.equals("play")) {
 			if (!shabadEditor.getText().equals(""))
-				Parser.parseAndPlay(shabadEditor.getText(),
-						(Double) tempoControl.getValue());
+				new Thread(new Runnable() {
+					public void run() {
+						Parser.parseAndPlay(shabadEditor.getText(),
+								(Double) tempoControl.getValue());
+					}
+				}).start();
 			else {
 				System.out.println("No Text.");
 				JOptionPane.showMessageDialog(frame, "Error: Nothing to play",
