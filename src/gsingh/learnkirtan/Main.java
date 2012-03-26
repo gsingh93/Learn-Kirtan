@@ -243,8 +243,6 @@ public class Main implements ActionListener, ItemListener {
 						e1.printStackTrace();
 					}
 
-				// TODO: Close previous file
-
 				openFile();
 			}
 		} else if (command.equals("showeditor")) {
@@ -291,6 +289,7 @@ public class Main implements ActionListener, ItemListener {
 	public void write() throws IOException {
 		BufferedWriter bw = new BufferedWriter(new FileWriter(curFile));
 		shabadEditor.write(bw);
+		bw.close();
 		prevText = shabadEditor.getText();
 	}
 
@@ -302,6 +301,7 @@ public class Main implements ActionListener, ItemListener {
 			try {
 				br = new BufferedReader(new FileReader(curFile));
 				shabadEditor.read(br, "File");
+				br.close();
 			} catch (FileNotFoundException e1) {
 				e1.printStackTrace();
 			} catch (IOException e2) {
