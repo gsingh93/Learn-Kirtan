@@ -8,6 +8,9 @@ import javax.swing.JOptionPane;
 
 public class Parser {
 
+	private static boolean stop = false;
+	private static boolean pause = false;
+
 	public static void parseAndPlay(String text, double tempo) {
 
 		Key[] keys = Main.keys;
@@ -16,6 +19,15 @@ public class Parser {
 
 		Scanner scanner = new Scanner(text);
 		while (scanner.hasNext("[A-Za-z.']+ *")) {
+
+			if (isPaused())
+				pause();
+
+			if (stop) {
+				stop = false;
+				break;
+			}
+
 			String note = scanner.next("[A-Za-z.']+");
 
 			int count = 0;
@@ -70,7 +82,7 @@ public class Parser {
 			if (suffix.contains(".")) {
 				key += 12;
 			}
-
+			System.out.println(pause);
 			if (key > 0 && key < 48)
 				keys[key].playOnce((int) (gap / tempo));
 			else
@@ -78,5 +90,33 @@ public class Parser {
 						"Error", JOptionPane.ERROR_MESSAGE);
 		}
 
+	}
+
+	public static void stop() {
+		stop = true;
+		pause = false;
+	}
+
+	public static void setPause() {
+		pause = true;
+	}
+
+	public static void pause() {
+		while (pause) {
+			try {
+				Thread.sleep(1000);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+	}
+
+	public static boolean isPaused() {
+		return pause;
+	}
+
+	public static void play() {
+		pause = false;
 	}
 }

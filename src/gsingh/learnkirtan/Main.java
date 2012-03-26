@@ -4,6 +4,7 @@ import gsingh.learnkirtan.keys.BlackKey;
 import gsingh.learnkirtan.keys.Key;
 import gsingh.learnkirtan.keys.WhiteKey;
 
+import java.awt.Color;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
@@ -53,6 +54,7 @@ public class Main implements ActionListener, ItemListener {
 	public static Key keys[] = new Key[48];
 	private static int index = 0;
 	private String prevText = "";
+	private boolean playing = false;
 
 	JTextArea shabadEditor = null;
 	JSpinner tempoControl;
@@ -71,12 +73,16 @@ public class Main implements ActionListener, ItemListener {
 
 		JButton playButton = new JButton("Play");
 		JButton pauseButton = new JButton("Pause");
+		JButton stopButton = new JButton("Stop");
 
 		playButton.addActionListener(this);
 		playButton.setActionCommand("play");
 
 		pauseButton.addActionListener(this);
 		pauseButton.setActionCommand("pause");
+
+		stopButton.addActionListener(this);
+		stopButton.setActionCommand("stop");
 
 		SpinnerNumberModel model = new SpinnerNumberModel(1, 0, 2, .1);
 		tempoControl = new JSpinner(model);
@@ -92,8 +98,10 @@ public class Main implements ActionListener, ItemListener {
 		// Construct each top level component
 		controlPanel.add(playButton);
 		controlPanel.add(pauseButton);
+		controlPanel.add(stopButton);
 		controlPanel.add(tempoControl);
 		shabadEditor = new JTextArea(20, 78);
+		shabadEditor.setDisabledTextColor(Color.GRAY);
 		constructKeyboard(pianoPanel);
 
 		// Add the piano panel and shabad editor to the window
@@ -123,6 +131,7 @@ public class Main implements ActionListener, ItemListener {
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setSize(WIDTH, WHITE_KEY_HEIGHT * 3 + 30);
 		frame.setLocation(250, 60);
+		frame.setResizable(false);
 		frame.setVisible(true);
 	}
 
@@ -207,21 +216,38 @@ public class Main implements ActionListener, ItemListener {
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		String command = e.getActionCommand();
+		System.out.println(command);
 
 		if (command.equals("play")) {
-			if (!shabadEditor.getText().equals(""))
-				new Thread(new Runnable() {
-					public void run() {
-						Parser.parseAndPlay(shabadEditor.getText(),
-								(Double) tempoControl.getValue());
-					}
-				}).start();
-			else {
+			if (!shabadEditor.getText().equals("")) {
+				if (Parser.isPaused())
+					Parser.play();
+				else {
+					new Thread(new Runnable() {
+						public void run() {
+							shabadEditor.setEnabled(false);
+							tempoControl.setEnabled(false);
+							Parser.parseAndPlay(shabadEditor.getText(),
+									(Double) tempoControl.getValue());
+							shabadEditor.setEnabled(true);
+							tempoControl.setEnabled(true);
+						}
+					}).start();
+				}
+				playing = true;
+			} else {
 				System.out.println("No Text.");
 				JOptionPane.showMessageDialog(frame, "Error: Nothing to play",
 						"Error", JOptionPane.ERROR_MESSAGE);
 			}
 		} else if (command.equals("pause")) {
+			if (playing) {
+				Parser.setPause();
+				playing = false;
+			}
+		} else if (command.equals("stop")) {
+			Parser.stop();
+			playing = false;
 		} else if (command.equals("create")) {
 			int result = askForSave();
 			if (result != JOptionPane.CANCEL_OPTION) {

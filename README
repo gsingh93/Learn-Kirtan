@@ -10,10 +10,8 @@ Improve prefix/suffix matching
 File selection and saving as .sbd
 
 Features:
-Pause and resume play
 Add double notes parsing
 Add long press for notes
-Add option for tempo
 Add option for repeating antra/asthai
 Add option for practicing shabad with keyboard
 Add option for typing shabad using keyboard
