@@ -10,10 +10,11 @@ import javax.swing.JOptionPane;
 
 public class Parser {
 
-	public static void parseAndPlay(File file) {
+	public static void parseAndPlay(File file, double tempo) {
 
 		Key[] keys = Main.keys;
 		Scanner scanner = null;
+		int gap = 500;
 		int key = 0;
 
 		try {
@@ -79,7 +80,7 @@ public class Parser {
 			}
 
 			if (key > 0 && key < 48)
-				keys[key].playOnce(500);
+				keys[key].playOnce((int) (gap / tempo));
 			else
 				JOptionPane.showMessageDialog(null, "Error: Invalid note.",
 						"Error", JOptionPane.ERROR_MESSAGE);

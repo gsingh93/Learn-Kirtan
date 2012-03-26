@@ -20,6 +20,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.text.DecimalFormat;
 
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
@@ -32,6 +33,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JSpinner;
 import javax.swing.JTextArea;
+import javax.swing.SpinnerNumberModel;
 
 public class Main implements ActionListener, ItemListener {
 
@@ -52,6 +54,7 @@ public class Main implements ActionListener, ItemListener {
 	private static int index = 0;
 
 	JTextArea shabadEditor = null;
+	JSpinner tempoControl;
 	JFrame frame;
 	File curFile;
 
@@ -74,11 +77,21 @@ public class Main implements ActionListener, ItemListener {
 		pauseButton.addActionListener(this);
 		pauseButton.setActionCommand("pause");
 
+		SpinnerNumberModel model = new SpinnerNumberModel(1, 0, 2, .1);
+		tempoControl = new JSpinner(model);
+		JSpinner.NumberEditor editor = (JSpinner.NumberEditor) tempoControl
+				.getEditor();
+		DecimalFormat format = editor.getFormat();
+		format.setMinimumFractionDigits(1);
+		Dimension d = tempoControl.getPreferredSize();
+		d.width = 40;
+		tempoControl.setPreferredSize(d);
+
 		GridBagConstraints c = new GridBagConstraints();
 		// Construct each top level component
 		controlPanel.add(playButton);
 		controlPanel.add(pauseButton);
-		controlPanel.add(new JSpinner());
+		controlPanel.add(tempoControl);
 		shabadEditor = new JTextArea(20, 78);
 		constructKeyboard(pianoPanel);
 
@@ -196,7 +209,7 @@ public class Main implements ActionListener, ItemListener {
 
 		if (command.equals("play")) {
 			if (curFile != null)
-				Parser.parseAndPlay(curFile);
+				Parser.parseAndPlay(curFile, (Double) tempoControl.getValue());
 			else {
 				System.out.println("File not selected.");
 				JOptionPane.showMessageDialog(null,
