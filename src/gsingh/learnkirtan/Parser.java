@@ -6,6 +6,8 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Scanner;
 
+import javax.swing.JOptionPane;
+
 public class Parser {
 
 	public static void parseAndPlay(File file) {
@@ -32,6 +34,7 @@ public class Parser {
 			String prefix = note.substring(0, count);
 			String suffix = "";
 			note = note.substring(count);
+			note = note.toUpperCase();
 			int index = note.indexOf(".");
 			if (index == -1)
 				index = note.indexOf("'");
@@ -41,22 +44,24 @@ public class Parser {
 			}
 
 			System.out.println(prefix + note + suffix);
-			if (note.equals("Sa")) {
+			if (note.equals("SA")) {
 				key = 10;
-			} else if (note.equals("Re")) {
+			} else if (note.equals("RE")) {
 				key = 12;
-			} else if (note.equals("Ga")) {
+			} else if (note.equals("GA")) {
 				key = 14;
-			} else if (note.equals("Ma")) {
+			} else if (note.equals("MA")) {
 				key = 15;
-			} else if (note.equals("Pa")) {
+			} else if (note.equals("PA")) {
 				key = 17;
-			} else if (note.equals("Dha")) {
+			} else if (note.equals("DHA")) {
 				key = 19;
-			} else if (note.equals("Ni")) {
+			} else if (note.equals("NI")) {
 				key = 21;
 			} else {
 				System.out.println("Invalid note.");
+				JOptionPane.showMessageDialog(null, "Error: Invalid note.",
+						"Error", JOptionPane.ERROR_MESSAGE);
 			}
 
 			// TODO: Check if notes have valid modifiers
@@ -76,7 +81,8 @@ public class Parser {
 			if (key > 0 && key < 48)
 				keys[key].playOnce(500);
 			else
-				System.out.println("Invalid note.");
+				JOptionPane.showMessageDialog(null, "Error: Invalid note.",
+						"Error", JOptionPane.ERROR_MESSAGE);
 		}
 
 	}

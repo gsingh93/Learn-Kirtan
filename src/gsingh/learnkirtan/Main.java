@@ -197,8 +197,12 @@ public class Main implements ActionListener, ItemListener {
 		if (command.equals("play")) {
 			if (curFile != null)
 				Parser.parseAndPlay(curFile);
-			else
+			else {
 				System.out.println("File not selected.");
+				JOptionPane.showMessageDialog(null,
+						"Error: File not selected.", "Error",
+						JOptionPane.ERROR_MESSAGE);
+			}
 		} else if (command.equals("pause")) {
 		} else if (command.equals("create")) {
 			int result = askForSave();
