@@ -52,6 +52,7 @@ public class Main implements ActionListener, ItemListener {
 
 	public static Key keys[] = new Key[48];
 	private static int index = 0;
+	private String prevText = "";
 
 	JTextArea shabadEditor = null;
 	JSpinner tempoControl;
@@ -120,8 +121,8 @@ public class Main implements ActionListener, ItemListener {
 		frame.add(mainPanel);
 
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.setSize(WIDTH, WHITE_KEY_HEIGHT * 3 + 140);
-		frame.setLocation(250, 100);
+		frame.setSize(WIDTH, WHITE_KEY_HEIGHT * 3 + 30);
+		frame.setLocation(250, 60);
 		frame.setVisible(true);
 	}
 
@@ -208,20 +209,25 @@ public class Main implements ActionListener, ItemListener {
 		String command = e.getActionCommand();
 
 		if (command.equals("play")) {
-			if (curFile != null)
-				Parser.parseAndPlay(curFile, (Double) tempoControl.getValue());
+			if (!shabadEditor.getText().equals(""))
+				Parser.parseAndPlay(shabadEditor.getText(),
+						(Double) tempoControl.getValue());
 			else {
-				System.out.println("File not selected.");
-				JOptionPane.showMessageDialog(null,
-						"Error: File not selected.", "Error",
-						JOptionPane.ERROR_MESSAGE);
+				System.out.println("No Text.");
+				JOptionPane.showMessageDialog(frame, "Error: Nothing to play",
+						"Error", JOptionPane.ERROR_MESSAGE);
 			}
 		} else if (command.equals("pause")) {
 		} else if (command.equals("create")) {
 			int result = askForSave();
 			if (result != JOptionPane.CANCEL_OPTION) {
-				if (result == JOptionPane.YES_OPTION)
-					save();
+				if (result == JOptionPane.YES_OPTION) {
+					try {
+						save();
+					} catch (IOException e1) {
+						e1.printStackTrace();
+					}
+				}
 				curFile = null;
 				shabadEditor.setText("");
 			}
@@ -230,72 +236,72 @@ public class Main implements ActionListener, ItemListener {
 			int result = askForSave();
 			if (result != JOptionPane.CANCEL_OPTION) {
 				if (result == JOptionPane.YES_OPTION)
-					save();
+
+					try {
+						save();
+					} catch (IOException e1) {
+						e1.printStackTrace();
+					}
 
 				// TODO: Close previous file
 
-				int returnVal = fc.showOpenDialog(frame);
-				BufferedReader br = null;
-				if (returnVal == JFileChooser.APPROVE_OPTION) {
-					curFile = fc.getSelectedFile();
-					try {
-						br = new BufferedReader(new FileReader(curFile));
-						shabadEditor.read(br, "File");
-					} catch (FileNotFoundException e1) {
-						e1.printStackTrace();
-					} catch (IOException e2) {
-						e2.printStackTrace();
-					}
-				}
+				openFile();
 			}
 		} else if (command.equals("showeditor")) {
 
 		} else if (command.equals("save")) {
-			save();
+			try {
+				save();
+			} catch (IOException e1) {
+				e1.printStackTrace();
+			}
 		}
 	}
 
 	public int askForSave() {
-		return JOptionPane.showConfirmDialog(frame,
-				"Would you like to save before proceeding?");
+		if (!prevText.equals(shabadEditor.getText()))
+			return JOptionPane.showConfirmDialog(frame,
+					"Would you like to save before proceeding?");
+		else
+			return -1;
 	}
 
-	public void save() {
-		BufferedWriter bw = null;
+	public void save() throws IOException {
 		if (curFile == null) {
 			int returnVal = fc.showSaveDialog(frame);
 			if (returnVal == JFileChooser.APPROVE_OPTION) {
 				curFile = fc.getSelectedFile();
 
 				if (curFile.exists()) {
+
 					int result = JOptionPane.showConfirmDialog(frame,
 							"Overwrite existing file?", "Confirm Overwrite",
 							JOptionPane.OK_CANCEL_OPTION,
 							JOptionPane.QUESTION_MESSAGE);
-					if (result == JOptionPane.OK_OPTION) {
-						try {
-							bw = new BufferedWriter(new FileWriter(curFile));
-							shabadEditor.write(bw);
-						} catch (FileNotFoundException e1) {
-							e1.printStackTrace();
-						} catch (IOException e2) {
-							e2.printStackTrace();
-						}
-					}
-				} else {
-					try {
-						bw = new BufferedWriter(new FileWriter(curFile));
-						shabadEditor.write(bw);
-					} catch (IOException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-				}
+
+					if (result == JOptionPane.OK_OPTION)
+						write();
+				} else
+					write();
 			}
-		} else {
+		} else
+			write();
+	}
+
+	public void write() throws IOException {
+		BufferedWriter bw = new BufferedWriter(new FileWriter(curFile));
+		shabadEditor.write(bw);
+		prevText = shabadEditor.getText();
+	}
+
+	public void openFile() {
+		int returnVal = fc.showOpenDialog(frame);
+		BufferedReader br = null;
+		if (returnVal == JFileChooser.APPROVE_OPTION) {
+			curFile = fc.getSelectedFile();
 			try {
-				bw = new BufferedWriter(new FileWriter(curFile));
-				shabadEditor.write(bw);
+				br = new BufferedReader(new FileReader(curFile));
+				shabadEditor.read(br, "File");
 			} catch (FileNotFoundException e1) {
 				e1.printStackTrace();
 			} catch (IOException e2) {

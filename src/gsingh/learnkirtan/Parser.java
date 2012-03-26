@@ -2,27 +2,19 @@ package gsingh.learnkirtan;
 
 import gsingh.learnkirtan.keys.Key;
 
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.util.Scanner;
 
 import javax.swing.JOptionPane;
 
 public class Parser {
 
-	public static void parseAndPlay(File file, double tempo) {
+	public static void parseAndPlay(String text, double tempo) {
 
 		Key[] keys = Main.keys;
-		Scanner scanner = null;
 		int gap = 500;
 		int key = 0;
 
-		try {
-			scanner = new Scanner(file);
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		}
-
+		Scanner scanner = new Scanner(text);
 		while (scanner.hasNext("[A-Za-z.']+ *")) {
 			String note = scanner.next("[A-Za-z.']+");
 
