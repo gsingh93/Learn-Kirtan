@@ -35,6 +35,8 @@ import javax.swing.JPanel;
 import javax.swing.JSpinner;
 import javax.swing.JTextArea;
 import javax.swing.SpinnerNumberModel;
+import javax.swing.filechooser.FileFilter;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
 public class Main implements ActionListener, ItemListener {
 
@@ -49,6 +51,9 @@ public class Main implements ActionListener, ItemListener {
 		BLACK_KEY_HEIGHT = Key.BLACK_KEY_HEIGHT;
 		WIDTH = 3 * (WHITE_KEY_WIDTH * 7) + WHITE_KEY_WIDTH;
 		fc = new JFileChooser();
+		FileFilter filter = new FileNameExtensionFilter("SBD (Shabad) File",
+				"sbd");
+		fc.setFileFilter(filter);
 	}
 
 	public static Key keys[] = new Key[48];
@@ -139,9 +144,7 @@ public class Main implements ActionListener, ItemListener {
 
 		JMenuBar menuBar = new JMenuBar();
 		JMenu fileMenu = new JMenu("File");
-		JMenu viewMenu = new JMenu("View");
 		menuBar.add(fileMenu);
-		menuBar.add(viewMenu);
 
 		// Initialize fileMenu items
 		JMenuItem createItem = new JMenuItem("Create new shabad", KeyEvent.VK_C);
@@ -161,17 +164,6 @@ public class Main implements ActionListener, ItemListener {
 		fileMenu.add(createItem);
 		fileMenu.add(openItem);
 		fileMenu.add(saveItem);
-
-		// Initialize viewMenu items
-		JMenuItem showEditorItem = new JMenuItem("Show shabad editor",
-				KeyEvent.VK_S);
-
-		// Set listeners
-		showEditorItem.setActionCommand("showeditor");
-		showEditorItem.addActionListener(this);
-
-		viewMenu.setMnemonic(KeyEvent.VK_V);
-		viewMenu.add(showEditorItem);
 
 		frame.setJMenuBar(menuBar);
 	}
@@ -275,8 +267,6 @@ public class Main implements ActionListener, ItemListener {
 
 				openFile();
 			}
-		} else if (command.equals("showeditor")) {
-
 		} else if (command.equals("save")) {
 			try {
 				save();
