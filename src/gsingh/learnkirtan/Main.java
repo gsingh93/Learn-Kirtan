@@ -76,38 +76,13 @@ public class Main implements ActionListener, ItemListener {
 
 		mainPanel.setLayout(new GridBagLayout());
 
-		JButton playButton = new JButton("Play");
-		JButton pauseButton = new JButton("Pause");
-		JButton stopButton = new JButton("Stop");
-
-		playButton.addActionListener(this);
-		playButton.setActionCommand("play");
-
-		pauseButton.addActionListener(this);
-		pauseButton.setActionCommand("pause");
-
-		stopButton.addActionListener(this);
-		stopButton.setActionCommand("stop");
-
-		SpinnerNumberModel model = new SpinnerNumberModel(1, 0, 2, .1);
-		tempoControl = new JSpinner(model);
-		JSpinner.NumberEditor editor = (JSpinner.NumberEditor) tempoControl
-				.getEditor();
-		DecimalFormat format = editor.getFormat();
-		format.setMinimumFractionDigits(1);
-		Dimension d = tempoControl.getPreferredSize();
-		d.width = 40;
-		tempoControl.setPreferredSize(d);
-
-		GridBagConstraints c = new GridBagConstraints();
 		// Construct each top level component
-		controlPanel.add(playButton);
-		controlPanel.add(pauseButton);
-		controlPanel.add(stopButton);
-		controlPanel.add(tempoControl);
+		initControlPanel(controlPanel);
 		shabadEditor = new JTextArea(20, 78);
 		shabadEditor.setDisabledTextColor(Color.GRAY);
 		constructKeyboard(pianoPanel);
+
+		GridBagConstraints c = new GridBagConstraints();
 
 		// Add the piano panel and shabad editor to the window
 		c.gridx = 0;
@@ -119,7 +94,6 @@ public class Main implements ActionListener, ItemListener {
 		c.gridx = 0;
 		c.gridy = 1;
 		c.weightx = 1.0;
-		// c.weighty = 1.0;
 		c.anchor = GridBagConstraints.NORTHWEST;
 		pianoPanel
 				.setPreferredSize(new Dimension(WIDTH - 18, WHITE_KEY_HEIGHT));
@@ -166,6 +140,36 @@ public class Main implements ActionListener, ItemListener {
 		fileMenu.add(saveItem);
 
 		frame.setJMenuBar(menuBar);
+	}
+
+	void initControlPanel(JPanel controlPanel) {
+		JButton playButton = new JButton("Play");
+		JButton pauseButton = new JButton("Pause");
+		JButton stopButton = new JButton("Stop");
+
+		playButton.addActionListener(this);
+		playButton.setActionCommand("play");
+
+		pauseButton.addActionListener(this);
+		pauseButton.setActionCommand("pause");
+
+		stopButton.addActionListener(this);
+		stopButton.setActionCommand("stop");
+
+		SpinnerNumberModel model = new SpinnerNumberModel(1, 0, 2, .1);
+		tempoControl = new JSpinner(model);
+		JSpinner.NumberEditor editor = (JSpinner.NumberEditor) tempoControl
+				.getEditor();
+		DecimalFormat format = editor.getFormat();
+		format.setMinimumFractionDigits(1);
+		Dimension d = tempoControl.getPreferredSize();
+		d.width = 40;
+		tempoControl.setPreferredSize(d);
+
+		controlPanel.add(playButton);
+		controlPanel.add(pauseButton);
+		controlPanel.add(stopButton);
+		controlPanel.add(tempoControl);
 	}
 
 	void constructKeyboard(Container panel) {
