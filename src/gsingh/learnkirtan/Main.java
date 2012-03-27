@@ -40,8 +40,15 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 
 public class Main implements ActionListener, ItemListener {
 
+	/**
+	 * Key dimensions
+	 */
 	final int WHITE_KEY_WIDTH, WHITE_KEY_HEIGHT, BLACK_KEY_WIDTH,
 			BLACK_KEY_HEIGHT;
+
+	/**
+	 * Width of the screen
+	 */
 	final int WIDTH;
 	final JFileChooser fc;
 	{
@@ -56,15 +63,51 @@ public class Main implements ActionListener, ItemListener {
 		fc.setFileFilter(filter);
 	}
 
+	/**
+	 * Stores all of the keys on the keyboard
+	 */
 	public static Key keys[] = new Key[48];
+
+	/**
+	 * The index used when adding the keys to the keyboard
+	 */
 	private static int index = 0;
+
+	/**
+	 * Used to determine whether a save is necessary. The text in
+	 * {@code shabadEditor} is compared to this string and if they don't match,
+	 * a save is necessary.
+	 */
 	private String prevText = "";
+
+	/**
+	 * True if a shabad is currently playing, false otherwise. At the moment,
+	 * it's only use is to determine whether pause should set the pause variable
+	 * or not.
+	 */
 	private boolean playing = false;
 
+	/**
+	 * The main shabad editor. When play is pressed, the text in here will be
+	 * played. It cannot be edited while playing.
+	 */
 	JTextArea shabadEditor = null;
+
+	/**
+	 * A spinner controlling tempo. It is set to 1.0 by default, has an
+	 * increment of 0.1, and has a range from .1 to 2. The shabad plays at this
+	 * multiplier times the default speed (in the implementation, the length of
+	 * each keypress is divided by this value to have the same effect). It
+	 * cannot be changed while playing.
+	 */
 	JSpinner tempoControl;
-	JFrame frame;
+
+	/**
+	 * The file in which your shabad will be saved or was opened from. When the
+	 * program is first started, it has the value of {@code null}.
+	 */
 	File curFile;
+	JFrame frame;
 
 	public Main() {
 		frame = new JFrame("Learn Kirtan");
@@ -82,29 +125,7 @@ public class Main implements ActionListener, ItemListener {
 		shabadEditor.setDisabledTextColor(Color.GRAY);
 		constructKeyboard(pianoPanel);
 
-		GridBagConstraints c = new GridBagConstraints();
-
-		// Add the piano panel and shabad editor to the window
-		c.gridx = 0;
-		c.gridy = 0;
-		c.weightx = 1.0;
-		c.anchor = GridBagConstraints.NORTHWEST;
-		mainPanel.add(controlPanel, c);
-
-		c.gridx = 0;
-		c.gridy = 1;
-		c.weightx = 1.0;
-		c.anchor = GridBagConstraints.NORTHWEST;
-		pianoPanel
-				.setPreferredSize(new Dimension(WIDTH - 18, WHITE_KEY_HEIGHT));
-		mainPanel.add(pianoPanel, c);
-
-		c.gridx = 0;
-		c.gridy = 2;
-		c.weightx = 1.0;
-		c.weighty = 1.0;
-		c.anchor = GridBagConstraints.NORTHWEST;
-		mainPanel.add(shabadEditor, c);
+		initMainPanel(mainPanel, controlPanel, pianoPanel);
 		frame.add(mainPanel);
 
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -156,7 +177,7 @@ public class Main implements ActionListener, ItemListener {
 		stopButton.addActionListener(this);
 		stopButton.setActionCommand("stop");
 
-		SpinnerNumberModel model = new SpinnerNumberModel(1, 0, 2, .1);
+		SpinnerNumberModel model = new SpinnerNumberModel(1, .1, 2, .1);
 		tempoControl = new JSpinner(model);
 		JSpinner.NumberEditor editor = (JSpinner.NumberEditor) tempoControl
 				.getEditor();
@@ -192,6 +213,33 @@ public class Main implements ActionListener, ItemListener {
 			j++;
 			addWhiteKey(panel, i++);
 		}
+	}
+
+	void initMainPanel(JPanel mainPanel, JPanel controlPanel,
+			JLayeredPane pianoPanel) {
+		GridBagConstraints c = new GridBagConstraints();
+
+		// Add the piano panel and shabad editor to the window
+		c.gridx = 0;
+		c.gridy = 0;
+		c.weightx = 1.0;
+		c.anchor = GridBagConstraints.NORTHWEST;
+		mainPanel.add(controlPanel, c);
+
+		c.gridx = 0;
+		c.gridy = 1;
+		c.weightx = 1.0;
+		c.anchor = GridBagConstraints.NORTHWEST;
+		pianoPanel
+				.setPreferredSize(new Dimension(WIDTH - 18, WHITE_KEY_HEIGHT));
+		mainPanel.add(pianoPanel, c);
+
+		c.gridx = 0;
+		c.gridy = 2;
+		c.weightx = 1.0;
+		c.weighty = 1.0;
+		c.anchor = GridBagConstraints.NORTHWEST;
+		mainPanel.add(shabadEditor, c);
 	}
 
 	void addWhiteKey(Container panel, int i) {

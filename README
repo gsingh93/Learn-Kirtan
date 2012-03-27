@@ -5,14 +5,15 @@ Instructions on use coming soon
 TODO:
 
 Implementation:
-Fixup layout (change how piano is constructed/clicking bugs)
-Improve prefix/suffix matching
-File selection and saving as .sbd
-
-Features:
+Add code documentation
 Add help page
+Check for incorrect modifiers on notes
 Add double notes parsing
 Add long press for notes
+Fixup layout (change how piano is constructed/clicking bugs)
+Improve prefix/suffix matching
+
+Features:
 Add option for repeating antra/asthai
 Add option for practicing shabad with keyboard
 Add option for typing shabad using keyboard

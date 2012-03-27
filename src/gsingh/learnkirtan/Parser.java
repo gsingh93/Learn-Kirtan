@@ -89,7 +89,6 @@ public class Parser {
 				JOptionPane.showMessageDialog(null, "Error: Invalid note.",
 						"Error", JOptionPane.ERROR_MESSAGE);
 		}
-
 	}
 
 	public static void stop() {
