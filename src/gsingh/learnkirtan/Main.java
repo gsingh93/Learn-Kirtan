@@ -293,7 +293,17 @@ public class Main implements ActionListener, ItemListener {
 			int returnVal = fc.showSaveDialog(frame);
 			if (returnVal == JFileChooser.APPROVE_OPTION) {
 				curFile = fc.getSelectedFile();
-
+				String filename = curFile.getName();
+				if (filename.length() <= 4) {
+					filename = filename + ".sbd";
+					System.out.println(filename);
+					curFile = new File(curFile.getAbsolutePath() + ".sbd");
+				} else if (!filename.substring(filename.length() - 4).equals(
+						".sbd")) {
+					filename = filename + ".sbd";
+					curFile = new File(curFile.getAbsolutePath() + ".sbd");
+				}
+				System.out.println(filename);
 				if (curFile.exists()) {
 
 					int result = JOptionPane.showConfirmDialog(frame,
