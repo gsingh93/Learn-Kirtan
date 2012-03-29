@@ -110,6 +110,8 @@ public class Parser {
 				break;
 			}
 		}
+
+		stop = false;
 	}
 
 	public static void stop() {
