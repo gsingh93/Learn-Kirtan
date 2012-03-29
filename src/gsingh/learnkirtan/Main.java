@@ -18,9 +18,12 @@ import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.text.DecimalFormat;
 
 import javax.swing.JButton;
@@ -38,6 +41,8 @@ import javax.swing.JTextArea;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
+
+import org.apache.commons.io.IOUtils;
 
 public class Main implements ActionListener, ItemListener {
 
@@ -111,6 +116,10 @@ public class Main implements ActionListener, ItemListener {
 	JFrame frame;
 
 	public Main() {
+
+		// Make sure the soundbank is installed
+		System.out.println(installSoundBank());
+
 		frame = new JFrame("Learn Kirtan v0.1 Beta");
 		initMenu();
 
@@ -402,6 +411,36 @@ public class Main implements ActionListener, ItemListener {
 	public void itemStateChanged(ItemEvent e) {
 		// TODO Auto-generated method stub
 
+	}
+
+	public boolean installSoundBank() {
+
+		// Determine where the JRE is installed
+		File file = new File("C:\\Program Files (x86)\\Java\\jre6");
+		if (!file.exists()) {
+			file = new File("C:\\Program Files\\Java\\jre6");
+			if (!file.exists())
+				return false;
+		}
+
+		// If the JRE is properly installed, check if the SoundBank is already
+		// installed
+		file = new File(file.getAbsolutePath()
+				+ "\\lib\\audio\\soundbank-min.gm");
+		if (!file.exists()) {
+			InputStream is = this.getClass().getClassLoader()
+					.getResourceAsStream("soundbank-min.gm");
+			OutputStream os = null;
+			try {
+				os = new FileOutputStream(file.getAbsolutePath());
+				IOUtils.copy(is, os);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+
+		return true;
 	}
 
 	public static void main(String[] args) {

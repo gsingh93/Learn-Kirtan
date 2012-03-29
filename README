@@ -1,19 +1,15 @@
 Learn Kirtan
 Software written by Gulshan Singh (gulshan@umich.edu)
-Instructions on use coming soon
+
+Documentation and Instructions: https://github.com/gsingh93/Learn-Kirtan/wiki
 
 TODO:
-
-Implementation:
+Improve editor/font
+Fix ending with dash bug
 Add code documentation
 Add help page
+Add about page with link to Apache License
 Check for incorrect modifiers on notes
 Add double notes parsing
-Add long press for notes
 Fixup layout (change how piano is constructed/clicking bugs)
 Improve prefix/suffix matching
-
-Features:
-Add option for repeating antra/asthai
-Add option for practicing shabad with keyboard
-Add option for typing shabad using keyboard
