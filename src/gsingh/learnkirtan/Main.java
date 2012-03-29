@@ -27,6 +27,7 @@ import java.io.OutputStream;
 import java.text.DecimalFormat;
 
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -107,6 +108,10 @@ public class Main implements ActionListener, ItemListener {
 	 * cannot be changed while playing.
 	 */
 	JSpinner tempoControl;
+
+	JCheckBox repeat;
+	JCheckBox playAsthai;
+	JCheckBox playAnthra;
 
 	/**
 	 * The file in which your shabad will be saved or was opened from. When the
@@ -201,11 +206,23 @@ public class Main implements ActionListener, ItemListener {
 		d.width = 40;
 		tempoControl.setPreferredSize(d);
 
+		repeat = new JCheckBox("Repeat");
+		repeat.addItemListener(this);
+
+		playAsthai = new JCheckBox("Play Only Asthai");
+		playAsthai.addItemListener(this);
+
+		playAnthra = new JCheckBox("Play Only Anthra");
+		playAnthra.addItemListener(this);
+
 		controlPanel.add(playButton);
 		controlPanel.add(pauseButton);
 		controlPanel.add(stopButton);
 		controlPanel.add(tempoLabel);
 		controlPanel.add(tempoControl);
+		controlPanel.add(repeat);
+		controlPanel.add(playAsthai);
+		controlPanel.add(playAnthra);
 	}
 
 	void constructKeyboard(Container panel) {
@@ -272,6 +289,14 @@ public class Main implements ActionListener, ItemListener {
 		keys[index++] = b;
 	}
 
+	public void setInputBoxes(boolean bool) {
+		shabadEditor.setEnabled(bool);
+		tempoControl.setEnabled(bool);
+		repeat.setEnabled(bool);
+		playAsthai.setEnabled(bool);
+		playAnthra.setEnabled(bool);
+	}
+
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		String command = e.getActionCommand();
@@ -284,12 +309,10 @@ public class Main implements ActionListener, ItemListener {
 				else {
 					new Thread(new Runnable() {
 						public void run() {
-							shabadEditor.setEnabled(false);
-							tempoControl.setEnabled(false);
+							setInputBoxes(false);
 							Parser.parseAndPlay(shabadEditor.getText(),
 									(Double) tempoControl.getValue());
-							shabadEditor.setEnabled(true);
-							tempoControl.setEnabled(true);
+							setInputBoxes(true);
 						}
 					}).start();
 				}
@@ -409,8 +432,15 @@ public class Main implements ActionListener, ItemListener {
 
 	@Override
 	public void itemStateChanged(ItemEvent e) {
-		// TODO Auto-generated method stub
+		Object source = e.getItemSelectable();
 
+		if (source == repeat) {
+			System.out.println("Repeat clicked");
+			if (e.getStateChange() == ItemEvent.SELECTED)
+				Parser.setRepeat(true);
+			else
+				Parser.setRepeat(false);
+		}
 	}
 
 	public boolean installSoundBank() {

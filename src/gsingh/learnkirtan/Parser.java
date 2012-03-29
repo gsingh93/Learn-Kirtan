@@ -12,6 +12,10 @@ public class Parser {
 
 	private static boolean stop = false;
 	private static boolean pause = false;
+	private static boolean finished = false;
+	private static boolean repeat = false;
+	private static boolean onlyAsthai = false;
+	private static boolean onlyAnthra = false;
 	private static Key[] keys = Main.keys;
 	private static int key = 0;
 
@@ -29,14 +33,19 @@ public class Parser {
 			if (isPaused())
 				pause();
 
-			// TODO: Unnecessary?
-			if (stop) {
-				stop = false;
-				break;
+			if (finished) {
+				if (repeat) {
+					scanner = new Scanner(text);
+					note = scanner.next("[A-Za-z.']+");
+					next = null;
+					finished = false;
+				} else {
+					break;
+				}
 			}
 
 			if (!scanner.hasNext("[A-Za-z.'-]+"))
-				stop = true;
+				finished = true;
 
 			while (scanner.hasNext("[A-Za-z.'-]+")) {
 				next = scanner.next("[A-Za-z.'-]+");
@@ -106,7 +115,7 @@ public class Parser {
 
 				// This occurs if the last note of the shabad is a dash
 				if (note.equals("-"))
-					stop = true;
+					finished = true;
 			} else {
 				System.out.println("Invalid note.");
 				JOptionPane.showMessageDialog(null, "Error: Invalid note.",
@@ -116,6 +125,7 @@ public class Parser {
 		}
 
 		stop = false;
+		finished = false;
 	}
 
 	public static void stop() {
@@ -144,5 +154,9 @@ public class Parser {
 
 	public static void play() {
 		pause = false;
+	}
+
+	public static void setRepeat(boolean bool) {
+		repeat = bool;
 	}
 }
