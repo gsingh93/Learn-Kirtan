@@ -103,6 +103,10 @@ public class Parser {
 			if (key > 0 && key < 48) {
 				keys[key].playOnce((int) (holdCount * gap / tempo));
 				note = next;
+
+				// This occurs if the last note of the shabad is a dash
+				if (note.equals("-"))
+					stop = true;
 			} else {
 				System.out.println("Invalid note.");
 				JOptionPane.showMessageDialog(null, "Error: Invalid note.",
