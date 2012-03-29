@@ -26,6 +26,7 @@ import java.text.DecimalFormat;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JLayeredPane;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
@@ -121,10 +122,10 @@ public class Main implements ActionListener, ItemListener {
 
 		// Construct each top level component
 		initControlPanel(controlPanel);
-		
+
 		shabadEditor = new JTextArea(20, 78);
 		shabadEditor.setDisabledTextColor(Color.GRAY);
-		
+
 		constructKeyboard(pianoPanel);
 
 		initMainPanel(mainPanel, controlPanel, pianoPanel);
@@ -179,6 +180,8 @@ public class Main implements ActionListener, ItemListener {
 		stopButton.addActionListener(this);
 		stopButton.setActionCommand("stop");
 
+		JLabel tempoLabel = new JLabel("Tempo:");
+
 		SpinnerNumberModel model = new SpinnerNumberModel(1, .1, 2, .1);
 		tempoControl = new JSpinner(model);
 		JSpinner.NumberEditor editor = (JSpinner.NumberEditor) tempoControl
@@ -192,6 +195,7 @@ public class Main implements ActionListener, ItemListener {
 		controlPanel.add(playButton);
 		controlPanel.add(pauseButton);
 		controlPanel.add(stopButton);
+		controlPanel.add(tempoLabel);
 		controlPanel.add(tempoControl);
 	}
 
