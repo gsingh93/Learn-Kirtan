@@ -121,8 +121,10 @@ public class Main implements ActionListener, ItemListener {
 
 		// Construct each top level component
 		initControlPanel(controlPanel);
+		
 		shabadEditor = new JTextArea(20, 78);
 		shabadEditor.setDisabledTextColor(Color.GRAY);
+		
 		constructKeyboard(pianoPanel);
 
 		initMainPanel(mainPanel, controlPanel, pianoPanel);

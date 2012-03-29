@@ -8,31 +8,47 @@ import javax.swing.JOptionPane;
 
 public class Parser {
 
+	private static final int gap = 500;
+
 	private static boolean stop = false;
 	private static boolean pause = false;
+	private static Key[] keys = Main.keys;
+	private static int key = 0;
 
 	public static void parseAndPlay(String text, double tempo) {
 
-		Key[] keys = Main.keys;
-		int gap = 500;
-		int key = 0;
+		int holdCount;
 
 		Scanner scanner = new Scanner(text);
-		while (scanner.hasNext("[A-Za-z.']+ *")) {
+		String note = scanner.next("[A-Za-z.']+");
+		String next = null;
+
+		while (!stop) {
+			holdCount = 1;
 
 			if (isPaused())
 				pause();
 
+			// TODO: Unnecessary?
 			if (stop) {
 				stop = false;
 				break;
 			}
 
-			String note = scanner.next("[A-Za-z.']+");
+			if (!scanner.hasNext("[A-Za-z.'-]+"))
+				stop = true;
+
+			while (scanner.hasNext("[A-Za-z.'-]+")) {
+				next = scanner.next("[A-Za-z.'-]+");
+				if (next.equals("-"))
+					holdCount++;
+				else
+					break;
+			}
 
 			int count = 0;
 			for (int i = 0; i < 3; i++) {
-				if (note.substring(i, i + 1).matches("[A-Za-z]"))
+				if (note.substring(i, i + 1).matches("[A-Za-z-]"))
 					break;
 				count++;
 			}
@@ -67,6 +83,7 @@ public class Parser {
 				System.out.println("Invalid note.");
 				JOptionPane.showMessageDialog(null, "Error: Invalid note.",
 						"Error", JOptionPane.ERROR_MESSAGE);
+				break;
 			}
 
 			// TODO: Check if notes have valid modifiers
@@ -83,11 +100,15 @@ public class Parser {
 				key += 12;
 			}
 			System.out.println(pause);
-			if (key > 0 && key < 48)
-				keys[key].playOnce((int) (gap / tempo));
-			else
+			if (key > 0 && key < 48) {
+				keys[key].playOnce((int) (holdCount * gap / tempo));
+				note = next;
+			} else {
+				System.out.println("Invalid note.");
 				JOptionPane.showMessageDialog(null, "Error: Invalid note.",
 						"Error", JOptionPane.ERROR_MESSAGE);
+				break;
+			}
 		}
 	}
 
