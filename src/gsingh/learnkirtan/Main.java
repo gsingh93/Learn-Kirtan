@@ -111,7 +111,7 @@ public class Main implements ActionListener, ItemListener {
 	JFrame frame;
 
 	public Main() {
-		frame = new JFrame("Learn Kirtan");
+		frame = new JFrame("Learn Kirtan v0.1 Beta");
 		initMenu();
 
 		JPanel mainPanel = new JPanel();
