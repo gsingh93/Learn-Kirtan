@@ -44,20 +44,34 @@ public class Key extends JButton implements MouseListener {
 		// }
 
 		channel = synth.getChannels();
+
+		// Sets the instrument to an instrument close to a harmonium
 		channel[0].programChange(20);
 		addMouseListener(this);
 	}
 
+	/**
+	 * Plays the midi note of this key for the specified amount of time
+	 * 
+	 * @param time
+	 *            - the length of time to play the note in milliseconds
+	 */
 	public void playOnce(int time) {
 		play();
 		doClick(time);
 		stop();
 	}
 
+	/**
+	 * Starts playing the midi note for this key
+	 */
 	public void play() {
 		channel[0].noteOn(note, 60);
 	}
 
+	/**
+	 * Stops playing the midi note of this key
+	 */
 	public void stop() {
 		channel[0].noteOff(note);
 	}

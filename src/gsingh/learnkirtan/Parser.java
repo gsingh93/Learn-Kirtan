@@ -8,6 +8,9 @@ import javax.swing.JOptionPane;
 
 public class Parser {
 
+	/**
+	 * The default length each note is played
+	 */
 	private static final int gap = 500;
 
 	private static boolean stop = false;
@@ -19,24 +22,48 @@ public class Parser {
 	private static Key[] keys = Main.keys;
 	private static int key = 0;
 
-	public static void parseAndPlay(String text, double tempo) {
+	/**
+	 * Plays the shabad on the keyboard
+	 * 
+	 * @param shabad
+	 *            - The shabad to play
+	 * @param tempo
+	 *            - The speed multiplier
+	 */
+	public static void parseAndPlay(String shabad, double tempo) {
 
 		int holdCount;
 
-		Scanner scanner = new Scanner(text);
-		String note = scanner.next("[A-Za-z.']+");
+		shabad = shabad.toUpperCase();
+		System.out.println(shabad);
+		validateShabad(shabad);
+
+		Scanner scanner = new Scanner(shabad);
+		String note = reset(scanner);
 		String next = null;
 
 		while (!stop) {
+
+			if (onlyAsthai)
+				if (note.equals("ANTHRA"))
+					finished = true;
+
+			if (onlyAnthra)
+				if (note.equals("ASTHAI"))
+					finished = true;
+
 			holdCount = 1;
 
+			// Pause the thread if necessary
 			if (isPaused())
 				pause();
 
+			// If we have reached the end of the shabad or specified lines,
+			// check if we should repeat. Otherwise, break.
 			if (finished) {
 				if (repeat) {
-					scanner = new Scanner(text);
-					note = scanner.next("[A-Za-z.']+");
+					scanner = new Scanner(shabad);
+					note = reset(scanner);
 					next = null;
 					finished = false;
 				} else {
@@ -44,9 +71,18 @@ public class Parser {
 				}
 			}
 
+			// If a label is found, skip it
+			if (note.equals("ASTHAI") || note.equals("ANTHRA")) {
+				note = scanner.next("[A-Za-z.']+");
+				continue;
+			}
+
+			// Check if we've reached the end of the shabad or specified lines
 			if (!scanner.hasNext("[A-Za-z.'-]+"))
 				finished = true;
 
+			// Get the next note if there is one and check if it's a dash. If
+			// so, increase the holdCount by one
 			while (scanner.hasNext("[A-Za-z.'-]+")) {
 				next = scanner.next("[A-Za-z.'-]+");
 				if (next.equals("-"))
@@ -55,16 +91,18 @@ public class Parser {
 					break;
 			}
 
+			// Determine the length of the prefix
 			int count = 0;
 			for (int i = 0; i < 3; i++) {
 				if (note.substring(i, i + 1).matches("[A-Za-z-]"))
 					break;
 				count++;
 			}
+
+			// Break the input into a prefix, a suffix and a note
 			String prefix = note.substring(0, count);
 			String suffix = "";
 			note = note.substring(count);
-			note = note.toUpperCase();
 			int index = note.indexOf(".");
 			if (index == -1)
 				index = note.indexOf("'");
@@ -74,6 +112,8 @@ public class Parser {
 			}
 
 			System.out.println(prefix + note + suffix);
+
+			// Set the key number of the note to be played
 			if (note.equals("SA")) {
 				key = 10;
 			} else if (note.equals("RE")) {
@@ -95,6 +135,8 @@ public class Parser {
 				break;
 			}
 
+			// Apply the modifiers in the prefix and suffix to calculate the
+			// actual key number
 			// TODO: Check if notes have valid modifiers
 			if (prefix.contains("'")) {
 				key--;
@@ -113,7 +155,7 @@ public class Parser {
 				keys[key].playOnce((int) (holdCount * gap / tempo));
 				note = next;
 
-				// This occurs if the last note of the shabad is a dash
+				// If note is equal to a dash, we've reached the end of the file
 				if (note.equals("-"))
 					finished = true;
 			} else {
@@ -128,15 +170,76 @@ public class Parser {
 		finished = false;
 	}
 
+	/**
+	 * Gets the first note to parse and sets the scanner to that position. The
+	 * note returned depends on whether onlyAsthai or onlyAntra are set
+	 * 
+	 * @param scanner
+	 *            - the scanner reading the shabad
+	 * @return the first note of the shabad
+	 */
+	private static String reset(Scanner scanner) {
+		String note;
+		if (onlyAsthai) {
+			note = scanner.next("[A-Za-z.']+");
+			while (!note.equals("ASTHAI"))
+				note = scanner.next("[A-Za-z.']+");
+		} else if (onlyAnthra) {
+			note = scanner.next("[A-Za-z.']+");
+			while (!note.equals("ANTHRA"))
+				note = scanner.next("[A-Za-z.']+");
+		}
+
+		note = scanner.next("[A-Za-z.']+");
+
+		return note;
+	}
+
+	/**
+	 * Checks whether the shabad input is valid. Specifically, correct use of
+	 * asthai/antra labels will be checked
+	 * 
+	 * @return true if input is valid. False otherwise.
+	 */
+	private static boolean validateShabad(String shabad) {
+
+		// First check if label is there when the checkboxes are selected
+		if (onlyAsthai) {
+			if (shabad.indexOf("ASTHAI") == -1) {
+				System.out
+						.println("Only Asthai specified but no Asthai label found");
+				return false;
+			}
+
+		} else if (onlyAnthra) {
+			if (shabad.indexOf("Anthra") == -1) {
+				System.out
+						.println("Only Anthra specified but no Anthra label found");
+				return false;
+			}
+		}
+
+		return true;
+	}
+
+	/**
+	 * Sets pause to false and stop to true
+	 */
 	public static void stop() {
 		stop = true;
 		pause = false;
 	}
 
+	/**
+	 * Sets pause to true
+	 */
 	public static void setPause() {
 		pause = true;
 	}
 
+	/**
+	 * If pause is true, the thread playing the shabad will sleep
+	 */
 	public static void pause() {
 		while (pause) {
 			try {
@@ -148,15 +251,48 @@ public class Parser {
 		}
 	}
 
+	/**
+	 * Returns true if the playback is paused, false otherwise
+	 */
 	public static boolean isPaused() {
 		return pause;
 	}
 
+	/**
+	 * Sets pause to false, so that playback resumes. This is note used to play
+	 * the shabad, only to unpause.
+	 */
 	public static void play() {
 		pause = false;
 	}
 
+	/**
+	 * Sets the repeat flag
+	 * 
+	 * @param bool
+	 *            - {@code repeat} is set to this value
+	 */
 	public static void setRepeat(boolean bool) {
 		repeat = bool;
+	}
+
+	/**
+	 * Sets the repeat flag
+	 * 
+	 * @param bool
+	 *            - {@code onlyAnthra} is set to this value
+	 */
+	public static void setOnlyAsthai(boolean bool) {
+		onlyAsthai = bool;
+	}
+
+	/**
+	 * Sets the repeat flag
+	 * 
+	 * @param bool
+	 *            - {@code onlyAnthra} is set to this value
+	 */
+	public static void setOnlyAnthra(boolean bool) {
+		onlyAnthra = bool;
 	}
 }

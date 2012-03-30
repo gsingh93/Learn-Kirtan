@@ -120,12 +120,46 @@ public class Main implements ActionListener, ItemListener {
 	File curFile;
 	JFrame frame;
 
+	public static void main(String[] args) {
+		new Main();
+	}
+
+	public boolean installSoundBank() {
+
+		// Determine where the JRE is installed
+		File file = new File("C:\\Program Files (x86)\\Java\\jre6");
+		if (!file.exists()) {
+			file = new File("C:\\Program Files\\Java\\jre6");
+			if (!file.exists())
+				return false;
+		}
+
+		// If the JRE is properly installed, check if the SoundBank is already
+		// installed
+		file = new File(file.getAbsolutePath()
+				+ "\\lib\\audio\\soundbank-min.gm");
+		if (!file.exists()) {
+			InputStream is = this.getClass().getClassLoader()
+					.getResourceAsStream("soundbank-min.gm");
+			OutputStream os = null;
+			try {
+				os = new FileOutputStream(file.getAbsolutePath());
+				IOUtils.copy(is, os);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+
+		return true;
+	}
+
 	public Main() {
 
 		// Make sure the soundbank is installed
 		System.out.println(installSoundBank());
 
-		frame = new JFrame("Learn Kirtan v0.1 Beta");
+		frame = new JFrame("Learn Kirtan v0.2 Beta");
 		initMenu();
 
 		JPanel mainPanel = new JPanel();
@@ -152,7 +186,10 @@ public class Main implements ActionListener, ItemListener {
 		frame.setVisible(true);
 	}
 
-	void initMenu() {
+	/**
+	 * Initializes the menu bar
+	 */
+	private void initMenu() {
 
 		JMenuBar menuBar = new JMenuBar();
 		JMenu fileMenu = new JMenu("File");
@@ -180,6 +217,12 @@ public class Main implements ActionListener, ItemListener {
 		frame.setJMenuBar(menuBar);
 	}
 
+	/**
+	 * Initializes the control panel
+	 * 
+	 * @param controlPanel
+	 *            - the panel to initialize
+	 */
 	void initControlPanel(JPanel controlPanel) {
 		JButton playButton = new JButton("Play");
 		JButton pauseButton = new JButton("Pause");
@@ -225,6 +268,12 @@ public class Main implements ActionListener, ItemListener {
 		controlPanel.add(playAnthra);
 	}
 
+	/**
+	 * Constructs the piano
+	 * 
+	 * @param panel
+	 *            - the layer in which to construct the piano
+	 */
 	void constructKeyboard(Container panel) {
 		int i = 0;
 		int j = 0;
@@ -247,6 +296,43 @@ public class Main implements ActionListener, ItemListener {
 		}
 	}
 
+	/**
+	 * Adds a white key to the piano panel
+	 * 
+	 * @param panel
+	 *            - the panel to which to add the key
+	 * @param i
+	 *            - a number which is used to calculate the position of the key
+	 */
+	void addWhiteKey(Container panel, int i) {
+		WhiteKey b = new WhiteKey();
+		b.setLocation(i++ * WHITE_KEY_WIDTH, 0);
+		panel.add(b, 0, -1);
+		keys[index++] = b;
+	}
+
+	/**
+	 * Adds a black key to the piano panel
+	 * 
+	 * @param panel
+	 *            - the panel to which to add the key
+	 * @param factor
+	 *            - a number which is used to calculate the position of the key
+	 */
+	void addBlackKey(Container panel, int factor) {
+		BlackKey b = new BlackKey();
+		b.setLocation(WHITE_KEY_WIDTH - BLACK_KEY_WIDTH / 2 + factor
+				* WHITE_KEY_WIDTH, 0);
+		panel.add(b, 1, -1);
+		keys[index++] = b;
+	}
+
+	/**
+	 * Constructs the mainPanel by taking the {@code controlPanel},
+	 * {@code pianoPanel}, and {@code shabadEditor} and arranging them using a
+	 * {@link GridBagLayout}.
+	 * 
+	 */
 	void initMainPanel(JPanel mainPanel, JPanel controlPanel,
 			JLayeredPane pianoPanel) {
 		GridBagConstraints c = new GridBagConstraints();
@@ -274,27 +360,133 @@ public class Main implements ActionListener, ItemListener {
 		mainPanel.add(shabadEditor, c);
 	}
 
-	void addWhiteKey(Container panel, int i) {
-		WhiteKey b = new WhiteKey();
-		b.setLocation(i++ * WHITE_KEY_WIDTH, 0);
-		panel.add(b, 0, -1);
-		keys[index++] = b;
-	}
-
-	void addBlackKey(Container panel, int factor) {
-		BlackKey b = new BlackKey();
-		b.setLocation(WHITE_KEY_WIDTH - BLACK_KEY_WIDTH / 2 + factor
-				* WHITE_KEY_WIDTH, 0);
-		panel.add(b, 1, -1);
-		keys[index++] = b;
-	}
-
+	/**
+	 * Enables or disables certain inputs depending on the value of bool. Used
+	 * when the play button is pressed.
+	 * 
+	 * @param bool
+	 *            - true if the inputs should be enabled, false if they should
+	 *            be disabled.
+	 */
 	public void setInputBoxes(boolean bool) {
 		shabadEditor.setEnabled(bool);
 		tempoControl.setEnabled(bool);
 		repeat.setEnabled(bool);
 		playAsthai.setEnabled(bool);
 		playAnthra.setEnabled(bool);
+	}
+
+	/**
+	 * Prompts the user if they would like to save if their text has been edited
+	 * 
+	 * @return a number specifying which option the user chose. -1 if the user
+	 *         was not prompted
+	 */
+	public int askForSave() {
+		if (!prevText.equals(shabadEditor.getText()))
+			return JOptionPane.showConfirmDialog(frame,
+					"Would you like to save before proceeding?");
+		else
+			return -1;
+	}
+
+	/**
+	 * Saves the text in the shabadEditor to the file specified. If no file is
+	 * specified, the user is prompted to specify one.
+	 * 
+	 * @throws IOException
+	 */
+	public void save() throws IOException {
+		if (curFile == null) {
+			int returnVal = fc.showSaveDialog(frame);
+			if (returnVal == JFileChooser.APPROVE_OPTION) {
+				curFile = fc.getSelectedFile();
+				String filename = curFile.getName();
+				if (filename.length() <= 4) {
+					filename = filename + ".sbd";
+					System.out.println(filename);
+					curFile = new File(curFile.getAbsolutePath() + ".sbd");
+				} else if (!filename.substring(filename.length() - 4).equals(
+						".sbd")) {
+					filename = filename + ".sbd";
+					curFile = new File(curFile.getAbsolutePath() + ".sbd");
+				}
+				System.out.println(filename);
+				if (curFile.exists()) {
+
+					int result = JOptionPane.showConfirmDialog(frame,
+							"Overwrite existing file?", "Confirm Overwrite",
+							JOptionPane.OK_CANCEL_OPTION,
+							JOptionPane.QUESTION_MESSAGE);
+
+					if (result == JOptionPane.OK_OPTION)
+						write();
+				} else
+					write();
+			}
+		} else
+			write();
+	}
+
+	/**
+	 * Write the shabadEditor text to {@code curFile}
+	 * 
+	 * @throws IOException
+	 */
+	public void write() throws IOException {
+		BufferedWriter bw = new BufferedWriter(new FileWriter(curFile));
+		shabadEditor.write(bw);
+		bw.close();
+		prevText = shabadEditor.getText();
+	}
+
+	/**
+	 * Prompts the user for a file to open and opens the selected file
+	 */
+	public void openFile() {
+		int returnVal = fc.showOpenDialog(frame);
+		BufferedReader br = null;
+		if (returnVal == JFileChooser.APPROVE_OPTION) {
+			curFile = fc.getSelectedFile();
+			try {
+				br = new BufferedReader(new FileReader(curFile));
+				shabadEditor.read(br, "File");
+				br.close();
+			} catch (FileNotFoundException e1) {
+				e1.printStackTrace();
+			} catch (IOException e2) {
+				e2.printStackTrace();
+			}
+		}
+	}
+
+	@Override
+	public void itemStateChanged(ItemEvent e) {
+		Object source = e.getItemSelectable();
+
+		if (source == repeat) {
+			System.out.println("Repeat clicked");
+			if (e.getStateChange() == ItemEvent.SELECTED)
+				Parser.setRepeat(true);
+			else
+				Parser.setRepeat(false);
+		} else if (source == playAsthai) {
+			System.out.println("Play Asthai clicked");
+			if (e.getStateChange() == ItemEvent.SELECTED) {
+				Parser.setOnlyAsthai(true);
+				playAnthra.setSelected(false);
+				Parser.setOnlyAnthra(false);
+			} else
+				Parser.setOnlyAsthai(false);
+		} else if (source == playAnthra) {
+			System.out.println("Play Anthra clicked");
+			if (e.getStateChange() == ItemEvent.SELECTED) {
+				Parser.setOnlyAnthra(true);
+				playAsthai.setSelected(false);
+				Parser.setOnlyAsthai(false);
+			} else
+				Parser.setOnlyAnthra(false);
+		}
 	}
 
 	@Override
@@ -364,116 +556,5 @@ public class Main implements ActionListener, ItemListener {
 				e1.printStackTrace();
 			}
 		}
-	}
-
-	public int askForSave() {
-		if (!prevText.equals(shabadEditor.getText()))
-			return JOptionPane.showConfirmDialog(frame,
-					"Would you like to save before proceeding?");
-		else
-			return -1;
-	}
-
-	public void save() throws IOException {
-		if (curFile == null) {
-			int returnVal = fc.showSaveDialog(frame);
-			if (returnVal == JFileChooser.APPROVE_OPTION) {
-				curFile = fc.getSelectedFile();
-				String filename = curFile.getName();
-				if (filename.length() <= 4) {
-					filename = filename + ".sbd";
-					System.out.println(filename);
-					curFile = new File(curFile.getAbsolutePath() + ".sbd");
-				} else if (!filename.substring(filename.length() - 4).equals(
-						".sbd")) {
-					filename = filename + ".sbd";
-					curFile = new File(curFile.getAbsolutePath() + ".sbd");
-				}
-				System.out.println(filename);
-				if (curFile.exists()) {
-
-					int result = JOptionPane.showConfirmDialog(frame,
-							"Overwrite existing file?", "Confirm Overwrite",
-							JOptionPane.OK_CANCEL_OPTION,
-							JOptionPane.QUESTION_MESSAGE);
-
-					if (result == JOptionPane.OK_OPTION)
-						write();
-				} else
-					write();
-			}
-		} else
-			write();
-	}
-
-	public void write() throws IOException {
-		BufferedWriter bw = new BufferedWriter(new FileWriter(curFile));
-		shabadEditor.write(bw);
-		bw.close();
-		prevText = shabadEditor.getText();
-	}
-
-	public void openFile() {
-		int returnVal = fc.showOpenDialog(frame);
-		BufferedReader br = null;
-		if (returnVal == JFileChooser.APPROVE_OPTION) {
-			curFile = fc.getSelectedFile();
-			try {
-				br = new BufferedReader(new FileReader(curFile));
-				shabadEditor.read(br, "File");
-				br.close();
-			} catch (FileNotFoundException e1) {
-				e1.printStackTrace();
-			} catch (IOException e2) {
-				e2.printStackTrace();
-			}
-		}
-	}
-
-	@Override
-	public void itemStateChanged(ItemEvent e) {
-		Object source = e.getItemSelectable();
-
-		if (source == repeat) {
-			System.out.println("Repeat clicked");
-			if (e.getStateChange() == ItemEvent.SELECTED)
-				Parser.setRepeat(true);
-			else
-				Parser.setRepeat(false);
-		}
-	}
-
-	public boolean installSoundBank() {
-
-		// Determine where the JRE is installed
-		File file = new File("C:\\Program Files (x86)\\Java\\jre6");
-		if (!file.exists()) {
-			file = new File("C:\\Program Files\\Java\\jre6");
-			if (!file.exists())
-				return false;
-		}
-
-		// If the JRE is properly installed, check if the SoundBank is already
-		// installed
-		file = new File(file.getAbsolutePath()
-				+ "\\lib\\audio\\soundbank-min.gm");
-		if (!file.exists()) {
-			InputStream is = this.getClass().getClassLoader()
-					.getResourceAsStream("soundbank-min.gm");
-			OutputStream os = null;
-			try {
-				os = new FileOutputStream(file.getAbsolutePath());
-				IOUtils.copy(is, os);
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
-
-		return true;
-	}
-
-	public static void main(String[] args) {
-		new Main();
 	}
 }
