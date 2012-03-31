@@ -47,7 +47,7 @@ public class Parser {
 			JOptionPane
 					.showMessageDialog(
 							null,
-							"Error: You specified that playback should start/stop at a label,"
+							"Error: You specified that playback should start/stop at a label, "
 									+ "but that label could not be found. Make sure there is a "
 									+ "'#' before the label.", "Error",
 							JOptionPane.ERROR_MESSAGE);
@@ -57,8 +57,6 @@ public class Parser {
 		reset(shabad, start);
 
 		while (!stop) {
-
-			holdCount = 1;
 
 			// Pause the thread if necessary
 			if (isPaused())
@@ -189,6 +187,7 @@ public class Parser {
 	 */
 	private static String getNextNote() {
 		String next = null;
+		holdCount = 1;
 		while (scanner.hasNext(PATTERN)) {
 			next = scanner.next(PATTERN);
 			if (next.equals("-"))
@@ -215,8 +214,7 @@ public class Parser {
 	}
 
 	/**
-	 * Gets the first note to parse and sets the scanner to that position. The
-	 * note returned depends on whether onlyAsthai or onlyAntra are set
+	 * Gets the first note to parse and sets the scanner to that position.
 	 * 
 	 * @param scanner
 	 *            - the scanner reading the shabad
@@ -225,10 +223,10 @@ public class Parser {
 	private static String getFirstNote(String start) {
 		String note;
 		if (!start.equals("")) {
-			note = scanner.next("[A-Z.'#]+");
+			note = scanner.next(PATTERN);
 			while (!note.equals("#" + start)) {
 				System.out.println(note);
-				note = scanner.next("[A-Z.'#]+");
+				note = scanner.next(PATTERN);
 			}
 		}
 
@@ -238,8 +236,8 @@ public class Parser {
 	}
 
 	/**
-	 * Checks whether the shabad input is valid. Specifically, correct use of
-	 * asthai/antra labels will be checked
+	 * Checks whether the shabad input is valid. Checks whether labels are
+	 * present and in valid format
 	 * 
 	 * @return true if input is valid. False otherwise.
 	 */
