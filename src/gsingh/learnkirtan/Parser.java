@@ -12,15 +12,20 @@ public class Parser {
 	 * The default length each note is played
 	 */
 	private static final int gap = 500;
+	private static final String PATTERN = "[A-Z.'\\-#]+";
 
 	private static boolean stop = false;
 	private static boolean pause = false;
 	private static boolean finished = false;
 	private static boolean repeat = false;
-	private static boolean onlyAsthai = false;
-	private static boolean onlyAnthra = false;
 	private static Key[] keys = Main.keys;
 	private static int key = 0;
+
+	private static int holdCount;
+	private static String note;
+	private static String nextNote;
+
+	private static Scanner scanner = null;
 
 	/**
 	 * Plays the shabad on the keyboard
@@ -30,17 +35,26 @@ public class Parser {
 	 * @param tempo
 	 *            - The speed multiplier
 	 */
-	public static void parseAndPlay(String shabad, double tempo) {
+	public static void parseAndPlay(String shabad, String start, String end,
+			double tempo) {
 
-		int holdCount;
-
+		start = start.toUpperCase();
+		end = end.toUpperCase();
 		shabad = shabad.toUpperCase();
 		System.out.println(shabad);
-		validateShabad(shabad);
 
-		Scanner scanner = new Scanner(shabad);
-		String note = reset(scanner);
-		String next = null;
+		if (!validateShabad(shabad, start, end)) {
+			JOptionPane
+					.showMessageDialog(
+							null,
+							"Error: You specified that playback should start/stop at a label,"
+									+ "but that label could not be found. Make sure there is a "
+									+ "'#' before the label.", "Error",
+							JOptionPane.ERROR_MESSAGE);
+			return;
+		}
+
+		reset(shabad, start);
 
 		while (!stop) {
 
@@ -50,13 +64,30 @@ public class Parser {
 			if (isPaused())
 				pause();
 
+			// If the end label is found, finish. If another label is found,
+			// skip it.
+			if (note != null) {
+				while (note.charAt(0) == '#') {
+					if (!end.equals("")) {
+						if (note.equals("#" + end))
+							finished = true;
+					}
+					note = nextNote;
+					nextNote = getNextNote();
+
+					if (note == null) {
+						finished = true;
+						break;
+					}
+				}
+			} else
+				finished = true;
+
 			// If we have reached the end of the shabad or specified lines,
 			// check if we should repeat. Otherwise, break.
 			if (finished) {
 				if (repeat) {
-					scanner = new Scanner(shabad);
-					note = reset(scanner);
-					next = null;
+					reset(shabad, start);
 					finished = false;
 				} else {
 					break;
@@ -64,23 +95,13 @@ public class Parser {
 			}
 
 			// Check if we've reached the end of the shabad or specified lines
-			if (!scanner.hasNext("[A-Za-z.'-]+"))
+			if (nextNote == null)
 				finished = true;
-
-			// Get the next note if there is one and check if it's a dash. If
-			// so, increase the holdCount by one
-			while (scanner.hasNext("[A-Za-z.'-]+")) {
-				next = scanner.next("[A-Za-z.'-]+");
-				if (next.equals("-"))
-					holdCount++;
-				else
-					break;
-			}
 
 			// Determine the length of the prefix
 			int count = 0;
 			for (int i = 0; i < 3; i++) {
-				if (note.substring(i, i + 1).matches("[A-Za-z-]"))
+				if (note.substring(i, i + 1).matches("[A-Z\\-]"))
 					break;
 				count++;
 			}
@@ -139,11 +160,13 @@ public class Parser {
 			System.out.println(pause);
 			if (key > 0 && key < 48) {
 				keys[key].playOnce((int) (holdCount * gap / tempo));
-				note = next;
+				note = nextNote;
+				nextNote = getNextNote();
 
 				// If note is equal to a dash, we've reached the end of the file
-				if (note.equals("-"))
-					finished = true;
+				if (note != null)
+					if (note.equals("-"))
+						finished = true;
 			} else {
 				System.out.println("Invalid note.");
 				JOptionPane.showMessageDialog(null, "Error: Invalid note.",
@@ -157,6 +180,41 @@ public class Parser {
 	}
 
 	/**
+	 * Gets the next note if one exists
+	 * 
+	 * @param holdCount
+	 *            - this is incremented each time a dash is found
+	 * @return the next note (after skipping any dashes) if it exists. If there
+	 *         is no next note, return null
+	 */
+	private static String getNextNote() {
+		String next = null;
+		while (scanner.hasNext(PATTERN)) {
+			next = scanner.next(PATTERN);
+			if (next.equals("-"))
+				holdCount++;
+			else
+				break;
+		}
+
+		return next;
+	}
+
+	/**
+	 * Sets the state of the scanner so we are starting from the beginning
+	 * 
+	 * @param shabad
+	 *            - the shabad to reset
+	 * @param start
+	 *            - the point in the shabad to reset too.
+	 */
+	private static void reset(String shabad, String start) {
+		scanner = new Scanner(shabad);
+		note = getFirstNote(start);
+		nextNote = getNextNote();
+	}
+
+	/**
 	 * Gets the first note to parse and sets the scanner to that position. The
 	 * note returned depends on whether onlyAsthai or onlyAntra are set
 	 * 
@@ -164,19 +222,17 @@ public class Parser {
 	 *            - the scanner reading the shabad
 	 * @return the first note of the shabad
 	 */
-	private static String reset(Scanner scanner) {
+	private static String getFirstNote(String start) {
 		String note;
-		if (onlyAsthai) {
-			note = scanner.next("[A-Za-z.']+");
-			while (!note.equals("ASTHAI"))
-				note = scanner.next("[A-Za-z.']+");
-		} else if (onlyAnthra) {
-			note = scanner.next("[A-Za-z.']+");
-			while (!note.equals("ANTHRA"))
-				note = scanner.next("[A-Za-z.']+");
+		if (!start.equals("")) {
+			note = scanner.next("[A-Z.'#]+");
+			while (!note.equals("#" + start)) {
+				System.out.println(note);
+				note = scanner.next("[A-Z.'#]+");
+			}
 		}
 
-		note = scanner.next("[A-Za-z.']+");
+		note = scanner.next("[A-Z.'#]+");
 
 		return note;
 	}
@@ -187,7 +243,17 @@ public class Parser {
 	 * 
 	 * @return true if input is valid. False otherwise.
 	 */
-	private static boolean validateShabad(String shabad) {
+	private static boolean validateShabad(String shabad, String start,
+			String end) {
+		if (!start.equals("")) {
+			if (!shabad.contains("#" + start))
+				return false;
+		}
+
+		if (!end.equals("")) {
+			if (!shabad.contains("#" + end))
+				return false;
+		}
 
 		return true;
 	}
@@ -244,25 +310,5 @@ public class Parser {
 	 */
 	public static void setRepeat(boolean bool) {
 		repeat = bool;
-	}
-
-	/**
-	 * Sets the repeat flag
-	 * 
-	 * @param bool
-	 *            - {@code onlyAnthra} is set to this value
-	 */
-	public static void setOnlyAsthai(boolean bool) {
-		onlyAsthai = bool;
-	}
-
-	/**
-	 * Sets the repeat flag
-	 * 
-	 * @param bool
-	 *            - {@code onlyAnthra} is set to this value
-	 */
-	public static void setOnlyAnthra(boolean bool) {
-		onlyAnthra = bool;
 	}
 }

@@ -497,6 +497,14 @@ public class Main implements ActionListener, ItemListener {
 
 	@Override
 	public void itemStateChanged(ItemEvent e) {
+		Object source = e.getItemSelectable();
+
+		if (source == repeat) {
+			if (e.getStateChange() == ItemEvent.SELECTED)
+				Parser.setRepeat(true);
+			else
+				Parser.setRepeat(false);
+		}
 	}
 
 	@Override
@@ -513,6 +521,7 @@ public class Main implements ActionListener, ItemListener {
 						public void run() {
 							setInputBoxes(false);
 							Parser.parseAndPlay(shabadEditor.getText(),
+									startField.getText(), endField.getText(),
 									(Double) tempoControl.getValue());
 							setInputBoxes(true);
 						}
