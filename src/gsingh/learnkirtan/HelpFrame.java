@@ -8,6 +8,9 @@ import javax.swing.JFrame;
 import javax.swing.JScrollPane;
 
 public class HelpFrame extends JFrame {
+
+	private static final long serialVersionUID = 1L;
+
 	JEditorPane helpDisplay = null;
 
 	public HelpFrame() {

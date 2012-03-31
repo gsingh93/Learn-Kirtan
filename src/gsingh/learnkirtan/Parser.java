@@ -98,10 +98,12 @@ public class Parser {
 
 			// Determine the length of the prefix
 			int count = 0;
-			for (int i = 0; i < 3; i++) {
-				if (note.substring(i, i + 1).matches("[A-Z\\-]"))
-					break;
-				count++;
+			if (note.length() > 1) {
+				for (int i = 0; i < 3; i++) {
+					if (note.substring(i, i + 1).matches("[A-Z\\-]"))
+						break;
+					count++;
+				}
 			}
 
 			// Break the input into a prefix, a suffix and a note

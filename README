@@ -3,12 +3,3 @@ Software written by Gulshan Singh (gulshan@umich.edu)
 
 Documentation and Instructions: https://github.com/gsingh93/Learn-Kirtan/wiki
 
-TODO:
-Improve editor/font
-Add code documentation
-Add help page
-Add about page with link to Apache License
-Check for incorrect modifiers on notes
-Add double notes parsing
-Fixup layout (change how piano is constructed/clicking bugs)
-Improve prefix/suffix matching
