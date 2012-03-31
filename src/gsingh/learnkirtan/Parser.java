@@ -87,6 +87,7 @@ public class Parser {
 				if (repeat) {
 					reset(shabad, start);
 					finished = false;
+					continue;
 				} else {
 					break;
 				}
