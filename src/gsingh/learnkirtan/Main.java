@@ -576,6 +576,15 @@ public class Main implements ActionListener, ItemListener {
 			}
 		} else if (command.equals("help")) {
 			new HelpFrame();
+		} else if (command.equals("about")) {
+			JOptionPane
+					.showConfirmDialog(
+							frame,
+							"This software was written by Gulshan Singh (gulshan@umich.edu) and is free \n"
+									+ "and opensource under the Apache License. Please contact me if you would like to contribute.\n"
+									+ "\n Version 0.2", "About",
+							JOptionPane.DEFAULT_OPTION,
+							JOptionPane.INFORMATION_MESSAGE);
 		}
 	}
 }
