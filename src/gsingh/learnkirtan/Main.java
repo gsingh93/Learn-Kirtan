@@ -9,6 +9,7 @@ import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.Label;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
@@ -39,6 +40,8 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JSpinner;
 import javax.swing.JTextArea;
+import javax.swing.JTextField;
+import javax.swing.KeyStroke;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
@@ -110,8 +113,8 @@ public class Main implements ActionListener, ItemListener {
 	JSpinner tempoControl;
 
 	JCheckBox repeat;
-	JCheckBox playAsthai;
-	JCheckBox playAnthra;
+	JTextField startField;
+	JTextField endField;
 
 	/**
 	 * The file in which your shabad will be saved or was opened from. When the
@@ -146,8 +149,8 @@ public class Main implements ActionListener, ItemListener {
 				os = new FileOutputStream(file.getAbsolutePath());
 				IOUtils.copy(is, os);
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
+				return false;
 			}
 		}
 
@@ -157,7 +160,16 @@ public class Main implements ActionListener, ItemListener {
 	public Main() {
 
 		// Make sure the soundbank is installed
-		System.out.println(installSoundBank());
+		if (!installSoundBank()) {
+			JOptionPane
+					.showMessageDialog(
+							frame,
+							"Error: There may be an issue with your Java installation"
+									+ " or the required file dependencies could not be installed."
+									+ " Sound may not work. If the problem persists,"
+									+ " please contact the developer for assistance.",
+							"Error", JOptionPane.ERROR_MESSAGE);
+		}
 
 		frame = new JFrame("Learn Kirtan v0.2 Beta");
 		initMenu();
@@ -193,7 +205,9 @@ public class Main implements ActionListener, ItemListener {
 
 		JMenuBar menuBar = new JMenuBar();
 		JMenu fileMenu = new JMenu("File");
+		JMenu helpMenu = new JMenu("Help");
 		menuBar.add(fileMenu);
+		menuBar.add(helpMenu);
 
 		// Initialize fileMenu items
 		JMenuItem createItem = new JMenuItem("Create new shabad", KeyEvent.VK_C);
@@ -201,18 +215,38 @@ public class Main implements ActionListener, ItemListener {
 				KeyEvent.VK_O);
 		JMenuItem saveItem = new JMenuItem("Save current shabad", KeyEvent.VK_S);
 
+		// Intialize helpMenu items
+		JMenuItem helpItem = new JMenuItem("Help", KeyEvent.VK_H);
+		JMenuItem aboutItem = new JMenuItem("About", KeyEvent.VK_A);
+
 		// Set listeners
 		createItem.setActionCommand("create");
 		createItem.addActionListener(this);
+		createItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_N,
+				ActionEvent.CTRL_MASK));
 		openItem.setActionCommand("open");
 		openItem.addActionListener(this);
+		openItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O,
+				ActionEvent.CTRL_MASK));
 		saveItem.setActionCommand("save");
 		saveItem.addActionListener(this);
+		saveItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S,
+				ActionEvent.CTRL_MASK));
+
+		helpItem.setActionCommand("help");
+		helpItem.addActionListener(this);
+		helpItem.setAccelerator(KeyStroke.getKeyStroke("F1"));
+		aboutItem.setActionCommand("about");
+		aboutItem.addActionListener(this);
 
 		fileMenu.setMnemonic(KeyEvent.VK_F);
 		fileMenu.add(createItem);
 		fileMenu.add(openItem);
 		fileMenu.add(saveItem);
+
+		helpMenu.setMnemonic(KeyEvent.VK_H);
+		helpMenu.add(helpItem);
+		helpMenu.add(aboutItem);
 
 		frame.setJMenuBar(menuBar);
 	}
@@ -252,11 +286,10 @@ public class Main implements ActionListener, ItemListener {
 		repeat = new JCheckBox("Repeat");
 		repeat.addItemListener(this);
 
-		playAsthai = new JCheckBox("Play Only Asthai");
-		playAsthai.addItemListener(this);
-
-		playAnthra = new JCheckBox("Play Only Anthra");
-		playAnthra.addItemListener(this);
+		Label startLabel = new Label("Start Label:");
+		Label endLabel = new Label("End Label:");
+		startField = new JTextField(7);
+		endField = new JTextField(7);
 
 		controlPanel.add(playButton);
 		controlPanel.add(pauseButton);
@@ -264,8 +297,10 @@ public class Main implements ActionListener, ItemListener {
 		controlPanel.add(tempoLabel);
 		controlPanel.add(tempoControl);
 		controlPanel.add(repeat);
-		controlPanel.add(playAsthai);
-		controlPanel.add(playAnthra);
+		controlPanel.add(startLabel);
+		controlPanel.add(startField);
+		controlPanel.add(endLabel);
+		controlPanel.add(endField);
 	}
 
 	/**
@@ -372,8 +407,8 @@ public class Main implements ActionListener, ItemListener {
 		shabadEditor.setEnabled(bool);
 		tempoControl.setEnabled(bool);
 		repeat.setEnabled(bool);
-		playAsthai.setEnabled(bool);
-		playAnthra.setEnabled(bool);
+		startField.setEnabled(bool);
+		endField.setEnabled(bool);
 	}
 
 	/**
@@ -462,31 +497,6 @@ public class Main implements ActionListener, ItemListener {
 
 	@Override
 	public void itemStateChanged(ItemEvent e) {
-		Object source = e.getItemSelectable();
-
-		if (source == repeat) {
-			System.out.println("Repeat clicked");
-			if (e.getStateChange() == ItemEvent.SELECTED)
-				Parser.setRepeat(true);
-			else
-				Parser.setRepeat(false);
-		} else if (source == playAsthai) {
-			System.out.println("Play Asthai clicked");
-			if (e.getStateChange() == ItemEvent.SELECTED) {
-				Parser.setOnlyAsthai(true);
-				playAnthra.setSelected(false);
-				Parser.setOnlyAnthra(false);
-			} else
-				Parser.setOnlyAsthai(false);
-		} else if (source == playAnthra) {
-			System.out.println("Play Anthra clicked");
-			if (e.getStateChange() == ItemEvent.SELECTED) {
-				Parser.setOnlyAnthra(true);
-				playAsthai.setSelected(false);
-				Parser.setOnlyAsthai(false);
-			} else
-				Parser.setOnlyAnthra(false);
-		}
 	}
 
 	@Override

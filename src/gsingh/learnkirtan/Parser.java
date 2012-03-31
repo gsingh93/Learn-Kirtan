@@ -44,14 +44,6 @@ public class Parser {
 
 		while (!stop) {
 
-			if (onlyAsthai)
-				if (note.equals("ANTHRA"))
-					finished = true;
-
-			if (onlyAnthra)
-				if (note.equals("ASTHAI"))
-					finished = true;
-
 			holdCount = 1;
 
 			// Pause the thread if necessary
@@ -69,12 +61,6 @@ public class Parser {
 				} else {
 					break;
 				}
-			}
-
-			// If a label is found, skip it
-			if (note.equals("ASTHAI") || note.equals("ANTHRA")) {
-				note = scanner.next("[A-Za-z.']+");
-				continue;
 			}
 
 			// Check if we've reached the end of the shabad or specified lines
@@ -202,22 +188,6 @@ public class Parser {
 	 * @return true if input is valid. False otherwise.
 	 */
 	private static boolean validateShabad(String shabad) {
-
-		// First check if label is there when the checkboxes are selected
-		if (onlyAsthai) {
-			if (shabad.indexOf("ASTHAI") == -1) {
-				System.out
-						.println("Only Asthai specified but no Asthai label found");
-				return false;
-			}
-
-		} else if (onlyAnthra) {
-			if (shabad.indexOf("Anthra") == -1) {
-				System.out
-						.println("Only Anthra specified but no Anthra label found");
-				return false;
-			}
-		}
 
 		return true;
 	}
