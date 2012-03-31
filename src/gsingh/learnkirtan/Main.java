@@ -574,6 +574,8 @@ public class Main implements ActionListener, ItemListener {
 			} catch (IOException e1) {
 				e1.printStackTrace();
 			}
+		} else if (command.equals("help")) {
+			new HelpFrame();
 		}
 	}
 }
