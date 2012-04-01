@@ -35,6 +35,8 @@ public class Parser {
 	private static String note;
 	private static String nextNote;
 
+	private static int saKey = 10;
+
 	private static Scanner scanner = null;
 
 	/**
@@ -154,19 +156,19 @@ public class Parser {
 
 			// Set the key number of the note to be played
 			if (note.equals("SA")) {
-				key = 10;
+				key = saKey;
 			} else if (note.equals("RE")) {
-				key = 12;
+				key = saKey + 2;
 			} else if (note.equals("GA")) {
-				key = 14;
+				key = saKey + 4;
 			} else if (note.equals("MA")) {
-				key = 15;
+				key = saKey + 5;
 			} else if (note.equals("PA")) {
-				key = 17;
+				key = saKey + 7;
 			} else if (note.equals("DHA")) {
-				key = 19;
+				key = saKey + 9;
 			} else if (note.equals("NI")) {
-				key = 21;
+				key = saKey + 11;
 			} else {
 				LOGGER.warning("Invalid note: " + note);
 				JOptionPane.showMessageDialog(null, "Error: Invalid note '"
@@ -190,7 +192,7 @@ public class Parser {
 				key += 12;
 			}
 
-			if (key > 0 && key < 48) {
+			if (key >= 0 && key < 36) {
 				LOGGER.info("Key: " + key);
 
 				keys[key].playOnce((int) (holdCount * gap / tempo));
@@ -358,5 +360,16 @@ public class Parser {
 	 */
 	public static void setRepeat(boolean bool) {
 		repeat = bool;
+	}
+
+	/**
+	 * Sets {@code saKey} to whatever key number the user input minus 1, as the
+	 * user counts keys starting from 1
+	 * 
+	 * @param key
+	 *            - the key number input by the user from 1 to 36
+	 */
+	public static void setSaKey(int key) {
+		saKey = key - 1;
 	}
 }

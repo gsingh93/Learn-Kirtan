@@ -46,6 +46,7 @@ import javax.swing.JSpinner;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.KeyStroke;
+import javax.swing.SpinnerModel;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
@@ -82,7 +83,7 @@ public class Main implements ActionListener, ItemListener {
 	/**
 	 * Stores all of the keys on the keyboard
 	 */
-	public static Key keys[] = new Key[48];
+	public static Key keys[] = new Key[36];
 
 	/**
 	 * The index used when adding the keys to the keyboard
@@ -199,7 +200,7 @@ public class Main implements ActionListener, ItemListener {
 							"Error", JOptionPane.ERROR_MESSAGE);
 		}
 
-		frame = new JFrame("Learn Kirtan v0.2 Beta");
+		frame = new JFrame("Learn Kirtan v0.3 Beta");
 		initMenu();
 
 		JPanel mainPanel = new JPanel();
@@ -656,6 +657,22 @@ public class Main implements ActionListener, ItemListener {
 			} catch (IOException e1) {
 				e1.printStackTrace();
 			}
+		} else if (command.equals("changesa")) {
+			SpinnerModel saModel = new SpinnerNumberModel(11, 1, 36, 1);
+			JSpinner saSpinner = new JSpinner(saModel);
+
+			JPanel panel = new JPanel();
+			panel.add(new JLabel("Choose the key number for sa:"));
+			panel.add(saSpinner);
+
+			int result = JOptionPane.showConfirmDialog(frame, panel,
+					"Change Sa Key", JOptionPane.OK_CANCEL_OPTION,
+					JOptionPane.PLAIN_MESSAGE);
+
+			if (result == JOptionPane.OK_OPTION) {
+				Parser.setSaKey((Integer) saSpinner.getValue());
+			}
+
 		} else if (command.equals("help")) {
 			new HelpFrame();
 		} else if (command.equals("about")) {
