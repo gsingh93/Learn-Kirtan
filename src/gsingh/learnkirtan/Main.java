@@ -16,6 +16,8 @@ import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -58,6 +60,7 @@ public class Main implements ActionListener, ItemListener, KeyListener {
 
 	private final static Logger LOGGER = Logger.getLogger(Main.class.getName());
 	public static FileHandler logFile;
+
 	/**
 	 * Key dimensions
 	 */
@@ -222,7 +225,13 @@ public class Main implements ActionListener, ItemListener, KeyListener {
 		initMainPanel(mainPanel, controlPanel, pianoPanel);
 		frame.add(mainPanel);
 
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.addWindowListener(new WindowAdapter() {
+			public void windowClosing(WindowEvent ev) {
+				askForSave();
+				LOGGER.info("Application closed.");
+				System.exit(0);
+			}
+		});
 		frame.setSize(WIDTH, WHITE_KEY_HEIGHT * 3 + 30);
 		frame.setLocation(250, 60);
 		frame.setResizable(false);
@@ -675,7 +684,9 @@ public class Main implements ActionListener, ItemListener, KeyListener {
 					JOptionPane.PLAIN_MESSAGE);
 
 			if (result == JOptionPane.OK_OPTION) {
-				Parser.setSaKey((Integer) saSpinner.getValue());
+				int value = (Integer) saSpinner.getValue();
+				LOGGER.info("Sa key changed to: " + value);
+				Parser.setSaKey(value);
 			}
 
 		} else if (command.equals("help")) {
