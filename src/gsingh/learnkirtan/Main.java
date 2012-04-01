@@ -9,7 +9,6 @@ import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.Label;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
@@ -266,6 +265,9 @@ public class Main implements ActionListener, ItemListener, KeyListener {
 						}
 					LOGGER.info("Application closed.");
 					System.exit(0);
+				} else {
+					LOGGER.info("Application closed.");
+					System.exit(0);
 				}
 			}
 		});
@@ -379,8 +381,8 @@ public class Main implements ActionListener, ItemListener, KeyListener {
 		repeat = new JCheckBox("Repeat");
 		repeat.addItemListener(this);
 
-		Label startLabel = new Label("Start Label:");
-		Label endLabel = new Label("End Label:");
+		JLabel startLabel = new JLabel("Start Label:");
+		JLabel endLabel = new JLabel("End Label:");
 		startField = new JTextField(7);
 		endField = new JTextField(7);
 
