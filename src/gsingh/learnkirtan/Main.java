@@ -225,11 +225,20 @@ public class Main implements ActionListener, ItemListener, KeyListener {
 		initMainPanel(mainPanel, controlPanel, pianoPanel);
 		frame.add(mainPanel);
 
+		frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 		frame.addWindowListener(new WindowAdapter() {
 			public void windowClosing(WindowEvent ev) {
-				askForSave();
-				LOGGER.info("Application closed.");
-				System.exit(0);
+				int result = askForSave();
+				if (result != JOptionPane.CANCEL_OPTION) {
+					if (result == JOptionPane.OK_OPTION)
+						try {
+							save();
+						} catch (IOException e) {
+							e.printStackTrace();
+						}
+					LOGGER.info("Application closed.");
+					System.exit(0);
+				}
 			}
 		});
 		frame.setSize(WIDTH, WHITE_KEY_HEIGHT * 3 + 30);
@@ -571,17 +580,24 @@ public class Main implements ActionListener, ItemListener, KeyListener {
 		if (returnVal == JFileChooser.APPROVE_OPTION) {
 			curFile = fc.getSelectedFile();
 			LOGGER.info("File Chosen: " + curFile.getName());
-			try {
-				LOGGER.fine("File open started");
-				br = new BufferedReader(new FileReader(curFile));
-				shabadEditor.read(br, "File");
-				br.close();
-				prevText = shabadEditor.getText();
-				LOGGER.fine("File write completed.");
-			} catch (FileNotFoundException e1) {
-				e1.printStackTrace();
-			} catch (IOException e2) {
-				e2.printStackTrace();
+			if (curFile.exists()) {
+				try {
+					LOGGER.fine("File open started");
+					br = new BufferedReader(new FileReader(curFile));
+					shabadEditor.read(br, "File");
+					br.close();
+					prevText = shabadEditor.getText();
+					LOGGER.fine("File write completed.");
+				} catch (FileNotFoundException e1) {
+					e1.printStackTrace();
+				} catch (IOException e2) {
+					e2.printStackTrace();
+				}
+			} else {
+				LOGGER.info("File doesn't exist.");
+				JOptionPane.showMessageDialog(frame,
+						"Error: File doesn't exist.", "Error",
+						JOptionPane.ERROR_MESSAGE);
 			}
 		}
 		LOGGER.fine("File open process finished.");
