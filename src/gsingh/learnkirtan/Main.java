@@ -15,6 +15,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -53,7 +54,7 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 
 import org.apache.commons.io.IOUtils;
 
-public class Main implements ActionListener, ItemListener {
+public class Main implements ActionListener, ItemListener, KeyListener {
 
 	private final static Logger LOGGER = Logger.getLogger(Main.class.getName());
 	public static FileHandler logFile;
@@ -214,6 +215,7 @@ public class Main implements ActionListener, ItemListener {
 
 		shabadEditor = new JTextArea(20, 78);
 		shabadEditor.setDisabledTextColor(Color.GRAY);
+		shabadEditor.addKeyListener(this);
 
 		constructKeyboard(pianoPanel);
 
@@ -545,6 +547,8 @@ public class Main implements ActionListener, ItemListener {
 		shabadEditor.write(bw);
 		bw.close();
 		prevText = shabadEditor.getText();
+		frame.setTitle(frame.getTitle().substring(0,
+				frame.getTitle().length() - 1));
 		LOGGER.fine("File write completed.");
 	}
 
@@ -686,5 +690,20 @@ public class Main implements ActionListener, ItemListener {
 							JOptionPane.DEFAULT_OPTION,
 							JOptionPane.INFORMATION_MESSAGE);
 		}
+	}
+
+	@Override
+	public void keyPressed(KeyEvent arg0) {
+	}
+
+	@Override
+	public void keyReleased(KeyEvent arg0) {
+	}
+
+	@Override
+	public void keyTyped(KeyEvent e) {
+		String title = frame.getTitle();
+		if (!title.contains("*"))
+			frame.setTitle(frame.getTitle() + "*");
 	}
 }
