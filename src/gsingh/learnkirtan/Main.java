@@ -618,6 +618,10 @@ public class Main implements ActionListener, ItemListener, KeyListener {
 					shabadEditor.read(br, "File");
 					br.close();
 					prevText = shabadEditor.getText();
+					if (frame.getTitle().contains("*")) {
+						frame.setTitle(frame.getTitle().substring(0,
+								frame.getTitle().length() - 1));
+					}
 					LOGGER.fine("File write completed.");
 				} catch (FileNotFoundException e1) {
 					e1.printStackTrace();
