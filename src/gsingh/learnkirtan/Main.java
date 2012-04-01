@@ -7,6 +7,7 @@ import gsingh.learnkirtan.keys.WhiteKey;
 import java.awt.Color;
 import java.awt.Container;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
@@ -734,10 +735,27 @@ public class Main implements ActionListener, ItemListener, KeyListener {
 
 			if (result == JOptionPane.OK_OPTION) {
 				int value = (Integer) saSpinner.getValue();
+
+				int difference = value - Parser.getSaKey() - 1;
+
 				LOGGER.info("Sa key changed to: " + value);
 				Parser.setSaKey(value);
-			}
 
+				if (difference > 0) {
+					for (int i = 0; i < difference; i++) {
+						Key.notes.add(0, Key.notes.get(Key.notes.size() - 1));
+						System.out
+								.println(Key.notes.remove(Key.notes.size() - 1));
+					}
+				} else if (difference < 0) {
+					for (int i = 0; i < -1 * difference; i++) {
+						Key.notes.add(Key.notes.size(), Key.notes.get(0));
+						System.out.println(Key.notes.remove(0));
+					}
+				}
+
+				relabelKeys();
+			}
 		} else if (command.equals("help")) {
 			new HelpFrame();
 		} else if (command.equals("about")) {
@@ -749,6 +767,19 @@ public class Main implements ActionListener, ItemListener, KeyListener {
 									+ "\n Version 0.2", "About",
 							JOptionPane.DEFAULT_OPTION,
 							JOptionPane.INFORMATION_MESSAGE);
+		}
+	}
+
+	private void relabelKeys() {
+		for (Key key : keys) {
+			key.label();
+			if (key instanceof BlackKey) {
+				if (key.getText().contains("Dha")) {
+					key.setFont(new Font("Dialog", Font.PLAIN, 7));
+				} else {
+					key.setFont(new Font("Dialog", Font.PLAIN, 9));
+				}
+			}
 		}
 	}
 

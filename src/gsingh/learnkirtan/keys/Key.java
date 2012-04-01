@@ -1,7 +1,15 @@
 package gsingh.learnkirtan.keys;
 
+import gsingh.learnkirtan.Main;
+import gsingh.learnkirtan.Parser;
+
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.sound.midi.MidiChannel;
 import javax.sound.midi.MidiSystem;
@@ -10,6 +18,9 @@ import javax.sound.midi.Synthesizer;
 import javax.swing.JButton;
 
 public class Key extends JButton implements MouseListener {
+
+	private static final Logger LOGGER = Logger.getLogger(Parser.class
+			.getName());
 
 	private static final long serialVersionUID = 1L;
 
@@ -28,6 +39,16 @@ public class Key extends JButton implements MouseListener {
 	 */
 	public int note;
 
+	/**
+	 * The note names for all the notes on the keyboard
+	 */
+	public static List<String> notes = new LinkedList<String>(
+			Arrays.asList(new String[] { "Re", "'Ga", "Ga", "Ma", "Ma'", "Pa",
+					"'Dha", "Dha", "'Ni", "Ni", "Sa", "'Re", "Re", "'Ga", "Ga",
+					"Ma", "Ma'", "Pa", "'Dha", "Dha", "'Ni", "Ni", "Sa", "'Re",
+					"Re", "'Ga", "Ga", "Ma", "Ma'", "Pa", "'Dha", "Dha", "'Ni",
+					"Ni", "Sa", "'Re" }));
+
 	private static Synthesizer synth = null;
 
 	static {
@@ -41,20 +62,20 @@ public class Key extends JButton implements MouseListener {
 	MidiChannel channel[];
 
 	public Key() {
+		LOGGER.addHandler(Main.logFile);
+		LOGGER.setLevel(Level.INFO);
+
 		note = noteCount++;
-
-		// Instrument[] instruments = synth.getAvailableInstruments();
-		// for (Instrument instrument : instruments) {
-		// System.out.println(instrument.getName());
-		// System.out.println(instrument.getPatch().getBank());
-		// System.out.println(instrument.getPatch().getProgram());
-		// }
-
+		label();
 		channel = synth.getChannels();
 
 		// Sets the instrument to an instrument close to a harmonium
 		channel[0].programChange(20);
 		addMouseListener(this);
+	}
+
+	public void label() {
+		setText(notes.get(note - 40));
 	}
 
 	/**
@@ -90,7 +111,7 @@ public class Key extends JButton implements MouseListener {
 
 	@Override
 	public void mouseClicked(MouseEvent e) {
-		System.out.println(this.note);
+		LOGGER.info("Key clicked: " + note);
 	}
 
 	@Override
