@@ -174,8 +174,13 @@ public class Main implements ActionListener, ItemListener, KeyListener {
 		new Main();
 	}
 
+	/**
+	 * Installs the soundbank file in the JRE lib/audio folder
+	 * 
+	 * @return - true if file is present or was installed correctly. False if
+	 *         there was an error.
+	 */
 	public boolean installSoundBank() {
-
 		// Determine where the JRE is installed
 		File file = new File("C:\\Program Files (x86)\\Java\\jre6");
 		if (!file.exists()) {
@@ -251,7 +256,8 @@ public class Main implements ActionListener, ItemListener, KeyListener {
 		frame.addWindowListener(new WindowAdapter() {
 			public void windowClosing(WindowEvent ev) {
 				int result = askForSave();
-				if (result != JOptionPane.CANCEL_OPTION) {
+				if (result != JOptionPane.CANCEL_OPTION
+						&& result != JOptionPane.CLOSED_OPTION) {
 					if (result == JOptionPane.OK_OPTION)
 						try {
 							save();
@@ -678,7 +684,8 @@ public class Main implements ActionListener, ItemListener, KeyListener {
 			playing = false;
 		} else if (command.equals("create")) {
 			int result = askForSave();
-			if (result != JOptionPane.CANCEL_OPTION) {
+			if (result != JOptionPane.CANCEL_OPTION
+					&& result != JOptionPane.CLOSED_OPTION || result == -1) {
 				if (result == JOptionPane.YES_OPTION) {
 					try {
 						save();
@@ -692,7 +699,8 @@ public class Main implements ActionListener, ItemListener, KeyListener {
 
 		} else if (command.equals("open")) {
 			int result = askForSave();
-			if (result != JOptionPane.CANCEL_OPTION) {
+			if (result != JOptionPane.CANCEL_OPTION
+					&& result != JOptionPane.CLOSED_OPTION || result == -1) {
 				if (result == JOptionPane.YES_OPTION)
 
 					try {
