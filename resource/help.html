@@ -1,3 +1,5 @@
+<p><strong>NOTE:</strong> This is a beta release. This is bound to have bugs and it would be great if you could let me know about any bugs you find. It is possible that this software will not run on your computer and it has only been tested on Windows. If you do have issues, feel free to email me. The program automatically generates a log file after each run. Please attach this log file to your email. Note that this log file is overwritten after each run of the program, so make sure that you send the log file of the run where you experienced problems, and do not run the program again until you have sent this file, otherwise I will receive a log file that doesn't reflect your problem.</p>
+
 <h3>Instructions</h3>
 
 <p><strong>Basics</strong></p>
@@ -14,10 +16,11 @@
 <li>You can change the tempo between 0.1 and 2 by click up and down in the Tempo Box, or you can type in the number yourself.</li>
 <li>Click play to play the shabad. You can click pause to pause the playback and then play again to resume. You can press Stop when the shabad is playing or paused to stop playback. You can not edit the tempo or the shabad while the shabad is playing.</li>
 <li>You can specify start and stop labels in their respective input boxes, so that pressing play will only play the notes between those two labels. If you specify a start/end label, it must be present in the shabad. Put a '#' before all labels in the shabad. If no start label is specified, the shabad will start at the beginning, and if no end label is specified, the shabad will end at the end.</li>
+<li>The default Sa is set to key 11. To change this, go to Options -&gt; Change Sa Key, and choose the key number for your Sa. </li>
 </ol><p>A sample file is available <a href="http://www.mediafire.com/?x0xa7on7t79tpgb">here</a> which contains all of the type of notes/symbols shown above.</p>
 
 <p>A sample shabad (Hay Gobind Hay Gopal) can be downloaded <a href="http://www.mediafire.com/?ccdf1ja5oze0eak">here</a>.
-A sample shabad (Har Ka Naam Ridhay Nit Thiaee) can be downloaded <a href="http://www.mediafire.com/?k6s2azu3rh12915">here</a> </p>
+A sample shabad (Har Ka Naam Ridhay Nit Thiaee) can be downloaded <a href="http://www.mediafire.com/?fwc85wn4m99b78w">here</a> </p>
 
 <h3>Features</h3>
 
@@ -29,29 +32,32 @@ A sample shabad (Har Ka Naam Ridhay Nit Thiaee) can be downloaded <a href="http:
 <li>Notes can be either pressed individually or held down</li>
 <li>Change the tempo (speed) of playback up to twice or a tenth of the original speed.</li>
 <li>Option to repeat the any part of the shabad using labels</li>
+<li>Notes names are displayed on keys</li>
+<li>Sa can be changed</li>
 </ul><h3>Missing Features (To be added soon)</h3>
 
 <ul>
 <li>Cannot play two notes per beat</li>
-<li>There is no way to adjust which note is Sa</li>
-<li>Note names should be displayed on keys</li>
 <li>Have the tempo settings saved along with the shabad</li>
 <li>Make a more user friendly editor</li>
-<li>Ask to save on exit if file is modified</li>
 <li>Automated Installation</li>
 <li>Automatic updates</li>
 </ul><h3>Known issues</h3>
 
 <ul>
-<li>When notes are played, the keyboard glitches so that some keys overlap in strange ways. Moving your mouse over these keys fixes this temporarily.</li>
-</ul><h3>Next Release: Version 0.3 - ETA: Unknown</h3>
+<li>Some invalid inputs cause the input boxes to stay disabled when Play is clicked</li>
+</ul><h3>Changelog</h3>
+
+<p><strong>Version 0.3</strong></p>
 
 <ul>
-<li>Add ability to change location of Sa</li>
-<li>Add logging framework to help debug errors</li>
-<li>Fix Keyboard glitches</li>
+<li>Note names are displayed on keys</li>
+<li>Added ability to change location of Sa</li>
+<li>Added logging framework to help debug errors</li>
+<li>Fixed Keyboard glitches</li>
 <li>Ask to save on exit if file is modified</li>
-</ul><h3>Changelog</h3>
+<li>An asterisk in the file name now indicates file has been modified</li>
+</ul>
 
 <p><strong>Version 0.2</strong></p>
 
@@ -61,6 +67,7 @@ A sample shabad (Har Ka Naam Ridhay Nit Thiaee) can be downloaded <a href="http:
 <li>Added the automatic installation of the soundbank</li>
 <li>Added a help page</li>
 <li>Added shortcut keys to menu items</li>
+<li>Added repeat functionality</li>
 </ul><p><strong>Version 0.1</strong></p>
 
 <p>Initial release of software.</p>

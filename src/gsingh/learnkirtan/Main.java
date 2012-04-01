@@ -768,7 +768,7 @@ public class Main implements ActionListener, ItemListener, KeyListener {
 							frame,
 							"This software was written by Gulshan Singh (gulshan@umich.edu) and is free \n"
 									+ "and opensource under the Apache License. Please contact me if you would like to contribute.\n"
-									+ "\n Version 0.2", "About",
+									+ "\n Version 0.3", "About",
 							JOptionPane.DEFAULT_OPTION,
 							JOptionPane.INFORMATION_MESSAGE);
 		}
