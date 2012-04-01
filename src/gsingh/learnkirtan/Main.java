@@ -563,6 +563,7 @@ public class Main implements ActionListener, ItemListener {
 				br = new BufferedReader(new FileReader(curFile));
 				shabadEditor.read(br, "File");
 				br.close();
+				prevText = shabadEditor.getText();
 				LOGGER.fine("File write completed.");
 			} catch (FileNotFoundException e1) {
 				e1.printStackTrace();
