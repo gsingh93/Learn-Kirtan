@@ -26,6 +26,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.text.DecimalFormat;
+import java.util.logging.FileHandler;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import java.util.logging.SimpleFormatter;
 
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -50,6 +54,8 @@ import org.apache.commons.io.IOUtils;
 
 public class Main implements ActionListener, ItemListener {
 
+	private final static Logger LOGGER = Logger.getLogger(Main.class.getName());
+	public static FileHandler logFile;
 	/**
 	 * Key dimensions
 	 */
@@ -124,6 +130,20 @@ public class Main implements ActionListener, ItemListener {
 	JFrame frame;
 
 	public static void main(String[] args) {
+
+		// Set up logging
+		LOGGER.setLevel(Level.INFO);
+		try {
+			logFile = new FileHandler("log");
+			SimpleFormatter formatter = new SimpleFormatter();
+			logFile.setFormatter(formatter);
+			LOGGER.addHandler(logFile);
+		} catch (SecurityException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
 		new Main();
 	}
 
@@ -132,9 +152,12 @@ public class Main implements ActionListener, ItemListener {
 		// Determine where the JRE is installed
 		File file = new File("C:\\Program Files (x86)\\Java\\jre6");
 		if (!file.exists()) {
+			LOGGER.warning("C:\\Program Files (x86)\\Java\\jre6 does not exist.");
 			file = new File("C:\\Program Files\\Java\\jre6");
-			if (!file.exists())
+			if (!file.exists()) {
+				LOGGER.severe("C:\\Program Files\\Java\\jre6 does not exist.");
 				return false;
+			}
 		}
 
 		// If the JRE is properly installed, check if the SoundBank is already
@@ -142,6 +165,7 @@ public class Main implements ActionListener, ItemListener {
 		file = new File(file.getAbsolutePath()
 				+ "\\lib\\audio\\soundbank-min.gm");
 		if (!file.exists()) {
+			LOGGER.warning("soundbank-min.gm does not exist.");
 			InputStream is = this.getClass().getClassLoader()
 					.getResourceAsStream("soundbank-min.gm");
 			OutputStream os = null;
@@ -149,11 +173,15 @@ public class Main implements ActionListener, ItemListener {
 				os = new FileOutputStream(file.getAbsolutePath());
 				IOUtils.copy(is, os);
 			} catch (IOException e) {
+				LOGGER.severe("An IOException was thrown when installing the soundbank.");
 				e.printStackTrace();
 				return false;
 			}
+		} else {
+			LOGGER.info("Soundbank found.");
 		}
 
+		LOGGER.info("Soundbank installation successful.");
 		return true;
 	}
 
@@ -202,6 +230,7 @@ public class Main implements ActionListener, ItemListener {
 	 * Initializes the menu bar
 	 */
 	private void initMenu() {
+		LOGGER.fine("Menu initialization started.");
 
 		JMenuBar menuBar = new JMenuBar();
 		JMenu fileMenu = new JMenu("File");
@@ -260,6 +289,8 @@ public class Main implements ActionListener, ItemListener {
 		helpMenu.add(aboutItem);
 
 		frame.setJMenuBar(menuBar);
+
+		LOGGER.fine("Menu initialization completed.");
 	}
 
 	/**
@@ -269,6 +300,8 @@ public class Main implements ActionListener, ItemListener {
 	 *            - the panel to initialize
 	 */
 	void initControlPanel(JPanel controlPanel) {
+		LOGGER.fine("Control panel initialization started.");
+
 		JButton playButton = new JButton("Play");
 		JButton pauseButton = new JButton("Pause");
 		JButton stopButton = new JButton("Stop");
@@ -312,6 +345,8 @@ public class Main implements ActionListener, ItemListener {
 		controlPanel.add(startField);
 		controlPanel.add(endLabel);
 		controlPanel.add(endField);
+
+		LOGGER.fine("Control panel initialization completed.");
 	}
 
 	/**
@@ -321,6 +356,8 @@ public class Main implements ActionListener, ItemListener {
 	 *            - the layer in which to construct the piano
 	 */
 	void constructKeyboard(Container panel) {
+		LOGGER.fine("Keyboard construction started.");
+
 		int i = 0;
 		int j = 0;
 
@@ -340,6 +377,8 @@ public class Main implements ActionListener, ItemListener {
 			j++;
 			addWhiteKey(panel, i++);
 		}
+
+		LOGGER.fine("Keyboard construction completed.");
 	}
 
 	/**
@@ -381,6 +420,8 @@ public class Main implements ActionListener, ItemListener {
 	 */
 	void initMainPanel(JPanel mainPanel, JPanel controlPanel,
 			JLayeredPane pianoPanel) {
+		LOGGER.fine("Main panel initialization started.");
+
 		GridBagConstraints c = new GridBagConstraints();
 
 		// Add the piano panel and shabad editor to the window
@@ -404,6 +445,8 @@ public class Main implements ActionListener, ItemListener {
 		c.weighty = 1.0;
 		c.anchor = GridBagConstraints.NORTHWEST;
 		mainPanel.add(shabadEditor, c);
+
+		LOGGER.fine("Main panel initialization completed.");
 	}
 
 	/**
@@ -415,6 +458,8 @@ public class Main implements ActionListener, ItemListener {
 	 *            be disabled.
 	 */
 	public void setInputBoxes(boolean bool) {
+		LOGGER.info("Input boxes " + (bool ? "enabled." : "disabled."));
+
 		shabadEditor.setEnabled(bool);
 		tempoControl.setEnabled(bool);
 		repeat.setEnabled(bool);
@@ -429,11 +474,14 @@ public class Main implements ActionListener, ItemListener {
 	 *         was not prompted
 	 */
 	public int askForSave() {
-		if (!prevText.equals(shabadEditor.getText()))
+		if (!prevText.equals(shabadEditor.getText())) {
+			LOGGER.info("User prompted to save.");
 			return JOptionPane.showConfirmDialog(frame,
 					"Would you like to save before proceeding?");
-		else
+		} else {
+			LOGGER.info("Save is not necessary. Continuing without save.");
 			return -1;
+		}
 	}
 
 	/**
@@ -443,35 +491,46 @@ public class Main implements ActionListener, ItemListener {
 	 * @throws IOException
 	 */
 	public void save() throws IOException {
+		LOGGER.info("Save process started.");
 		if (curFile == null) {
+			LOGGER.info("User will be prompted for a save location.");
 			int returnVal = fc.showSaveDialog(frame);
 			if (returnVal == JFileChooser.APPROVE_OPTION) {
 				curFile = fc.getSelectedFile();
 				String filename = curFile.getName();
 				if (filename.length() <= 4) {
 					filename = filename + ".sbd";
-					System.out.println(filename);
 					curFile = new File(curFile.getAbsolutePath() + ".sbd");
+					LOGGER.info(".sbd extension was automatically appended.");
 				} else if (!filename.substring(filename.length() - 4).equals(
 						".sbd")) {
 					filename = filename + ".sbd";
 					curFile = new File(curFile.getAbsolutePath() + ".sbd");
+					LOGGER.info(".sbd extension was supplied.");
 				}
-				System.out.println(filename);
+				LOGGER.info("Filename Chosen: " + filename);
 				if (curFile.exists()) {
-
+					LOGGER.info("File specified already exists.");
 					int result = JOptionPane.showConfirmDialog(frame,
 							"Overwrite existing file?", "Confirm Overwrite",
 							JOptionPane.OK_CANCEL_OPTION,
 							JOptionPane.QUESTION_MESSAGE);
 
-					if (result == JOptionPane.OK_OPTION)
+					if (result == JOptionPane.OK_OPTION) {
+						LOGGER.warning("User chose to overwrite.");
 						write();
-				} else
+					} else {
+						LOGGER.info("User chose not to overwrite.");
+					}
+				} else {
+					LOGGER.info("User specified a new file. Proceeding with save.");
 					write();
+				}
 			}
-		} else
+		} else {
+			LOGGER.info("User is saving to an already chosen file.");
 			write();
+		}
 	}
 
 	/**
@@ -480,35 +539,45 @@ public class Main implements ActionListener, ItemListener {
 	 * @throws IOException
 	 */
 	public void write() throws IOException {
+		LOGGER.fine("File write started.");
 		BufferedWriter bw = new BufferedWriter(new FileWriter(curFile));
 		shabadEditor.write(bw);
 		bw.close();
 		prevText = shabadEditor.getText();
+		LOGGER.fine("File write completed.");
 	}
 
 	/**
 	 * Prompts the user for a file to open and opens the selected file
 	 */
 	public void openFile() {
+		LOGGER.fine("File open process started.");
 		int returnVal = fc.showOpenDialog(frame);
 		BufferedReader br = null;
 		if (returnVal == JFileChooser.APPROVE_OPTION) {
 			curFile = fc.getSelectedFile();
+			LOGGER.info("File Chosen: " + curFile.getName());
 			try {
+				LOGGER.fine("File open started");
 				br = new BufferedReader(new FileReader(curFile));
 				shabadEditor.read(br, "File");
 				br.close();
+				LOGGER.fine("File write completed.");
 			} catch (FileNotFoundException e1) {
 				e1.printStackTrace();
 			} catch (IOException e2) {
 				e2.printStackTrace();
 			}
 		}
+		LOGGER.fine("File open process finished.");
 	}
 
 	@Override
 	public void itemStateChanged(ItemEvent e) {
 		Object source = e.getItemSelectable();
+		LOGGER.info(source.getClass().getName()
+				+ ((e.getStateChange() == ItemEvent.SELECTED) ? " selected."
+						: " deselected."));
 
 		if (source == repeat) {
 			if (e.getStateChange() == ItemEvent.SELECTED)
@@ -521,15 +590,17 @@ public class Main implements ActionListener, ItemListener {
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		String command = e.getActionCommand();
-		System.out.println(command);
+		LOGGER.info("Action Performed: " + command);
 
 		if (command.equals("play")) {
 			if (!shabadEditor.getText().equals("")) {
-				if (Parser.isPaused())
+				if (Parser.isPaused()) {
+					LOGGER.info("Playback unpaused.");
 					Parser.play();
-				else {
+				} else {
 					new Thread(new Runnable() {
 						public void run() {
+							LOGGER.info("Starting playback.");
 							setInputBoxes(false);
 							Parser.parseAndPlay(shabadEditor.getText(),
 									startField.getText(), endField.getText(),
@@ -540,7 +611,7 @@ public class Main implements ActionListener, ItemListener {
 				}
 				playing = true;
 			} else {
-				System.out.println("No Text.");
+				LOGGER.warning("The user presed play when there was no text in input box");
 				JOptionPane.showMessageDialog(frame, "Error: Nothing to play",
 						"Error", JOptionPane.ERROR_MESSAGE);
 			}

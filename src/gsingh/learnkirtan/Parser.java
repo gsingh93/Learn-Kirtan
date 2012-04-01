@@ -3,10 +3,20 @@ package gsingh.learnkirtan;
 import gsingh.learnkirtan.keys.Key;
 
 import java.util.Scanner;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.swing.JOptionPane;
 
 public class Parser {
+
+	private static final Logger LOGGER = Logger.getLogger(Parser.class
+			.getName());
+
+	static {
+		LOGGER.addHandler(Main.logFile);
+		LOGGER.setLevel(Level.INFO);
+	}
 
 	/**
 	 * The default length each note is played
@@ -41,7 +51,7 @@ public class Parser {
 		start = start.toUpperCase();
 		end = end.toUpperCase();
 		shabad = shabad.toUpperCase();
-		System.out.println(shabad);
+		LOGGER.info("Shabad: " + shabad);
 
 		if (!validateShabad(shabad, start, end)) {
 			JOptionPane
@@ -68,45 +78,63 @@ public class Parser {
 			if (note != null) {
 				while (note.charAt(0) == '#') {
 					if (!end.equals("")) {
-						if (note.equals("#" + end))
+						if (note.equals("#" + end)) {
+							LOGGER.info("Reached end label");
 							finished = true;
+						}
 					}
 					note = nextNote;
 					nextNote = getNextNote();
 
+					LOGGER.info("Label skipped");
+
+					LOGGER.info("Next note to be played: " + note);
+					LOGGER.info("Next nextNote to be played: " + nextNote);
+
 					if (note == null) {
+						LOGGER.info("Reached end after label - note is null");
 						finished = true;
 						break;
 					}
 				}
-			} else
+			} else {
+				LOGGER.info("Reached end - note is null");
 				finished = true;
+			}
 
 			// If we have reached the end of the shabad or specified lines,
 			// check if we should repeat. Otherwise, break.
 			if (finished) {
 				if (repeat) {
+					LOGGER.info("Finished. Repeating.");
 					reset(shabad, start);
 					finished = false;
 					continue;
 				} else {
+					LOGGER.info("Finished. Returning.");
 					break;
 				}
 			}
 
 			// Check if we've reached the end of the shabad or specified lines
-			if (nextNote == null)
+			// TODO: Unnecessary?
+			if (nextNote == null) {
+				LOGGER.info("Reached end - nextNote is null.");
 				finished = true;
+			}
 
 			// Determine the length of the prefix
 			int count = 0;
 			if (note.length() > 1) {
+				LOGGER.info("Checking for prefix.");
 				for (int i = 0; i < 3; i++) {
 					if (note.substring(i, i + 1).matches("[A-Z\\-]"))
 						break;
 					count++;
 				}
 			}
+
+			LOGGER.info("Prefix Length: " + count);
 
 			// Break the input into a prefix, a suffix and a note
 			String prefix = note.substring(0, count);
@@ -120,7 +148,9 @@ public class Parser {
 				note = note.substring(0, index);
 			}
 
-			System.out.println(prefix + note + suffix);
+			LOGGER.info("Prefix: " + prefix);
+			LOGGER.info("Note: " + note);
+			LOGGER.info("Suffix: " + suffix);
 
 			// Set the key number of the note to be played
 			if (note.equals("SA")) {
@@ -138,9 +168,9 @@ public class Parser {
 			} else if (note.equals("NI")) {
 				key = 21;
 			} else {
-				System.out.println("Invalid note.");
-				JOptionPane.showMessageDialog(null, "Error: Invalid note.",
-						"Error", JOptionPane.ERROR_MESSAGE);
+				LOGGER.warning("Invalid note: " + note);
+				JOptionPane.showMessageDialog(null, "Error: Invalid note '"
+						+ note + "'", "Error", JOptionPane.ERROR_MESSAGE);
 				break;
 			}
 
@@ -159,24 +189,32 @@ public class Parser {
 			if (suffix.contains(".")) {
 				key += 12;
 			}
-			System.out.println(pause);
+
 			if (key > 0 && key < 48) {
+				LOGGER.info("Key: " + key);
+
 				keys[key].playOnce((int) (holdCount * gap / tempo));
 				note = nextNote;
 				nextNote = getNextNote();
 
+				LOGGER.info("Next note to be played: " + note);
+				LOGGER.info("Next nextNote to be played: " + nextNote);
+
 				// If note is equal to a dash, we've reached the end of the file
 				if (note != null)
-					if (note.equals("-"))
+					if (note.equals("-")) {
+						LOGGER.info("Dash reached at end of file.");
 						finished = true;
+					}
 			} else {
-				System.out.println("Invalid note.");
-				JOptionPane.showMessageDialog(null, "Error: Invalid note.",
-						"Error", JOptionPane.ERROR_MESSAGE);
+				LOGGER.warning("Invalid note: " + note);
+				JOptionPane.showMessageDialog(null, "Error: Invalid note '"
+						+ note + "'", "Error", JOptionPane.ERROR_MESSAGE);
 				break;
 			}
 		}
 
+		LOGGER.info("Left Loop. Returning.");
 		stop = false;
 		finished = false;
 	}
@@ -227,9 +265,10 @@ public class Parser {
 	private static String getFirstNote(String start) {
 		String note;
 		if (!start.equals("")) {
+			LOGGER.info("Searching for starting label");
 			note = scanner.next(PATTERN);
 			while (!note.equals("#" + start)) {
-				System.out.println(note);
+				LOGGER.info("While searching, skipped: " + note);
 				note = scanner.next(PATTERN);
 			}
 		}
@@ -248,15 +287,22 @@ public class Parser {
 	private static boolean validateShabad(String shabad, String start,
 			String end) {
 		if (!start.equals("")) {
-			if (!shabad.contains("#" + start))
+			LOGGER.info("A starting label was specified.");
+			if (!shabad.contains("#" + start)) {
+				LOGGER.warning("No starting label was found. Stopping playback.");
 				return false;
+			}
 		}
 
 		if (!end.equals("")) {
-			if (!shabad.contains("#" + end))
+			LOGGER.info("An ending label was specified.");
+			if (!shabad.contains("#" + end)) {
+				LOGGER.warning("No ending label was found. Stopping playback.");
 				return false;
+			}
 		}
 
+		LOGGER.info("Validation completed successfully");
 		return true;
 	}
 
