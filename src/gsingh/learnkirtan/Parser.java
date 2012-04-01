@@ -54,6 +54,7 @@ public class Parser {
 			return;
 		}
 
+		// TODO: Make labels work with numbers
 		reset(shabad, start);
 
 		while (!stop) {
