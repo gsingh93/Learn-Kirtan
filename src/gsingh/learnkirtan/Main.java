@@ -205,8 +205,10 @@ public class Main implements ActionListener, ItemListener {
 
 		JMenuBar menuBar = new JMenuBar();
 		JMenu fileMenu = new JMenu("File");
+		JMenu optionsMenu = new JMenu("Options");
 		JMenu helpMenu = new JMenu("Help");
 		menuBar.add(fileMenu);
+		menuBar.add(optionsMenu);
 		menuBar.add(helpMenu);
 
 		// Initialize fileMenu items
@@ -214,6 +216,9 @@ public class Main implements ActionListener, ItemListener {
 		JMenuItem openItem = new JMenuItem("Open existing shabad",
 				KeyEvent.VK_O);
 		JMenuItem saveItem = new JMenuItem("Save current shabad", KeyEvent.VK_S);
+
+		// Initialize optionsMenu items
+		JMenuItem saItem = new JMenuItem("Change Sa Key", KeyEvent.VK_C);
 
 		// Intialize helpMenu items
 		JMenuItem helpItem = new JMenuItem("Help", KeyEvent.VK_H);
@@ -233,6 +238,9 @@ public class Main implements ActionListener, ItemListener {
 		saveItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S,
 				ActionEvent.CTRL_MASK));
 
+		saItem.setActionCommand("changesa");
+		saItem.addActionListener(this);
+
 		helpItem.setActionCommand("help");
 		helpItem.addActionListener(this);
 		helpItem.setAccelerator(KeyStroke.getKeyStroke("F1"));
@@ -243,6 +251,9 @@ public class Main implements ActionListener, ItemListener {
 		fileMenu.add(createItem);
 		fileMenu.add(openItem);
 		fileMenu.add(saveItem);
+
+		optionsMenu.setMnemonic(KeyEvent.VK_O);
+		optionsMenu.add(saItem);
 
 		helpMenu.setMnemonic(KeyEvent.VK_H);
 		helpMenu.add(helpItem);
