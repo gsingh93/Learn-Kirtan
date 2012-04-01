@@ -18,7 +18,14 @@ public class Key extends JButton implements MouseListener {
 	public static final int BLACK_KEY_WIDTH = 20;
 	public static final int BLACK_KEY_HEIGHT = 120;
 
+	/**
+	 * A counter used to assign midi note numbers to the keys
+	 */
 	private static int noteCount = 40;
+
+	/**
+	 * The midi note number of the key
+	 */
 	public int note;
 
 	private static Synthesizer synth = null;

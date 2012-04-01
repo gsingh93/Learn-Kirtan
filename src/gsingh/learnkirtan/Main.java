@@ -58,7 +58,14 @@ import org.apache.commons.io.IOUtils;
 
 public class Main implements ActionListener, ItemListener, KeyListener {
 
+	/**
+	 * The logger for this class
+	 */
 	private final static Logger LOGGER = Logger.getLogger(Main.class.getName());
+
+	/**
+	 * The {@link FileHandler} to which log messages are written
+	 */
 	public static FileHandler logFile;
 
 	/**
@@ -123,8 +130,19 @@ public class Main implements ActionListener, ItemListener, KeyListener {
 	 */
 	JSpinner tempoControl;
 
+	/**
+	 * If checked, the selected playback lines will repeat when finished
+	 */
 	JCheckBox repeat;
+
+	/**
+	 * If not empty, the playback will start here
+	 */
 	JTextField startField;
+
+	/**
+	 * If not empty, the playback will end here
+	 */
 	JTextField endField;
 
 	/**
@@ -132,6 +150,10 @@ public class Main implements ActionListener, ItemListener, KeyListener {
 	 * program is first started, it has the value of {@code null}.
 	 */
 	File curFile;
+
+	/**
+	 * The main frame
+	 */
 	JFrame frame;
 
 	public static void main(String[] args) {
@@ -688,7 +710,8 @@ public class Main implements ActionListener, ItemListener, KeyListener {
 				e1.printStackTrace();
 			}
 		} else if (command.equals("changesa")) {
-			SpinnerModel saModel = new SpinnerNumberModel(11, 1, 36, 1);
+			SpinnerModel saModel = new SpinnerNumberModel(
+					Parser.getSaKey() + 1, 1, 36, 1);
 			JSpinner saSpinner = new JSpinner(saModel);
 
 			JPanel panel = new JPanel();

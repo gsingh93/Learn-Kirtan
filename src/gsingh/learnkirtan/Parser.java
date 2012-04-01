@@ -24,19 +24,61 @@ public class Parser {
 	private static final int gap = 500;
 	private static final String PATTERN = "[A-Z.'\\-#]+";
 
+	/**
+	 * If set, loop will terminate
+	 */
 	private static boolean stop = false;
+
+	/**
+	 * If set, playback will pause
+	 */
 	private static boolean pause = false;
+
+	/**
+	 * If set, end of file or playback region has been reached. If
+	 * {@code repeat} is set, playback will repeat. Otherwise, this function
+	 * will return
+	 */
 	private static boolean finished = false;
+
+	/**
+	 * If set, playback region will repeat when finished
+	 */
 	private static boolean repeat = false;
+
+	/**
+	 * An array of the keyboard keys
+	 */
 	private static Key[] keys = Main.keys;
+
+	/**
+	 * The key to be played
+	 */
 	private static int key = 0;
 
+	/**
+	 * The number of beats to hold the note
+	 */
 	private static int holdCount;
+
+	/**
+	 * The note to play
+	 */
 	private static String note;
+
+	/**
+	 * The next note to play
+	 */
 	private static String nextNote;
 
+	/**
+	 * The Sa key
+	 */
 	private static int saKey = 10;
 
+	/**
+	 * The scanner which reads in input from the {@code shabadEditor}
+	 */
 	private static Scanner scanner = null;
 
 	/**
@@ -371,5 +413,12 @@ public class Parser {
 	 */
 	public static void setSaKey(int key) {
 		saKey = key - 1;
+	}
+
+	/**
+	 * Returns {@code saKey}
+	 */
+	public static int getSaKey() {
+		return saKey;
 	}
 }
