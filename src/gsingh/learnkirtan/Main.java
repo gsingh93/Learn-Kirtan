@@ -596,8 +596,10 @@ public class Main implements ActionListener, ItemListener, KeyListener {
 		shabadEditor.write(bw);
 		bw.close();
 		prevText = shabadEditor.getText();
-		frame.setTitle(frame.getTitle().substring(0,
-				frame.getTitle().length() - 1));
+		if (frame.getTitle().contains("*")) {
+			frame.setTitle(frame.getTitle().substring(0,
+					frame.getTitle().length() - 1));
+		}
 		LOGGER.fine("File write completed.");
 	}
 
