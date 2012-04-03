@@ -6,6 +6,7 @@ import gsingh.learnkirtan.keys.WhiteKey;
 
 import java.awt.Color;
 import java.awt.Container;
+import java.awt.Desktop;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
@@ -27,7 +28,12 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.text.DecimalFormat;
 import java.util.logging.FileHandler;
 import java.util.logging.Level;
@@ -67,6 +73,8 @@ public class Main implements ActionListener, ItemListener, KeyListener {
 	 * The {@link FileHandler} to which log messages are written
 	 */
 	public static FileHandler logFile;
+
+	public static final String VERSION = "0.3.1";
 
 	/**
 	 * Key dimensions
@@ -217,6 +225,39 @@ public class Main implements ActionListener, ItemListener, KeyListener {
 		return true;
 	}
 
+	public void checkForUpdate() {
+		String url = "http://michigangurudwara.com/version.txt";
+		String updateSite = "https://github.com/gsingh93/Learn-Kirtan/wiki";
+		String line = VERSION;
+		try {
+			BufferedReader reader = new BufferedReader(new InputStreamReader(
+					new URL(url).openStream()));
+			line = reader.readLine();
+
+			if (!line.equals(VERSION)) {
+				int result = JOptionPane
+						.showOptionDialog(
+								frame,
+								"The software has detected that an update is available. Would you like to go to the download page?",
+								"Update Available", JOptionPane.YES_NO_OPTION,
+								JOptionPane.INFORMATION_MESSAGE, null, null,
+								null);
+
+				LOGGER.info("Update Available");
+
+				if (result == JOptionPane.YES_OPTION)
+					Desktop.getDesktop().browse(new URI(updateSite));
+			}
+		} catch (MalformedURLException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (URISyntaxException e) {
+			e.printStackTrace();
+		}
+
+	}
+
 	public Main() {
 
 		// Make sure the soundbank is installed
@@ -231,7 +272,10 @@ public class Main implements ActionListener, ItemListener, KeyListener {
 							"Error", JOptionPane.ERROR_MESSAGE);
 		}
 
-		frame = new JFrame("Learn Kirtan v0.3 Beta");
+		// Check for updates
+		checkForUpdate();
+
+		frame = new JFrame("Learn Kirtan v" + VERSION + " Beta");
 		initMenu();
 
 		JPanel mainPanel = new JPanel();
@@ -767,7 +811,7 @@ public class Main implements ActionListener, ItemListener, KeyListener {
 							frame,
 							"This software was written by Gulshan Singh (gulshan@umich.edu) and is free \n"
 									+ "and opensource under the Apache License. Please contact me if you would like to contribute.\n"
-									+ "\n Version 0.3", "About",
+									+ "\n Version " + VERSION, "About",
 							JOptionPane.DEFAULT_OPTION,
 							JOptionPane.INFORMATION_MESSAGE);
 		}
