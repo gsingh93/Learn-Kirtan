@@ -750,13 +750,10 @@ public class Main implements ActionListener, ItemListener, KeyListener {
 				if (difference > 0) {
 					for (int i = 0; i < difference; i++) {
 						Key.notes.add(0, Key.notes.get(Key.notes.size() - 1));
-						System.out
-								.println(Key.notes.remove(Key.notes.size() - 1));
 					}
 				} else if (difference < 0) {
 					for (int i = 0; i < -1 * difference; i++) {
 						Key.notes.add(Key.notes.size(), Key.notes.get(0));
-						System.out.println(Key.notes.remove(0));
 					}
 				}
 
@@ -799,8 +796,10 @@ public class Main implements ActionListener, ItemListener, KeyListener {
 
 	@Override
 	public void keyTyped(KeyEvent e) {
-		String title = frame.getTitle();
-		if (!title.contains("*"))
-			frame.setTitle(frame.getTitle() + "*");
+		if (!e.isAltDown() && !e.isControlDown()) {
+			String title = frame.getTitle();
+			if (!title.contains("*"))
+				frame.setTitle(frame.getTitle() + "*");
+		}
 	}
 }
