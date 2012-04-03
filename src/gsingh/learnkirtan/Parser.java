@@ -22,7 +22,6 @@ public class Parser {
 	 * The default length each note is played
 	 */
 	private static final int gap = 500;
-	private static final String PATTERN = "[A-Z.'\\-#]+";
 
 	/**
 	 * If set, loop will terminate
@@ -80,6 +79,11 @@ public class Parser {
 	 * The scanner which reads in input from the {@code shabadEditor}
 	 */
 	private static Scanner scanner = null;
+
+	/**
+	 * Set to true when two notes will be played in one beat
+	 */
+	static boolean doubleNote = false;
 
 	/**
 	 * Plays the shabad on the keyboard
@@ -167,77 +171,30 @@ public class Parser {
 				finished = true;
 			}
 
-			// Determine the length of the prefix
-			int count = 0;
-			if (note.length() > 1) {
-				LOGGER.info("Checking for prefix.");
-				for (int i = 0; i < 3; i++) {
-					if (note.substring(i, i + 1).matches("[A-Z\\-]"))
-						break;
-					count++;
-				}
-			}
-
-			LOGGER.info("Prefix Length: " + count);
-
-			// Break the input into a prefix, a suffix and a note
-			String prefix = note.substring(0, count);
-			String suffix = "";
-			note = note.substring(count);
-			int index = note.indexOf(".");
-			if (index == -1)
-				index = note.indexOf("'");
-			if (index != -1) {
-				suffix = note.substring(index);
-				note = note.substring(0, index);
-			}
-
-			LOGGER.info("Prefix: " + prefix);
-			LOGGER.info("Note: " + note);
-			LOGGER.info("Suffix: " + suffix);
-
-			// Set the key number of the note to be played
-			if (note.equals("SA")) {
-				key = saKey;
-			} else if (note.equals("RE")) {
-				key = saKey + 2;
-			} else if (note.equals("GA")) {
-				key = saKey + 4;
-			} else if (note.equals("MA")) {
-				key = saKey + 5;
-			} else if (note.equals("PA")) {
-				key = saKey + 7;
-			} else if (note.equals("DHA")) {
-				key = saKey + 9;
-			} else if (note.equals("NI")) {
-				key = saKey + 11;
-			} else {
-				LOGGER.warning("Invalid note: " + note);
-				JOptionPane.showMessageDialog(null, "Error: Invalid note '"
-						+ note + "'", "Error", JOptionPane.ERROR_MESSAGE);
+			if (!calculateKey(note))
 				break;
-			}
-
-			// Apply the modifiers in the prefix and suffix to calculate the
-			// actual key number
-			// TODO: Check if notes have valid modifiers
-			if (prefix.contains("'")) {
-				key--;
-			}
-			if (prefix.contains(".")) {
-				key -= 12;
-			}
-			if (suffix.contains("'")) {
-				key++;
-			}
-			if (suffix.contains(".")) {
-				key += 12;
-			}
 
 			if (key >= 0 && key < 36) {
 				LOGGER.info("Key: " + key);
 
-				keys[key].playOnce((int) (holdCount * gap / tempo));
+				if (doubleNote) {
+					int index = note.indexOf("-");
+					String note1 = note.substring(0, index);
+					String note2 = note.substring(index + 1);
+
+					if (!calculateKey(note1))
+						break;
+					keys[key].playOnce((int) (.5 * holdCount * gap / tempo));
+
+					if (!calculateKey(note2))
+						break;
+					keys[key].playOnce((int) (.5 * holdCount * gap / tempo));
+
+					doubleNote = false;
+
+				} else {
+					keys[key].playOnce((int) (holdCount * gap / tempo));
+				}
 				note = nextNote;
 				nextNote = getNextNote();
 
@@ -251,6 +208,7 @@ public class Parser {
 						finished = true;
 					}
 			} else {
+				// TODO Missing prefix/suffix
 				LOGGER.warning("Invalid note: " + note);
 				JOptionPane.showMessageDialog(null, "Error: Invalid note '"
 						+ note + "'", "Error", JOptionPane.ERROR_MESSAGE);
@@ -259,8 +217,96 @@ public class Parser {
 		}
 
 		LOGGER.info("Left Loop. Returning.");
+		doubleNote = false;
 		stop = false;
 		finished = false;
+	}
+
+	public static boolean calculateKey(String note) {
+
+		// Check for double note
+		if (note.matches("[.']*[A-Z]{2,3}[.']*\\-[.']*[A-Z]{2,3}[.']*")) {
+			doubleNote = true;
+			return true;
+		}
+
+		// Determine the length of the prefix
+		int count = 0;
+		if (note.length() > 1) {
+			LOGGER.info("Checking for prefix.");
+			for (int i = 0; i < 3; i++) {
+				if (note.substring(i, i + 1).matches("[A-Z\\-]"))
+					break;
+				count++;
+			}
+		}
+
+		LOGGER.info("Prefix Length: " + count);
+
+		// Break the input into a prefix, a suffix and a note
+		String prefix = note.substring(0, count);
+		String suffix = "";
+		note = note.substring(count);
+		int index = note.indexOf(".");
+		if (index == -1)
+			index = note.indexOf("'");
+		if (index != -1) {
+			suffix = note.substring(index);
+			note = note.substring(0, index);
+		}
+
+		LOGGER.info("Prefix: " + prefix);
+		LOGGER.info("Note: " + note);
+		LOGGER.info("Suffix: " + suffix);
+
+		// Set the key number of the note to be played
+		if (note.equals("SA")) {
+			key = saKey;
+		} else if (note.equals("RE")) {
+			key = saKey + 2;
+		} else if (note.equals("GA")) {
+			key = saKey + 4;
+		} else if (note.equals("MA")) {
+			key = saKey + 5;
+		} else if (note.equals("PA")) {
+			key = saKey + 7;
+		} else if (note.equals("DHA")) {
+			key = saKey + 9;
+		} else if (note.equals("NI")) {
+			key = saKey + 11;
+		} else {
+			LOGGER.warning("Invalid note: " + prefix + note + suffix);
+			JOptionPane.showMessageDialog(null, "Error: Invalid note '"
+					+ prefix + note + suffix + "'", "Error",
+					JOptionPane.ERROR_MESSAGE);
+			return false;
+		}
+
+		// Apply the modifiers in the prefix and suffix to calculate the
+		// actual key number
+		// TODO: Check if notes have valid modifiers
+		if (prefix.contains("'")) {
+			key--;
+		}
+		if (prefix.contains(".")) {
+			key -= 12;
+		}
+		if (suffix.contains("'")) {
+			key++;
+		}
+		if (suffix.contains(".")) {
+			key += 12;
+		}
+
+		if (key >= 0 && key < 36)
+			return true;
+		else {
+			LOGGER.warning("Invalid note: " + prefix + note + suffix);
+			JOptionPane.showMessageDialog(null, "Error: Invalid note '"
+					+ prefix + note + suffix + "' is too low or too high",
+					"Error", JOptionPane.ERROR_MESSAGE);
+			return false;
+		}
 	}
 
 	/**
@@ -274,8 +320,8 @@ public class Parser {
 	private static String getNextNote() {
 		String next = null;
 		holdCount = 1;
-		while (scanner.hasNext(PATTERN)) {
-			next = scanner.next(PATTERN);
+		while (scanner.hasNext()) {
+			next = scanner.next();
 			if (next.equals("-"))
 				holdCount++;
 			else
@@ -310,14 +356,14 @@ public class Parser {
 		String note;
 		if (!start.equals("")) {
 			LOGGER.info("Searching for starting label");
-			note = scanner.next(PATTERN);
+			note = scanner.next();
 			while (!note.equals("#" + start)) {
 				LOGGER.info("While searching, skipped: " + note);
-				note = scanner.next(PATTERN);
+				note = scanner.next();
 			}
 		}
 
-		note = scanner.next("[A-Z.'#]+");
+		note = scanner.next();
 
 		return note;
 	}
