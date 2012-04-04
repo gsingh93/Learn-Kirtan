@@ -51,6 +51,7 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JSpinner;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
@@ -92,7 +93,7 @@ public class Main implements ActionListener, ItemListener, KeyListener {
 		BLACK_KEY_WIDTH = Key.BLACK_KEY_WIDTH;
 		WHITE_KEY_HEIGHT = Key.WHITE_KEY_HEIGHT;
 		BLACK_KEY_HEIGHT = Key.BLACK_KEY_HEIGHT;
-		WIDTH = 3 * (WHITE_KEY_WIDTH * 7) + WHITE_KEY_WIDTH;
+		WIDTH = 3 * (WHITE_KEY_WIDTH * 7) + WHITE_KEY_WIDTH - 20;
 		fc = new JFileChooser();
 		FileFilter filter = new FileNameExtensionFilter("SBD (Shabad) File",
 				"sbd");
@@ -287,8 +288,9 @@ public class Main implements ActionListener, ItemListener, KeyListener {
 		// Construct each top level component
 		initControlPanel(controlPanel);
 
-		shabadEditor = new JTextArea(20, 78);
+		shabadEditor = new JTextArea(16, 60);
 		shabadEditor.setDisabledTextColor(Color.GRAY);
+		shabadEditor.setFont(new Font("Dialog", Font.BOLD, 16));
 		shabadEditor.addKeyListener(this);
 
 		constructKeyboard(pianoPanel);
@@ -540,7 +542,7 @@ public class Main implements ActionListener, ItemListener, KeyListener {
 		c.weightx = 1.0;
 		c.weighty = 1.0;
 		c.anchor = GridBagConstraints.NORTHWEST;
-		mainPanel.add(shabadEditor, c);
+		mainPanel.add(new JScrollPane(shabadEditor), c);
 
 		LOGGER.fine("Main panel initialization completed.");
 	}
