@@ -165,6 +165,9 @@ public class Main implements ActionListener, ItemListener, KeyListener {
 	 */
 	JFrame frame;
 
+	public static final String BASETITLE = "Learn Kirtan v" + VERSION
+			+ " Beta - ";
+
 	public static void main(String[] args) {
 
 		// Set up logging
@@ -276,7 +279,7 @@ public class Main implements ActionListener, ItemListener, KeyListener {
 		// Check for updates
 		checkForUpdate();
 
-		frame = new JFrame("Learn Kirtan v" + VERSION + " Beta");
+		frame = new JFrame(BASETITLE + "Untitled Shabad");
 		initMenu();
 
 		JPanel mainPanel = new JPanel();
@@ -617,12 +620,14 @@ public class Main implements ActionListener, ItemListener, KeyListener {
 					if (result == JOptionPane.OK_OPTION) {
 						LOGGER.warning("User chose to overwrite.");
 						write();
+						frame.setTitle(BASETITLE + curFile.getName());
 					} else {
 						LOGGER.info("User chose not to overwrite.");
 					}
 				} else {
 					LOGGER.info("User specified a new file. Proceeding with save.");
 					write();
+					frame.setTitle(BASETITLE + curFile.getName());
 				}
 			}
 		} else {
@@ -666,10 +671,7 @@ public class Main implements ActionListener, ItemListener, KeyListener {
 					shabadEditor.read(br, "File");
 					br.close();
 					prevText = shabadEditor.getText();
-					if (frame.getTitle().contains("*")) {
-						frame.setTitle(frame.getTitle().substring(0,
-								frame.getTitle().length() - 1));
-					}
+					frame.setTitle(BASETITLE + curFile.getName());
 					LOGGER.fine("File write completed.");
 				} catch (FileNotFoundException e1) {
 					e1.printStackTrace();
@@ -748,6 +750,8 @@ public class Main implements ActionListener, ItemListener, KeyListener {
 						e1.printStackTrace();
 					}
 				}
+
+				frame.setTitle(BASETITLE + "Untitled Shabad");
 				curFile = null;
 				shabadEditor.setText("");
 			}
