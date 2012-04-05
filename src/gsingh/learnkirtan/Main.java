@@ -15,8 +15,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.BufferedReader;
@@ -58,12 +58,13 @@ import javax.swing.JTextField;
 import javax.swing.KeyStroke;
 import javax.swing.SpinnerModel;
 import javax.swing.SpinnerNumberModel;
+import javax.swing.SwingUtilities;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 import org.apache.commons.io.IOUtils;
 
-public class Main implements ActionListener, ItemListener, KeyListener {
+public class Main {
 
 	/**
 	 * The logger for this class
@@ -78,22 +79,11 @@ public class Main implements ActionListener, ItemListener, KeyListener {
 	public static final String VERSION = "0.3.1";
 
 	/**
-	 * Key dimensions
-	 */
-	final int WHITE_KEY_WIDTH, WHITE_KEY_HEIGHT, BLACK_KEY_WIDTH,
-			BLACK_KEY_HEIGHT;
-
-	/**
 	 * Width of the screen
 	 */
-	final int WIDTH;
+	final int WIDTH = 3 * (Key.WHITE_KEY_WIDTH * 7) + Key.WHITE_KEY_WIDTH - 20;
 	final JFileChooser fc;
 	{
-		WHITE_KEY_WIDTH = Key.WHITE_KEY_WIDTH;
-		BLACK_KEY_WIDTH = Key.BLACK_KEY_WIDTH;
-		WHITE_KEY_HEIGHT = Key.WHITE_KEY_HEIGHT;
-		BLACK_KEY_HEIGHT = Key.BLACK_KEY_HEIGHT;
-		WIDTH = 3 * (WHITE_KEY_WIDTH * 7) + WHITE_KEY_WIDTH - 20;
 		fc = new JFileChooser();
 		FileFilter filter = new FileNameExtensionFilter("SBD (Shabad) File",
 				"sbd");
@@ -116,13 +106,6 @@ public class Main implements ActionListener, ItemListener, KeyListener {
 	 * a save is necessary.
 	 */
 	private String prevText = "";
-
-	/**
-	 * True if a shabad is currently playing, false otherwise. At the moment,
-	 * it's only use is to determine whether pause should set the pause variable
-	 * or not.
-	 */
-	private boolean playing = false;
 
 	/**
 	 * The main shabad editor. When play is pressed, the text in here will be
@@ -165,6 +148,11 @@ public class Main implements ActionListener, ItemListener, KeyListener {
 	 */
 	JFrame frame;
 
+	/**
+	 * Action listener for all events
+	 */
+	ActionListenerClass listener = new ActionListenerClass();
+
 	public static final String BASETITLE = "Learn Kirtan v" + VERSION
 			+ " Beta - ";
 
@@ -183,7 +171,31 @@ public class Main implements ActionListener, ItemListener, KeyListener {
 			e.printStackTrace();
 		}
 
-		new Main();
+		SwingUtilities.invokeLater(new Runnable() {
+			public void run() {
+				new Main();
+			}
+		});
+	}
+
+	public Main() {
+
+		// Make sure the soundbank is installed
+		if (!installSoundBank()) {
+			JOptionPane
+					.showMessageDialog(
+							frame,
+							"Error: There may be an issue with your Java installation"
+									+ " or the required file dependencies could not be installed."
+									+ " Sound may not work. If the problem persists,"
+									+ " please contact the developer for assistance.",
+							"Error", JOptionPane.ERROR_MESSAGE);
+		}
+
+		// Check for updates
+		checkForUpdate();
+
+		createAndShowGui();
 	}
 
 	/**
@@ -229,6 +241,10 @@ public class Main implements ActionListener, ItemListener, KeyListener {
 		return true;
 	}
 
+	/**
+	 * Connects to the server to see if there is a later update. If found, offer
+	 * to go to download page
+	 */
 	public void checkForUpdate() {
 		String url = "http://michigangurudwara.com/version.txt";
 		String updateSite = "https://github.com/gsingh93/Learn-Kirtan/wiki";
@@ -262,23 +278,7 @@ public class Main implements ActionListener, ItemListener, KeyListener {
 
 	}
 
-	public Main() {
-
-		// Make sure the soundbank is installed
-		if (!installSoundBank()) {
-			JOptionPane
-					.showMessageDialog(
-							frame,
-							"Error: There may be an issue with your Java installation"
-									+ " or the required file dependencies could not be installed."
-									+ " Sound may not work. If the problem persists,"
-									+ " please contact the developer for assistance.",
-							"Error", JOptionPane.ERROR_MESSAGE);
-		}
-
-		// Check for updates
-		checkForUpdate();
-
+	private void createAndShowGui() {
 		frame = new JFrame(BASETITLE + "Untitled Shabad");
 		initMenu();
 
@@ -294,7 +294,7 @@ public class Main implements ActionListener, ItemListener, KeyListener {
 		shabadEditor = new JTextArea(16, 60);
 		shabadEditor.setDisabledTextColor(Color.GRAY);
 		shabadEditor.setFont(new Font("Dialog", Font.BOLD, 16));
-		shabadEditor.addKeyListener(this);
+		shabadEditor.addKeyListener(listener);
 
 		constructKeyboard(pianoPanel);
 
@@ -321,7 +321,7 @@ public class Main implements ActionListener, ItemListener, KeyListener {
 				}
 			}
 		});
-		frame.setSize(WIDTH, WHITE_KEY_HEIGHT * 3 + 30);
+		frame.setSize(WIDTH, Key.WHITE_KEY_HEIGHT * 3 + 30);
 		frame.setLocation(250, 60);
 		frame.setResizable(false);
 		frame.setVisible(true);
@@ -356,26 +356,26 @@ public class Main implements ActionListener, ItemListener, KeyListener {
 
 		// Set listeners
 		createItem.setActionCommand("create");
-		createItem.addActionListener(this);
+		createItem.addActionListener(listener);
 		createItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_N,
 				ActionEvent.CTRL_MASK));
 		openItem.setActionCommand("open");
-		openItem.addActionListener(this);
+		openItem.addActionListener(listener);
 		openItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O,
 				ActionEvent.CTRL_MASK));
 		saveItem.setActionCommand("save");
-		saveItem.addActionListener(this);
+		saveItem.addActionListener(listener);
 		saveItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S,
 				ActionEvent.CTRL_MASK));
 
 		saItem.setActionCommand("changesa");
-		saItem.addActionListener(this);
+		saItem.addActionListener(listener);
 
 		helpItem.setActionCommand("help");
-		helpItem.addActionListener(this);
+		helpItem.addActionListener(listener);
 		helpItem.setAccelerator(KeyStroke.getKeyStroke("F1"));
 		aboutItem.setActionCommand("about");
-		aboutItem.addActionListener(this);
+		aboutItem.addActionListener(listener);
 
 		fileMenu.setMnemonic(KeyEvent.VK_F);
 		fileMenu.add(createItem);
@@ -407,13 +407,13 @@ public class Main implements ActionListener, ItemListener, KeyListener {
 		JButton pauseButton = new JButton("Pause");
 		JButton stopButton = new JButton("Stop");
 
-		playButton.addActionListener(this);
+		playButton.addActionListener(listener);
 		playButton.setActionCommand("play");
 
-		pauseButton.addActionListener(this);
+		pauseButton.addActionListener(listener);
 		pauseButton.setActionCommand("pause");
 
-		stopButton.addActionListener(this);
+		stopButton.addActionListener(listener);
 		stopButton.setActionCommand("stop");
 
 		JLabel tempoLabel = new JLabel("Tempo:");
@@ -429,7 +429,7 @@ public class Main implements ActionListener, ItemListener, KeyListener {
 		tempoControl.setPreferredSize(d);
 
 		repeat = new JCheckBox("Repeat");
-		repeat.addItemListener(this);
+		repeat.addItemListener(listener);
 
 		JLabel startLabel = new JLabel("Start Label:");
 		JLabel endLabel = new JLabel("End Label:");
@@ -492,7 +492,7 @@ public class Main implements ActionListener, ItemListener, KeyListener {
 	 */
 	void addWhiteKey(Container panel, int i) {
 		WhiteKey b = new WhiteKey();
-		b.setLocation(i++ * WHITE_KEY_WIDTH, 0);
+		b.setLocation(i++ * Key.WHITE_KEY_WIDTH, 0);
 		panel.add(b, 0, -1);
 		keys[index++] = b;
 	}
@@ -507,8 +507,8 @@ public class Main implements ActionListener, ItemListener, KeyListener {
 	 */
 	void addBlackKey(Container panel, int factor) {
 		BlackKey b = new BlackKey();
-		b.setLocation(WHITE_KEY_WIDTH - BLACK_KEY_WIDTH / 2 + factor
-				* WHITE_KEY_WIDTH, 0);
+		b.setLocation(Key.WHITE_KEY_WIDTH - Key.BLACK_KEY_WIDTH / 2 + factor
+				* Key.WHITE_KEY_WIDTH, 0);
 		panel.add(b, 1, -1);
 		keys[index++] = b;
 	}
@@ -536,8 +536,8 @@ public class Main implements ActionListener, ItemListener, KeyListener {
 		c.gridy = 1;
 		c.weightx = 1.0;
 		c.anchor = GridBagConstraints.NORTHWEST;
-		pianoPanel
-				.setPreferredSize(new Dimension(WIDTH - 18, WHITE_KEY_HEIGHT));
+		pianoPanel.setPreferredSize(new Dimension(WIDTH - 18,
+				Key.WHITE_KEY_HEIGHT));
 		mainPanel.add(pianoPanel, c);
 
 		c.gridx = 0;
@@ -688,177 +688,178 @@ public class Main implements ActionListener, ItemListener, KeyListener {
 		LOGGER.fine("File open process finished.");
 	}
 
-	@Override
-	public void itemStateChanged(ItemEvent e) {
-		Object source = e.getItemSelectable();
-		LOGGER.info(source.getClass().getName()
-				+ ((e.getStateChange() == ItemEvent.SELECTED) ? " selected."
-						: " deselected."));
+	class ActionListenerClass extends KeyAdapter implements ActionListener,
+			ItemListener {
+		/**
+		 * True if a shabad is currently playing, false otherwise. At the
+		 * moment, it's only use is to determine whether pause should set the
+		 * pause variable or not.
+		 */
+		private boolean playing = false;
 
-		if (source == repeat) {
-			if (e.getStateChange() == ItemEvent.SELECTED)
-				Parser.setRepeat(true);
-			else
-				Parser.setRepeat(false);
-		}
-	}
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			String command = e.getActionCommand();
+			LOGGER.info("Action Performed: " + command);
 
-	@Override
-	public void actionPerformed(ActionEvent e) {
-		String command = e.getActionCommand();
-		LOGGER.info("Action Performed: " + command);
-
-		if (command.equals("play")) {
-			if (!Parser.isPlaying()) {
-				if (!shabadEditor.getText().equals("")) {
-					if (Parser.isPaused()) {
-						LOGGER.info("Playback unpaused.");
-						Parser.play();
+			if (command.equals("play")) {
+				if (!Parser.isPlaying()) {
+					if (!shabadEditor.getText().equals("")) {
+						if (Parser.isPaused()) {
+							LOGGER.info("Playback unpaused.");
+							Parser.play();
+						} else {
+							new Thread(new Runnable() {
+								public void run() {
+									LOGGER.info("Starting playback.");
+									setInputBoxes(false);
+									Parser.parseAndPlay(shabadEditor.getText(),
+											startField.getText(),
+											endField.getText(),
+											(Double) tempoControl.getValue());
+									setInputBoxes(true);
+								}
+							}).start();
+						}
+						playing = true;
 					} else {
-						new Thread(new Runnable() {
-							public void run() {
-								LOGGER.info("Starting playback.");
-								setInputBoxes(false);
-								Parser.parseAndPlay(shabadEditor.getText(),
-										startField.getText(),
-										endField.getText(),
-										(Double) tempoControl.getValue());
-								setInputBoxes(true);
-							}
-						}).start();
+						LOGGER.warning("The user presed play when there was no text in input box");
+						JOptionPane.showMessageDialog(frame,
+								"Error: Nothing to play", "Error",
+								JOptionPane.ERROR_MESSAGE);
 					}
-					playing = true;
 				} else {
-					LOGGER.warning("The user presed play when there was no text in input box");
+					LOGGER.warning("The user presed play when shabad was already playing");
 					JOptionPane.showMessageDialog(frame,
-							"Error: Nothing to play", "Error",
+							"The shabad is already playing.", "Error",
 							JOptionPane.ERROR_MESSAGE);
 				}
-			} else {
-				LOGGER.warning("The user presed play when shabad was already playing");
-				JOptionPane.showMessageDialog(frame,
-						"The shabad is already playing.", "Error",
-						JOptionPane.ERROR_MESSAGE);
-			}
-		} else if (command.equals("pause")) {
-			if (playing) {
-				Parser.setPause();
+			} else if (command.equals("pause")) {
+				if (playing) {
+					Parser.setPause();
+					playing = false;
+				}
+			} else if (command.equals("stop")) {
+				Parser.stop();
 				playing = false;
-			}
-		} else if (command.equals("stop")) {
-			Parser.stop();
-			playing = false;
-		} else if (command.equals("create")) {
-			int result = askForSave();
-			if (result != JOptionPane.CANCEL_OPTION
-					&& result != JOptionPane.CLOSED_OPTION || result == -1) {
-				if (result == JOptionPane.YES_OPTION) {
-					try {
-						save();
-					} catch (IOException e1) {
-						e1.printStackTrace();
+			} else if (command.equals("create")) {
+				int result = askForSave();
+				if (result != JOptionPane.CANCEL_OPTION
+						&& result != JOptionPane.CLOSED_OPTION || result == -1) {
+					if (result == JOptionPane.YES_OPTION) {
+						try {
+							save();
+						} catch (IOException e1) {
+							e1.printStackTrace();
+						}
+					}
+
+					frame.setTitle(BASETITLE + "Untitled Shabad");
+					curFile = null;
+					shabadEditor.setText("");
+				}
+
+			} else if (command.equals("open")) {
+				int result = askForSave();
+				if (result != JOptionPane.CANCEL_OPTION
+						&& result != JOptionPane.CLOSED_OPTION || result == -1) {
+					if (result == JOptionPane.YES_OPTION)
+
+						try {
+							save();
+						} catch (IOException e1) {
+							e1.printStackTrace();
+						}
+
+					openFile();
+				}
+			} else if (command.equals("save")) {
+				try {
+					save();
+				} catch (IOException e1) {
+					e1.printStackTrace();
+				}
+			} else if (command.equals("changesa")) {
+				SpinnerModel saModel = new SpinnerNumberModel(
+						Parser.getSaKey() + 1, 1, 36, 1);
+				JSpinner saSpinner = new JSpinner(saModel);
+
+				JPanel panel = new JPanel();
+				panel.add(new JLabel("Choose the key number for sa:"));
+				panel.add(saSpinner);
+
+				int result = JOptionPane.showConfirmDialog(frame, panel,
+						"Change Sa Key", JOptionPane.OK_CANCEL_OPTION,
+						JOptionPane.PLAIN_MESSAGE);
+
+				if (result == JOptionPane.OK_OPTION) {
+					int value = (Integer) saSpinner.getValue();
+
+					int difference = value - Parser.getSaKey() - 1;
+
+					LOGGER.info("Sa key changed to: " + value);
+					Parser.setSaKey(value);
+
+					if (difference > 0) {
+						for (int i = 0; i < difference; i++) {
+							Key.notes.add(0,
+									Key.notes.get(Key.notes.size() - 1));
+						}
+					} else if (difference < 0) {
+						for (int i = 0; i < -1 * difference; i++) {
+							Key.notes.add(Key.notes.size(), Key.notes.get(0));
+						}
+					}
+
+					// Relabel the keys
+					for (Key key : keys) {
+						key.label();
+						if (key instanceof BlackKey) {
+							if (key.getText().contains("Dha")) {
+								key.setFont(new Font("Dialog", Font.PLAIN, 7));
+							} else {
+								key.setFont(new Font("Dialog", Font.PLAIN, 9));
+							}
+						}
 					}
 				}
 
-				frame.setTitle(BASETITLE + "Untitled Shabad");
-				curFile = null;
-				shabadEditor.setText("");
-			}
-
-		} else if (command.equals("open")) {
-			int result = askForSave();
-			if (result != JOptionPane.CANCEL_OPTION
-					&& result != JOptionPane.CLOSED_OPTION || result == -1) {
-				if (result == JOptionPane.YES_OPTION)
-
-					try {
-						save();
-					} catch (IOException e1) {
-						e1.printStackTrace();
-					}
-
-				openFile();
-			}
-		} else if (command.equals("save")) {
-			try {
-				save();
-			} catch (IOException e1) {
-				e1.printStackTrace();
-			}
-		} else if (command.equals("changesa")) {
-			SpinnerModel saModel = new SpinnerNumberModel(
-					Parser.getSaKey() + 1, 1, 36, 1);
-			JSpinner saSpinner = new JSpinner(saModel);
-
-			JPanel panel = new JPanel();
-			panel.add(new JLabel("Choose the key number for sa:"));
-			panel.add(saSpinner);
-
-			int result = JOptionPane.showConfirmDialog(frame, panel,
-					"Change Sa Key", JOptionPane.OK_CANCEL_OPTION,
-					JOptionPane.PLAIN_MESSAGE);
-
-			if (result == JOptionPane.OK_OPTION) {
-				int value = (Integer) saSpinner.getValue();
-
-				int difference = value - Parser.getSaKey() - 1;
-
-				LOGGER.info("Sa key changed to: " + value);
-				Parser.setSaKey(value);
-
-				if (difference > 0) {
-					for (int i = 0; i < difference; i++) {
-						Key.notes.add(0, Key.notes.get(Key.notes.size() - 1));
-					}
-				} else if (difference < 0) {
-					for (int i = 0; i < -1 * difference; i++) {
-						Key.notes.add(Key.notes.size(), Key.notes.get(0));
-					}
-				}
-
-				relabelKeys();
-			}
-		} else if (command.equals("help")) {
-			new HelpFrame();
-		} else if (command.equals("about")) {
-			JOptionPane
-					.showConfirmDialog(
-							frame,
-							"This software was written by Gulshan Singh (gulshan@umich.edu) and is free \n"
-									+ "and opensource under the Apache License. Please contact me if you would like to contribute.\n"
-									+ "\n Version " + VERSION, "About",
-							JOptionPane.DEFAULT_OPTION,
-							JOptionPane.INFORMATION_MESSAGE);
-		}
-	}
-
-	private void relabelKeys() {
-		for (Key key : keys) {
-			key.label();
-			if (key instanceof BlackKey) {
-				if (key.getText().contains("Dha")) {
-					key.setFont(new Font("Dialog", Font.PLAIN, 7));
-				} else {
-					key.setFont(new Font("Dialog", Font.PLAIN, 9));
-				}
+			} else if (command.equals("help")) {
+				new HelpFrame();
+			} else if (command.equals("about")) {
+				JOptionPane
+						.showConfirmDialog(
+								frame,
+								"This software was written by Gulshan Singh (gulshan@umich.edu) and is free \n"
+										+ "and opensource under the Apache License. Please contact me if you would like to contribute.\n"
+										+ "\n Version " + VERSION, "About",
+								JOptionPane.DEFAULT_OPTION,
+								JOptionPane.INFORMATION_MESSAGE);
 			}
 		}
-	}
 
-	@Override
-	public void keyPressed(KeyEvent arg0) {
-	}
+		@Override
+		public void keyTyped(KeyEvent e) {
+			if (!e.isAltDown() && !e.isControlDown()) {
+				String title = frame.getTitle();
+				if (!title.contains("*"))
+					frame.setTitle(frame.getTitle() + "*");
+			}
+		}
 
-	@Override
-	public void keyReleased(KeyEvent arg0) {
-	}
+		@Override
+		public void itemStateChanged(ItemEvent e) {
+			Object source = e.getItemSelectable();
+			LOGGER.info(source.getClass().getName()
+					+ ((e.getStateChange() == ItemEvent.SELECTED) ? " selected."
+							: " deselected."));
 
-	@Override
-	public void keyTyped(KeyEvent e) {
-		if (!e.isAltDown() && !e.isControlDown()) {
-			String title = frame.getTitle();
-			if (!title.contains("*"))
-				frame.setTitle(frame.getTitle() + "*");
+			if (source == repeat) {
+				if (e.getStateChange() == ItemEvent.SELECTED)
+					Parser.setRepeat(true);
+				else
+					Parser.setRepeat(false);
+			}
 		}
 	}
 }
