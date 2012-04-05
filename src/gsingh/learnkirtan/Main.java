@@ -66,6 +66,11 @@ import org.apache.commons.io.IOUtils;
 
 public class Main {
 
+	public static final String VERSION = "0.3.1";
+
+	public static final String BASETITLE = "Learn Kirtan v" + VERSION
+			+ " Beta - ";
+
 	/**
 	 * The logger for this class
 	 */
@@ -76,13 +81,16 @@ public class Main {
 	 */
 	public static FileHandler logFile;
 
-	public static final String VERSION = "0.3.1";
-
 	/**
 	 * Width of the screen
 	 */
-	final int WIDTH = 3 * (Key.WHITE_KEY_WIDTH * 7) + Key.WHITE_KEY_WIDTH - 20;
-	final JFileChooser fc;
+	private final int WIDTH = 3 * (Key.WHITE_KEY_WIDTH * 7)
+			+ Key.WHITE_KEY_WIDTH - 20;
+
+	/**
+	 * The filechooser used for opening and saving files
+	 */
+	private final JFileChooser fc;
 	{
 		fc = new JFileChooser();
 		FileFilter filter = new FileNameExtensionFilter("SBD (Shabad) File",
@@ -111,7 +119,7 @@ public class Main {
 	 * The main shabad editor. When play is pressed, the text in here will be
 	 * played. It cannot be edited while playing.
 	 */
-	JTextArea shabadEditor = null;
+	private JTextArea shabadEditor = null;
 
 	/**
 	 * A spinner controlling tempo. It is set to 1.0 by default, has an
@@ -120,41 +128,38 @@ public class Main {
 	 * each keypress is divided by this value to have the same effect). It
 	 * cannot be changed while playing.
 	 */
-	JSpinner tempoControl;
+	private JSpinner tempoControl;
 
 	/**
 	 * If checked, the selected playback lines will repeat when finished
 	 */
-	JCheckBox repeat;
+	private JCheckBox repeat;
 
 	/**
 	 * If not empty, the playback will start here
 	 */
-	JTextField startField;
+	private JTextField startField;
 
 	/**
 	 * If not empty, the playback will end here
 	 */
-	JTextField endField;
+	private JTextField endField;
 
 	/**
 	 * The file in which your shabad will be saved or was opened from. When the
 	 * program is first started, it has the value of {@code null}.
 	 */
-	File curFile;
+	private File curFile;
 
 	/**
 	 * The main frame
 	 */
-	JFrame frame;
+	private JFrame frame;
 
 	/**
 	 * Action listener for all events
 	 */
-	ActionListenerClass listener = new ActionListenerClass();
-
-	public static final String BASETITLE = "Learn Kirtan v" + VERSION
-			+ " Beta - ";
+	private ActionListenerClass listener = new ActionListenerClass();
 
 	public static void main(String[] args) {
 
@@ -275,7 +280,6 @@ public class Main {
 		} catch (URISyntaxException e) {
 			e.printStackTrace();
 		}
-
 	}
 
 	private void createAndShowGui() {
@@ -325,6 +329,8 @@ public class Main {
 		frame.setLocation(250, 60);
 		frame.setResizable(false);
 		frame.setVisible(true);
+
+		shabadEditor.requestFocusInWindow();
 	}
 
 	/**
@@ -672,6 +678,9 @@ public class Main {
 					br.close();
 					prevText = shabadEditor.getText();
 					frame.setTitle(BASETITLE + curFile.getName());
+					startField.setText("");
+					endField.setText("");
+					shabadEditor.requestFocusInWindow();
 					LOGGER.fine("File write completed.");
 				} catch (FileNotFoundException e1) {
 					e1.printStackTrace();
