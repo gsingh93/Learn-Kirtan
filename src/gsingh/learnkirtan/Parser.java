@@ -34,6 +34,11 @@ public class Parser {
 	private static boolean pause = false;
 
 	/**
+	 * True if playing, false otherwise.
+	 */
+	private static boolean play = false;
+
+	/**
 	 * If set, end of file or playback region has been reached. If
 	 * {@code repeat} is set, playback will repeat. Otherwise, this function
 	 * will return
@@ -95,6 +100,8 @@ public class Parser {
 	 */
 	public static void parseAndPlay(String shabad, String start, String end,
 			double tempo) {
+
+		play = true;
 
 		start = start.toUpperCase();
 		end = end.toUpperCase();
@@ -217,6 +224,7 @@ public class Parser {
 		}
 
 		LOGGER.info("Left Loop. Returning.");
+		play = false;
 		doubleNote = false;
 		stop = false;
 		finished = false;
@@ -402,6 +410,7 @@ public class Parser {
 	public static void stop() {
 		stop = true;
 		pause = false;
+		play = false;
 	}
 
 	/**
@@ -409,6 +418,7 @@ public class Parser {
 	 */
 	public static void setPause() {
 		pause = true;
+		play = false;
 	}
 
 	/**
@@ -432,11 +442,19 @@ public class Parser {
 	}
 
 	/**
+	 * Returns true if playing, false otherwise
+	 */
+	public static boolean isPlaying() {
+		return play;
+	}
+
+	/**
 	 * Sets pause to false, so that playback resumes. This is note used to play
 	 * the shabad, only to unpause.
 	 */
 	public static void play() {
 		pause = false;
+		play = true;
 	}
 
 	/**

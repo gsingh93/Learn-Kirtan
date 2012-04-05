@@ -709,27 +709,36 @@ public class Main implements ActionListener, ItemListener, KeyListener {
 		LOGGER.info("Action Performed: " + command);
 
 		if (command.equals("play")) {
-			if (!shabadEditor.getText().equals("")) {
-				if (Parser.isPaused()) {
-					LOGGER.info("Playback unpaused.");
-					Parser.play();
+			if (!Parser.isPlaying()) {
+				if (!shabadEditor.getText().equals("")) {
+					if (Parser.isPaused()) {
+						LOGGER.info("Playback unpaused.");
+						Parser.play();
+					} else {
+						new Thread(new Runnable() {
+							public void run() {
+								LOGGER.info("Starting playback.");
+								setInputBoxes(false);
+								Parser.parseAndPlay(shabadEditor.getText(),
+										startField.getText(),
+										endField.getText(),
+										(Double) tempoControl.getValue());
+								setInputBoxes(true);
+							}
+						}).start();
+					}
+					playing = true;
 				} else {
-					new Thread(new Runnable() {
-						public void run() {
-							LOGGER.info("Starting playback.");
-							setInputBoxes(false);
-							Parser.parseAndPlay(shabadEditor.getText(),
-									startField.getText(), endField.getText(),
-									(Double) tempoControl.getValue());
-							setInputBoxes(true);
-						}
-					}).start();
+					LOGGER.warning("The user presed play when there was no text in input box");
+					JOptionPane.showMessageDialog(frame,
+							"Error: Nothing to play", "Error",
+							JOptionPane.ERROR_MESSAGE);
 				}
-				playing = true;
 			} else {
-				LOGGER.warning("The user presed play when there was no text in input box");
-				JOptionPane.showMessageDialog(frame, "Error: Nothing to play",
-						"Error", JOptionPane.ERROR_MESSAGE);
+				LOGGER.warning("The user presed play when shabad was already playing");
+				JOptionPane.showMessageDialog(frame,
+						"The shabad is already playing.", "Error",
+						JOptionPane.ERROR_MESSAGE);
 			}
 		} else if (command.equals("pause")) {
 			if (playing) {
