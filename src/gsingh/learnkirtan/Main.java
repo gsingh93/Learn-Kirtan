@@ -15,7 +15,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
-import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
@@ -40,6 +39,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
 
+import javax.swing.AbstractAction;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JFileChooser;
@@ -59,8 +59,16 @@ import javax.swing.KeyStroke;
 import javax.swing.SpinnerModel;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingUtilities;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
+import javax.swing.event.UndoableEditEvent;
+import javax.swing.event.UndoableEditListener;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
+import javax.swing.text.DefaultEditorKit;
+import javax.swing.undo.CannotRedoException;
+import javax.swing.undo.CannotUndoException;
+import javax.swing.undo.UndoManager;
 
 import org.apache.commons.io.IOUtils;
 
@@ -109,13 +117,6 @@ public class Main {
 	private static int index = 0;
 
 	/**
-	 * Used to determine whether a save is necessary. The text in
-	 * {@code shabadEditor} is compared to this string and if they don't match,
-	 * a save is necessary.
-	 */
-	private String prevText = "";
-
-	/**
 	 * The main shabad editor. When play is pressed, the text in here will be
 	 * played. It cannot be edited while playing.
 	 */
@@ -156,10 +157,9 @@ public class Main {
 	 */
 	private JFrame frame;
 
-	/**
-	 * Action listener for all events
-	 */
-	private ActionListenerClass listener = new ActionListenerClass();
+	private UndoManager undo = new UndoManager();
+	private UndoAction undoAction = new UndoAction();
+	private RedoAction redoAction = new RedoAction();
 
 	public static void main(String[] args) {
 
@@ -295,10 +295,13 @@ public class Main {
 		// Construct each top level component
 		initControlPanel(controlPanel);
 
+		ShabadEditorListener listener = new ShabadEditorListener();
+
 		shabadEditor = new JTextArea(16, 60);
 		shabadEditor.setDisabledTextColor(Color.GRAY);
 		shabadEditor.setFont(new Font("Dialog", Font.BOLD, 16));
-		shabadEditor.addKeyListener(listener);
+		shabadEditor.getDocument().addDocumentListener(listener);
+		shabadEditor.getDocument().addUndoableEditListener(listener);
 
 		constructKeyboard(pianoPanel);
 
@@ -341,9 +344,11 @@ public class Main {
 
 		JMenuBar menuBar = new JMenuBar();
 		JMenu fileMenu = new JMenu("File");
+		JMenu editMenu = new JMenu("Edit");
 		JMenu optionsMenu = new JMenu("Options");
 		JMenu helpMenu = new JMenu("Help");
 		menuBar.add(fileMenu);
+		menuBar.add(editMenu);
 		menuBar.add(optionsMenu);
 		menuBar.add(helpMenu);
 
@@ -353,6 +358,13 @@ public class Main {
 				KeyEvent.VK_O);
 		JMenuItem saveItem = new JMenuItem("Save current shabad", KeyEvent.VK_S);
 
+		// Initialize editMenu
+		JMenuItem undoItem = new JMenuItem(undoAction);
+		JMenuItem redoItem = new JMenuItem(redoAction);
+		JMenuItem cutItem = new JMenuItem(new DefaultEditorKit.CutAction());
+		JMenuItem copyItem = new JMenuItem(new DefaultEditorKit.CopyAction());
+		JMenuItem pasteItem = new JMenuItem(new DefaultEditorKit.PasteAction());
+
 		// Initialize optionsMenu items
 		JMenuItem saItem = new JMenuItem("Change Sa Key", KeyEvent.VK_C);
 
@@ -361,32 +373,52 @@ public class Main {
 		JMenuItem aboutItem = new JMenuItem("About", KeyEvent.VK_A);
 
 		// Set listeners
+		FileMenuListener l1 = new FileMenuListener();
 		createItem.setActionCommand("create");
-		createItem.addActionListener(listener);
+		createItem.addActionListener(l1);
 		createItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_N,
 				ActionEvent.CTRL_MASK));
 		openItem.setActionCommand("open");
-		openItem.addActionListener(listener);
+		openItem.addActionListener(l1);
 		openItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O,
 				ActionEvent.CTRL_MASK));
 		saveItem.setActionCommand("save");
-		saveItem.addActionListener(listener);
+		saveItem.addActionListener(l1);
 		saveItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S,
 				ActionEvent.CTRL_MASK));
 
-		saItem.setActionCommand("changesa");
-		saItem.addActionListener(listener);
+		undoItem.setMnemonic(KeyEvent.VK_U);
+		undoItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Z,
+				ActionEvent.CTRL_MASK));
+		undoItem.setMnemonic(KeyEvent.VK_R);
+		redoItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Y,
+				ActionEvent.CTRL_MASK));
+		cutItem.setText("Cut");
+		copyItem.setText("Copy");
+		pasteItem.setText("Paste");
 
+		OptionsMenuListener l2 = new OptionsMenuListener();
+		saItem.setActionCommand("changesa");
+		saItem.addActionListener(l2);
+
+		HelpMenuListener l3 = new HelpMenuListener();
 		helpItem.setActionCommand("help");
-		helpItem.addActionListener(listener);
+		helpItem.addActionListener(l3);
 		helpItem.setAccelerator(KeyStroke.getKeyStroke("F1"));
 		aboutItem.setActionCommand("about");
-		aboutItem.addActionListener(listener);
+		aboutItem.addActionListener(l3);
 
 		fileMenu.setMnemonic(KeyEvent.VK_F);
 		fileMenu.add(createItem);
 		fileMenu.add(openItem);
 		fileMenu.add(saveItem);
+
+		editMenu.setMnemonic(KeyEvent.VK_E);
+		editMenu.add(undoItem);
+		editMenu.add(redoItem);
+		editMenu.add(cutItem);
+		editMenu.add(copyItem);
+		editMenu.add(pasteItem);
 
 		optionsMenu.setMnemonic(KeyEvent.VK_O);
 		optionsMenu.add(saItem);
@@ -413,13 +445,15 @@ public class Main {
 		JButton pauseButton = new JButton("Pause");
 		JButton stopButton = new JButton("Stop");
 
-		playButton.addActionListener(listener);
+		ButtonListener l1 = new ButtonListener();
+
+		playButton.addActionListener(l1);
 		playButton.setActionCommand("play");
 
-		pauseButton.addActionListener(listener);
+		pauseButton.addActionListener(l1);
 		pauseButton.setActionCommand("pause");
 
-		stopButton.addActionListener(listener);
+		stopButton.addActionListener(l1);
 		stopButton.setActionCommand("stop");
 
 		JLabel tempoLabel = new JLabel("Tempo:");
@@ -434,8 +468,9 @@ public class Main {
 		d.width = 40;
 		tempoControl.setPreferredSize(d);
 
+		CheckBoxListener l2 = new CheckBoxListener();
 		repeat = new JCheckBox("Repeat");
-		repeat.addItemListener(listener);
+		repeat.addItemListener(l2);
 
 		JLabel startLabel = new JLabel("Start Label:");
 		JLabel endLabel = new JLabel("End Label:");
@@ -581,7 +616,7 @@ public class Main {
 	 *         was not prompted
 	 */
 	public int askForSave() {
-		if (!prevText.equals(shabadEditor.getText())) {
+		if (frame.getTitle().contains("*")) {
 			LOGGER.info("User prompted to save.");
 			return JOptionPane.showConfirmDialog(frame,
 					"Would you like to save before proceeding?");
@@ -652,7 +687,6 @@ public class Main {
 		BufferedWriter bw = new BufferedWriter(new FileWriter(curFile));
 		shabadEditor.write(bw);
 		bw.close();
-		prevText = shabadEditor.getText();
 		if (frame.getTitle().contains("*")) {
 			frame.setTitle(frame.getTitle().substring(0,
 					frame.getTitle().length() - 1));
@@ -674,13 +708,20 @@ public class Main {
 				try {
 					LOGGER.fine("File open started");
 					br = new BufferedReader(new FileReader(curFile));
-					shabadEditor.read(br, "File");
+
+					// Read file text into editor
+					String line;
+					shabadEditor.setText("");
+					while ((line = br.readLine()) != null) {
+						shabadEditor.append(line + '\n');
+					}
+
 					br.close();
-					prevText = shabadEditor.getText();
 					frame.setTitle(BASETITLE + curFile.getName());
 					startField.setText("");
 					endField.setText("");
 					shabadEditor.requestFocusInWindow();
+					shabadEditor.setCaretPosition(0);
 					LOGGER.fine("File write completed.");
 				} catch (FileNotFoundException e1) {
 					e1.printStackTrace();
@@ -697,13 +738,9 @@ public class Main {
 		LOGGER.fine("File open process finished.");
 	}
 
-	class ActionListenerClass extends KeyAdapter implements ActionListener,
-			ItemListener {
-		/**
-		 * True if a shabad is currently playing, false otherwise. At the
-		 * moment, it's only use is to determine whether pause should set the
-		 * pause variable or not.
-		 */
+	class ButtonListener implements ActionListener {
+
+		// True if a shabad is currently playing, false otherwise.
 		private boolean playing = false;
 
 		@Override
@@ -751,6 +788,39 @@ public class Main {
 			} else if (command.equals("stop")) {
 				Parser.stop();
 				playing = false;
+			}
+		}
+
+	}
+
+	class FileMenuListener implements ActionListener {
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			String command = e.getActionCommand();
+			LOGGER.info("Action Performed: " + command);
+			if (command.equals("open")) {
+				int result = askForSave();
+				if (result != JOptionPane.CANCEL_OPTION
+						&& result != JOptionPane.CLOSED_OPTION || result == -1) {
+					if (result == JOptionPane.YES_OPTION)
+
+						try {
+							save();
+						} catch (IOException e1) {
+							e1.printStackTrace();
+						}
+
+					openFile();
+
+					undo.discardAllEdits();
+					undoAction.setEnabled(false);
+				}
+			} else if (command.equals("save")) {
+				try {
+					save();
+				} catch (IOException e1) {
+					e1.printStackTrace();
+				}
 			} else if (command.equals("create")) {
 				int result = askForSave();
 				if (result != JOptionPane.CANCEL_OPTION
@@ -766,29 +836,27 @@ public class Main {
 					frame.setTitle(BASETITLE + "Untitled Shabad");
 					curFile = null;
 					shabadEditor.setText("");
+					undo.discardAllEdits();
+					undoAction.setEnabled(false);
+
+					if (frame.getTitle().contains("*")) {
+						frame.setTitle(frame.getTitle().substring(0,
+								frame.getTitle().length() - 1));
+					}
 				}
 
-			} else if (command.equals("open")) {
-				int result = askForSave();
-				if (result != JOptionPane.CANCEL_OPTION
-						&& result != JOptionPane.CLOSED_OPTION || result == -1) {
-					if (result == JOptionPane.YES_OPTION)
+			}
+		}
+	}
 
-						try {
-							save();
-						} catch (IOException e1) {
-							e1.printStackTrace();
-						}
+	class OptionsMenuListener implements ActionListener {
 
-					openFile();
-				}
-			} else if (command.equals("save")) {
-				try {
-					save();
-				} catch (IOException e1) {
-					e1.printStackTrace();
-				}
-			} else if (command.equals("changesa")) {
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			String command = e.getActionCommand();
+			LOGGER.info("Action Performed: " + command);
+
+			if (command.equals("changesa")) {
 				SpinnerModel saModel = new SpinnerNumberModel(
 						Parser.getSaKey() + 1, 1, 36, 1);
 				JSpinner saSpinner = new JSpinner(saModel);
@@ -833,7 +901,17 @@ public class Main {
 					}
 				}
 
-			} else if (command.equals("help")) {
+			}
+		}
+	}
+
+	class HelpMenuListener implements ActionListener {
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			String command = e.getActionCommand();
+			LOGGER.info("Action Performed: " + command);
+			if (command.equals("help")) {
 				new HelpFrame();
 			} else if (command.equals("about")) {
 				JOptionPane
@@ -846,16 +924,9 @@ public class Main {
 								JOptionPane.INFORMATION_MESSAGE);
 			}
 		}
+	}
 
-		@Override
-		public void keyTyped(KeyEvent e) {
-			if (!e.isAltDown() && !e.isControlDown()) {
-				String title = frame.getTitle();
-				if (!title.contains("*"))
-					frame.setTitle(frame.getTitle() + "*");
-			}
-		}
-
+	class CheckBoxListener implements ItemListener {
 		@Override
 		public void itemStateChanged(ItemEvent e) {
 			Object source = e.getItemSelectable();
@@ -868,6 +939,108 @@ public class Main {
 					Parser.setRepeat(true);
 				else
 					Parser.setRepeat(false);
+			}
+		}
+	}
+
+	class UndoAction extends AbstractAction {
+
+		private static final long serialVersionUID = 1L;
+
+		public UndoAction() {
+			super("Undo");
+			setEnabled(false);
+		}
+
+		public void actionPerformed(ActionEvent e) {
+			try {
+				undo.undo();
+			} catch (CannotUndoException ex) {
+				System.out.println("Unable to undo: " + ex);
+				ex.printStackTrace();
+			}
+			updateUndoState();
+			redoAction.updateRedoState();
+		}
+
+		protected void updateUndoState() {
+			if (undo.canUndo()) {
+				setEnabled(true);
+			} else {
+				setEnabled(false);
+			}
+		}
+	}
+
+	class RedoAction extends AbstractAction {
+
+		private static final long serialVersionUID = 1L;
+
+		public RedoAction() {
+			super("Redo");
+
+			setEnabled(false);
+		}
+
+		public void actionPerformed(ActionEvent e) {
+			try {
+				undo.redo();
+			} catch (CannotRedoException ex) {
+				System.out.println("Unable to redo: " + ex);
+				ex.printStackTrace();
+			}
+			updateRedoState();
+			undoAction.updateUndoState();
+		}
+
+		protected void updateRedoState() {
+			if (undo.canRedo()) {
+				setEnabled(true);
+			} else {
+				setEnabled(false);
+			}
+		}
+	}
+
+	class ShabadEditorListener implements DocumentListener,
+			UndoableEditListener {
+
+		@Override
+		public void changedUpdate(DocumentEvent arg0) {
+			// Empty for plain text components
+		}
+
+		@Override
+		public void insertUpdate(DocumentEvent arg0) {
+			updateTitleOnChange();
+		}
+
+		@Override
+		public void removeUpdate(DocumentEvent arg0) {
+			updateTitleOnChange();
+		}
+
+		@Override
+		public void undoableEditHappened(UndoableEditEvent e) {
+			// Remember the edit and update the menus
+			undo.addEdit(e.getEdit());
+			undoAction.updateUndoState();
+			redoAction.updateRedoState();
+
+			updateTitleOnChange();
+		}
+
+		private void updateTitleOnChange() {
+			String title = frame.getTitle();
+
+			if (!undo.canUndo()) {
+				if (title.contains("*")) {
+					frame.setTitle(frame.getTitle().substring(0,
+							frame.getTitle().length() - 1));
+				}
+			} else {
+				if (!title.contains("*"))
+					frame.setTitle(frame.getTitle() + "*");
 			}
 		}
 	}
