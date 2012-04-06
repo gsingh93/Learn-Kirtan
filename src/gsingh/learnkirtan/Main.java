@@ -15,6 +15,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
@@ -142,6 +143,8 @@ public class Main {
 	private UndoManager undo = new UndoManager();
 	private UndoAction undoAction = new UndoAction();
 	private RedoAction redoAction = new RedoAction();
+
+	public String mode = "edit";
 
 	public static void main(String[] args) {
 
@@ -284,6 +287,7 @@ public class Main {
 		shabadEditor.setFont(new Font("Dialog", Font.BOLD, 16));
 		shabadEditor.getDocument().addDocumentListener(listener);
 		shabadEditor.getDocument().addUndoableEditListener(listener);
+		shabadEditor.addKeyListener(new KeyboardListener());
 
 		constructKeyboard(pianoPanel);
 
@@ -324,9 +328,11 @@ public class Main {
 		JMenu fileMenu = new JMenu("File");
 		JMenu editMenu = new JMenu("Edit");
 		JMenu optionsMenu = new JMenu("Options");
+		JMenu keyboardMenu = new JMenu("Keyboard Mode");
 		JMenu helpMenu = new JMenu("Help");
 		menuBar.add(fileMenu);
 		menuBar.add(editMenu);
+		menuBar.add(keyboardMenu);
 		menuBar.add(optionsMenu);
 		menuBar.add(helpMenu);
 
@@ -345,6 +351,11 @@ public class Main {
 
 		// Initialize optionsMenu items
 		JMenuItem saItem = new JMenuItem("Change Sa Key", KeyEvent.VK_C);
+
+		// Initialize KeyboardMenu items
+		JMenuItem playItem = new JMenuItem("Play", KeyEvent.VK_P);
+		JMenuItem composeItem = new JMenuItem("Compose", KeyEvent.VK_C);
+		JMenuItem editItem = new JMenuItem("Edit", KeyEvent.VK_E);
 
 		// Intialize helpMenu items
 		JMenuItem helpItem = new JMenuItem("Help", KeyEvent.VK_H);
@@ -379,6 +390,20 @@ public class Main {
 		saItem.setActionCommand("changesa");
 		saItem.addActionListener(l2);
 
+		KeyboardMenuListener l4 = new KeyboardMenuListener();
+		playItem.setActionCommand("playmode");
+		playItem.addActionListener(l4);
+		playItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_P,
+				ActionEvent.ALT_MASK));
+		composeItem.setActionCommand("composemode");
+		composeItem.addActionListener(l4);
+		composeItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_C,
+				ActionEvent.ALT_MASK));
+		editItem.setActionCommand("editmode");
+		editItem.addActionListener(l4);
+		editItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_E,
+				ActionEvent.ALT_MASK));
+
 		HelpMenuListener l3 = new HelpMenuListener();
 		helpItem.setActionCommand("help");
 		helpItem.addActionListener(l3);
@@ -400,6 +425,10 @@ public class Main {
 
 		optionsMenu.setMnemonic(KeyEvent.VK_O);
 		optionsMenu.add(saItem);
+
+		keyboardMenu.add(playItem);
+		keyboardMenu.add(composeItem);
+		keyboardMenu.add(editItem);
 
 		helpMenu.setMnemonic(KeyEvent.VK_H);
 		helpMenu.add(helpItem);
@@ -786,6 +815,81 @@ public class Main {
 				}
 
 			}
+		}
+	}
+
+	class KeyboardMenuListener implements ActionListener {
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			String command = e.getActionCommand();
+			if (command.equals("playmode")) {
+				mode = "play";
+				// shabadEditor.setEnabled(false);
+				shabadEditor.setEditable(false);
+			} else if (command.equals("composemode")) {
+				mode = "compose";
+			} else if (command.equals("editmode")) {
+				mode = "edit";
+				shabadEditor.setEditable(true);
+			}
+		}
+
+	}
+
+	class KeyboardListener extends KeyAdapter {
+		@Override
+		public void keyTyped(KeyEvent e) {
+			if (!e.isAltDown() && !e.isControlDown()) {
+				if (mode.equals("play")) {
+					int key = letterToKey(String.valueOf(e.getKeyChar())
+							.toUpperCase());
+					if (key != -1) {
+						keys[key].playOnce(500);
+					} else {
+						LOGGER.warning("User pressed key in play mode that"
+								+ " is not playable.");
+					}
+				}
+				if (mode.equals("compose")) {
+
+				}
+				if (mode.equals("edit")) {
+
+				}
+			}
+		}
+
+		private int letterToKey(String letter) {
+			int key = -1;
+
+			if (letter.equals("A")) {
+				key = 7;
+			} else if (letter.equals("S")) {
+				key = 9;
+			} else if (letter.equals("E")) {
+				key = 10;
+			} else if (letter.equals("F")) {
+				key = 12;
+			} else if (letter.equals("G")) {
+				key = 14;
+			} else if (letter.equals("Y")) {
+				key = 15;
+			} else if (letter.equals("J")) {
+				key = 17;
+			} else if (letter.equals("K")) {
+				key = 19;
+			} else if (letter.equals("L")) {
+				key = 21;
+			} else if (letter.equals("P")) {
+				key = 22;
+			} else if (letter.equals(";")) {
+				key = 24;
+			} else if (letter.equals("'")) {
+				key = 26;
+			}
+
+			return key;
 		}
 	}
 
