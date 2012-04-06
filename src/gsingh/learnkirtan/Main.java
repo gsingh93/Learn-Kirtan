@@ -19,12 +19,8 @@ import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -42,7 +38,6 @@ import java.util.logging.SimpleFormatter;
 import javax.swing.AbstractAction;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
-import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JLayeredPane;
@@ -63,8 +58,6 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.event.UndoableEditEvent;
 import javax.swing.event.UndoableEditListener;
-import javax.swing.filechooser.FileFilter;
-import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.text.DefaultEditorKit;
 import javax.swing.undo.CannotRedoException;
 import javax.swing.undo.CannotUndoException;
@@ -94,17 +87,6 @@ public class Main {
 	 */
 	private final int WIDTH = 3 * (Key.WHITE_KEY_WIDTH * 7)
 			+ Key.WHITE_KEY_WIDTH - 20;
-
-	/**
-	 * The filechooser used for opening and saving files
-	 */
-	private final JFileChooser fc;
-	{
-		fc = new JFileChooser();
-		FileFilter filter = new FileNameExtensionFilter("SBD (Shabad) File",
-				"sbd");
-		fc.setFileFilter(filter);
-	}
 
 	/**
 	 * Stores all of the keys on the keyboard
@@ -315,11 +297,7 @@ public class Main {
 				if (result != JOptionPane.CANCEL_OPTION
 						&& result != JOptionPane.CLOSED_OPTION) {
 					if (result == JOptionPane.OK_OPTION)
-						try {
-							save();
-						} catch (IOException e) {
-							e.printStackTrace();
-						}
+						save();
 					LOGGER.info("Application closed.");
 					System.exit(0);
 				} else {
@@ -615,7 +593,7 @@ public class Main {
 	 * @return a number specifying which option the user chose. -1 if the user
 	 *         was not prompted
 	 */
-	public int askForSave() {
+	private int askForSave() {
 		if (frame.getTitle().contains("*")) {
 			LOGGER.info("User prompted to save.");
 			return JOptionPane.showConfirmDialog(frame,
@@ -626,116 +604,27 @@ public class Main {
 		}
 	}
 
-	/**
-	 * Saves the text in the shabadEditor to the file specified. If no file is
-	 * specified, the user is prompted to specify one.
-	 * 
-	 * @throws IOException
-	 */
-	public void save() throws IOException {
-		LOGGER.info("Save process started.");
-		if (curFile == null) {
-			LOGGER.info("User will be prompted for a save location.");
-			int returnVal = fc.showSaveDialog(frame);
-			if (returnVal == JFileChooser.APPROVE_OPTION) {
-				curFile = fc.getSelectedFile();
-				String filename = curFile.getName();
-				if (filename.length() <= 4) {
-					filename = filename + ".sbd";
-					curFile = new File(curFile.getAbsolutePath() + ".sbd");
-					LOGGER.info(".sbd extension was automatically appended.");
-				} else if (!filename.substring(filename.length() - 4).equals(
-						".sbd")) {
-					filename = filename + ".sbd";
-					curFile = new File(curFile.getAbsolutePath() + ".sbd");
-					LOGGER.info(".sbd extension was supplied.");
-				}
-				LOGGER.info("Filename Chosen: " + filename);
-				if (curFile.exists()) {
-					LOGGER.info("File specified already exists.");
-					int result = JOptionPane.showConfirmDialog(frame,
-							"Overwrite existing file?", "Confirm Overwrite",
-							JOptionPane.OK_CANCEL_OPTION,
-							JOptionPane.QUESTION_MESSAGE);
-
-					if (result == JOptionPane.OK_OPTION) {
-						LOGGER.warning("User chose to overwrite.");
-						write();
-						frame.setTitle(BASETITLE + curFile.getName());
-					} else {
-						LOGGER.info("User chose not to overwrite.");
-					}
-				} else {
-					LOGGER.info("User specified a new file. Proceeding with save.");
-					write();
-					frame.setTitle(BASETITLE + curFile.getName());
-				}
-			}
-		} else {
-			LOGGER.info("User is saving to an already chosen file.");
-			write();
+	private void save() {
+		int success = -1;
+		try {
+			success = FileIO.save(shabadEditor, curFile);
+		} catch (IOException e1) {
+			e1.printStackTrace();
 		}
-	}
 
-	/**
-	 * Write the shabadEditor text to {@code curFile}
-	 * 
-	 * @throws IOException
-	 */
-	public void write() throws IOException {
-		LOGGER.fine("File write started.");
-		BufferedWriter bw = new BufferedWriter(new FileWriter(curFile));
-		shabadEditor.write(bw);
-		bw.close();
-		if (frame.getTitle().contains("*")) {
-			frame.setTitle(frame.getTitle().substring(0,
-					frame.getTitle().length() - 1));
-		}
-		LOGGER.fine("File write completed.");
-	}
-
-	/**
-	 * Prompts the user for a file to open and opens the selected file
-	 */
-	public void openFile() {
-		LOGGER.fine("File open process started.");
-		int returnVal = fc.showOpenDialog(frame);
-		BufferedReader br = null;
-		if (returnVal == JFileChooser.APPROVE_OPTION) {
-			curFile = fc.getSelectedFile();
-			LOGGER.info("File Chosen: " + curFile.getName());
-			if (curFile.exists()) {
-				try {
-					LOGGER.fine("File open started");
-					br = new BufferedReader(new FileReader(curFile));
-
-					// Read file text into editor
-					String line;
-					shabadEditor.setText("");
-					while ((line = br.readLine()) != null) {
-						shabadEditor.append(line + '\n');
-					}
-
-					br.close();
-					frame.setTitle(BASETITLE + curFile.getName());
-					startField.setText("");
-					endField.setText("");
-					shabadEditor.requestFocusInWindow();
-					shabadEditor.setCaretPosition(0);
-					LOGGER.fine("File write completed.");
-				} catch (FileNotFoundException e1) {
-					e1.printStackTrace();
-				} catch (IOException e2) {
-					e2.printStackTrace();
-				}
-			} else {
-				LOGGER.info("File doesn't exist.");
-				JOptionPane.showMessageDialog(frame,
-						"Error: File doesn't exist.", "Error",
-						JOptionPane.ERROR_MESSAGE);
+		// If file was successfully written, remove modified symbol
+		if (success == 1 || success == 2) {
+			if (frame.getTitle().contains("*")) {
+				frame.setTitle(frame.getTitle().substring(0,
+						frame.getTitle().length() - 1));
 			}
 		}
-		LOGGER.fine("File open process finished.");
+
+		// If the file was save for the first time, add the filename to the
+		// title
+		if (success == 2) {
+			frame.setTitle(BASETITLE + curFile.getName());
+		}
 	}
 
 	class ButtonListener implements ActionListener {
@@ -803,34 +692,29 @@ public class Main {
 				if (result != JOptionPane.CANCEL_OPTION
 						&& result != JOptionPane.CLOSED_OPTION || result == -1) {
 					if (result == JOptionPane.YES_OPTION)
+						save();
 
-						try {
-							save();
-						} catch (IOException e1) {
-							e1.printStackTrace();
-						}
-
-					openFile();
-
-					undo.discardAllEdits();
-					undoAction.setEnabled(false);
+					File tempFile = curFile;
+					if ((curFile = FileIO.openFile(shabadEditor, curFile)) != null) {
+						frame.setTitle(BASETITLE + curFile.getName());
+						startField.setText("");
+						endField.setText("");
+						shabadEditor.requestFocusInWindow();
+						shabadEditor.setCaretPosition(0);
+						undo.discardAllEdits();
+						undoAction.setEnabled(false);
+					} else {
+						curFile = tempFile;
+					}
 				}
 			} else if (command.equals("save")) {
-				try {
-					save();
-				} catch (IOException e1) {
-					e1.printStackTrace();
-				}
+				save();
 			} else if (command.equals("create")) {
 				int result = askForSave();
 				if (result != JOptionPane.CANCEL_OPTION
 						&& result != JOptionPane.CLOSED_OPTION || result == -1) {
 					if (result == JOptionPane.YES_OPTION) {
-						try {
-							save();
-						} catch (IOException e1) {
-							e1.printStackTrace();
-						}
+						save();
 					}
 
 					frame.setTitle(BASETITLE + "Untitled Shabad");
