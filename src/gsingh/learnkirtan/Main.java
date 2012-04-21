@@ -794,11 +794,12 @@ public class Main {
 					if (difference > 0) {
 						for (int i = 0; i < difference; i++) {
 							Key.notes.add(0,
-									Key.notes.get(Key.notes.size() - 1));
+									Key.notes.remove((Key.notes.size() - 1)));
 						}
 					} else if (difference < 0) {
 						for (int i = 0; i < -1 * difference; i++) {
-							Key.notes.add(Key.notes.size(), Key.notes.get(0));
+							Key.notes.add(Key.notes.size() - 1,
+									Key.notes.remove(0));
 						}
 					}
 
@@ -826,7 +827,6 @@ public class Main {
 			String command = e.getActionCommand();
 			if (command.equals("playmode")) {
 				mode = "play";
-				// shabadEditor.setEnabled(false);
 				shabadEditor.setEditable(false);
 			} else if (command.equals("composemode")) {
 				mode = "compose";
@@ -853,7 +853,11 @@ public class Main {
 					}
 				}
 				if (mode.equals("compose")) {
-
+					int key = letterToKey(String.valueOf(e.getKeyChar())
+							.toUpperCase());
+					if (key < 36 && key >= 0) {
+						System.out.println(Key.notes.get(key));
+					}
 				}
 				if (mode.equals("edit")) {
 
