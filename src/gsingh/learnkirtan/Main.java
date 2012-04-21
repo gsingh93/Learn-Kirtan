@@ -145,6 +145,7 @@ public class Main {
 	private RedoAction redoAction = new RedoAction();
 
 	public String mode = "edit";
+	public String octave = "middle";
 
 	public static void main(String[] args) {
 
@@ -844,7 +845,7 @@ public class Main {
 				if (mode.equals("play")) {
 					int key = letterToKey(String.valueOf(e.getKeyChar())
 							.toUpperCase());
-					if (key != -1) {
+					if (key < 36 && key >= 0) {
 						keys[key].playOnce(500);
 					} else {
 						LOGGER.warning("User pressed key in play mode that"
@@ -861,34 +862,68 @@ public class Main {
 		}
 
 		private int letterToKey(String letter) {
-			int key = -1;
+			int key = -20;
 
 			if (letter.equals("A")) {
 				key = 7;
+			} else if (letter.equals("W")) {
+				key = 8;
 			} else if (letter.equals("S")) {
 				key = 9;
 			} else if (letter.equals("E")) {
 				key = 10;
+			} else if (letter.equals("D")) {
+				key = 11;
 			} else if (letter.equals("F")) {
 				key = 12;
+			} else if (letter.equals("T")) {
+				key = 13;
 			} else if (letter.equals("G")) {
 				key = 14;
 			} else if (letter.equals("Y")) {
 				key = 15;
+			} else if (letter.equals("H")) {
+				key = 16;
 			} else if (letter.equals("J")) {
 				key = 17;
+			} else if (letter.equals("I")) {
+				key = 18;
 			} else if (letter.equals("K")) {
 				key = 19;
+			} else if (letter.equals("O")) {
+				key = 20;
 			} else if (letter.equals("L")) {
 				key = 21;
 			} else if (letter.equals("P")) {
 				key = 22;
 			} else if (letter.equals(";")) {
-				key = 24;
+				key = 23;
 			} else if (letter.equals("'")) {
-				key = 26;
+				key = 24;
+			} else if (letter.equals("]")) {
+				key = 25;
+			} else if (letter.equals("Z")) {
+				LOGGER.info("User pressed Z.");
+				LOGGER.info("Initial Octave: " + octave);
+				if (octave.equals("upper"))
+					octave = "middle";
+				else if (octave.equals("middle"))
+					octave = "lower";
+				LOGGER.info("Final Octave: " + octave);
+			} else if (letter.equals("X")) {
+				LOGGER.info("User pressed X.");
+				LOGGER.info("Initial Octave: " + octave);
+				if (octave.equals("middle"))
+					octave = "upper";
+				else if (octave.equals("lower"))
+					octave = "middle";
+				LOGGER.info("Final Octave: " + octave);
 			}
 
+			if (octave.equals("lower"))
+				key -= 12;
+			else if (octave.equals("upper"))
+				key += 12;
 			return key;
 		}
 	}
