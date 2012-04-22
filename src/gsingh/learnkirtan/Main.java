@@ -13,6 +13,8 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.KeyAdapter;
@@ -59,6 +61,7 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.event.UndoableEditEvent;
 import javax.swing.event.UndoableEditListener;
+import javax.swing.text.BadLocationException;
 import javax.swing.text.DefaultEditorKit;
 import javax.swing.undo.CannotRedoException;
 import javax.swing.undo.CannotUndoException;
@@ -289,6 +292,7 @@ public class Main {
 		shabadEditor.getDocument().addDocumentListener(listener);
 		shabadEditor.getDocument().addUndoableEditListener(listener);
 		shabadEditor.addKeyListener(new KeyboardListener());
+		shabadEditor.addFocusListener(new EditorFocusListener());
 
 		constructKeyboard(pianoPanel);
 
@@ -821,7 +825,6 @@ public class Main {
 	}
 
 	class KeyboardMenuListener implements ActionListener {
-
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			String command = e.getActionCommand();
@@ -830,12 +833,19 @@ public class Main {
 				shabadEditor.setEditable(false);
 			} else if (command.equals("composemode")) {
 				mode = "compose";
+				shabadEditor.setEditable(false);
 			} else if (command.equals("editmode")) {
 				mode = "edit";
 				shabadEditor.setEditable(true);
 			}
 		}
+	}
 
+	class EditorFocusListener extends FocusAdapter {
+		@Override
+		public void focusGained(FocusEvent e) {
+			shabadEditor.getCaret().setVisible(true);
+		}
 	}
 
 	class KeyboardListener extends KeyAdapter {
@@ -843,20 +853,53 @@ public class Main {
 		public void keyTyped(KeyEvent e) {
 			if (!e.isAltDown() && !e.isControlDown()) {
 				if (mode.equals("play")) {
-					int key = letterToKey(String.valueOf(e.getKeyChar())
+					final int key = letterToKey(String.valueOf(e.getKeyChar())
 							.toUpperCase());
 					if (key < 36 && key >= 0) {
-						keys[key].playOnce(500);
+						new Thread(new Runnable() {
+							public void run() {
+								keys[key].playOnce(500);
+							}
+						}).start();
 					} else {
 						LOGGER.warning("User pressed key in play mode that"
 								+ " is not playable.");
 					}
 				}
 				if (mode.equals("compose")) {
-					int key = letterToKey(String.valueOf(e.getKeyChar())
+					final int key = letterToKey(String.valueOf(e.getKeyChar())
 							.toUpperCase());
 					if (key < 36 && key >= 0) {
-						System.out.println(Key.notes.get(key));
+						shabadEditor.insert(Key.notes.get(key) + " ",
+								shabadEditor.getCaretPosition());
+						new Thread(new Runnable() {
+							public void run() {
+								keys[key].playOnce(500);
+							}
+						}).start();
+					}
+
+					if (e.getKeyChar() == KeyEvent.VK_BACK_SPACE) {
+						int pos = shabadEditor.getCaretPosition();
+						try {
+							int start = shabadEditor.getSelectionStart();
+							int end = shabadEditor.getSelectionEnd();
+							if (start != end) {
+								shabadEditor.getDocument().remove(start,
+										end - start);
+							}
+
+							if (pos != 0 && start == end) {
+								shabadEditor.getDocument().remove(pos - 1, 1);
+							}
+						} catch (BadLocationException e1) {
+							e1.printStackTrace();
+						}
+					}
+
+					if (e.getKeyChar() == KeyEvent.VK_SPACE) {
+						shabadEditor.insert(" ",
+								shabadEditor.getCaretPosition());
 					}
 				}
 				if (mode.equals("edit")) {
