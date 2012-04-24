@@ -3,6 +3,8 @@ package gsingh.learnkirtan.keys;
 import gsingh.learnkirtan.Main;
 import gsingh.learnkirtan.Parser;
 
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.Arrays;
@@ -68,6 +70,7 @@ public class Key extends JButton implements MouseListener {
 		note = noteCount++;
 		label();
 		channel = synth.getChannels();
+		addKeyListener(new KeyboardListener());
 
 		// Sets the instrument to an instrument close to a harmonium
 		channel[0].programChange(20);
@@ -137,4 +140,10 @@ public class Key extends JButton implements MouseListener {
 		stop();
 	}
 
+	class KeyboardListener extends KeyAdapter {
+		@Override
+		public void keyTyped(KeyEvent e) {
+			Main.getMain().notePressed(e);
+		}
+	}
 }

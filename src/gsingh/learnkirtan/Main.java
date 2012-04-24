@@ -146,6 +146,8 @@ public class Main {
 	 */
 	private JFrame frame;
 
+	public static Main main;
+
 	private UndoManager undo = new UndoManager();
 	private UndoAction undoAction = new UndoAction();
 	private RedoAction redoAction = new RedoAction();
@@ -170,9 +172,13 @@ public class Main {
 
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
-				new Main();
+				main = new Main();
 			}
 		});
+	}
+
+	public static Main getMain() {
+		return main;
 	}
 
 	public Main() {
@@ -365,7 +371,6 @@ public class Main {
 		JMenuItem saItem = new JMenuItem("Change Sa Key", KeyEvent.VK_C);
 
 		// Initialize KeyboardMenu items
-		JMenuItem playItem = new JMenuItem("Play", KeyEvent.VK_P);
 		JMenuItem composeItem = new JMenuItem("Compose", KeyEvent.VK_C);
 		JMenuItem editItem = new JMenuItem("Edit", KeyEvent.VK_E);
 
@@ -403,10 +408,7 @@ public class Main {
 		saItem.addActionListener(l2);
 
 		KeyboardMenuListener l4 = new KeyboardMenuListener();
-		playItem.setActionCommand("playmode");
-		playItem.addActionListener(l4);
-		playItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_P,
-				ActionEvent.ALT_MASK));
+		;
 		composeItem.setActionCommand("composemode");
 		composeItem.addActionListener(l4);
 		composeItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_C,
@@ -449,7 +451,6 @@ public class Main {
 		optionsMenu.add(saItem);
 
 		keyboardMenu.setMnemonic(KeyEvent.VK_K);
-		keyboardMenu.add(playItem);
 		keyboardMenu.add(composeItem);
 		keyboardMenu.add(editItem);
 
@@ -695,6 +696,21 @@ public class Main {
 		}
 	}
 
+	public void notePressed(KeyEvent e) {
+		final int key = letterToKey(String.valueOf(e.getKeyChar())
+				.toUpperCase());
+		if (key < 36 && key >= 0) {
+			new Thread(new Runnable() {
+				public void run() {
+					keys[key].playOnce(500);
+				}
+			}).start();
+		} else {
+			LOGGER.warning("User pressed key in play mode that"
+					+ " is not playable.");
+		}
+	}
+
 	class ButtonListener implements ActionListener {
 
 		// True if a shabad is currently playing, false otherwise.
@@ -712,6 +728,7 @@ public class Main {
 							LOGGER.info("Playback unpaused.");
 							Parser.play();
 						} else {
+							keys[0].requestFocusInWindow();
 							new Thread(new Runnable() {
 								public void run() {
 									LOGGER.info("Starting playback.");
@@ -886,20 +903,6 @@ public class Main {
 		@Override
 		public void keyTyped(KeyEvent e) {
 			if (!e.isAltDown() && !e.isControlDown()) {
-				if (mode.equals("play")) {
-					final int key = letterToKey(String.valueOf(e.getKeyChar())
-							.toUpperCase());
-					if (key < 36 && key >= 0) {
-						new Thread(new Runnable() {
-							public void run() {
-								keys[key].playOnce(500);
-							}
-						}).start();
-					} else {
-						LOGGER.warning("User pressed key in play mode that"
-								+ " is not playable.");
-					}
-				}
 				if (mode.equals("compose")) {
 					final int key = letterToKey(String.valueOf(e.getKeyChar())
 							.toUpperCase());
@@ -941,72 +944,72 @@ public class Main {
 				}
 			}
 		}
+	}
 
-		private int letterToKey(String letter) {
-			int key = -20;
+	private int letterToKey(String letter) {
+		int key = -20;
 
-			if (letter.equals("A")) {
-				key = 7;
-			} else if (letter.equals("W")) {
-				key = 8;
-			} else if (letter.equals("S")) {
-				key = 9;
-			} else if (letter.equals("E")) {
-				key = 10;
-			} else if (letter.equals("D")) {
-				key = 11;
-			} else if (letter.equals("F")) {
-				key = 12;
-			} else if (letter.equals("T")) {
-				key = 13;
-			} else if (letter.equals("G")) {
-				key = 14;
-			} else if (letter.equals("Y")) {
-				key = 15;
-			} else if (letter.equals("H")) {
-				key = 16;
-			} else if (letter.equals("J")) {
-				key = 17;
-			} else if (letter.equals("I")) {
-				key = 18;
-			} else if (letter.equals("K")) {
-				key = 19;
-			} else if (letter.equals("O")) {
-				key = 20;
-			} else if (letter.equals("L")) {
-				key = 21;
-			} else if (letter.equals("P")) {
-				key = 22;
-			} else if (letter.equals(";")) {
-				key = 23;
-			} else if (letter.equals("'")) {
-				key = 24;
-			} else if (letter.equals("]")) {
-				key = 25;
-			} else if (letter.equals("Z")) {
-				LOGGER.info("User pressed Z.");
-				LOGGER.info("Initial Octave: " + octave);
-				if (octave.equals("upper"))
-					octave = "middle";
-				else if (octave.equals("middle"))
-					octave = "lower";
-				LOGGER.info("Final Octave: " + octave);
-			} else if (letter.equals("X")) {
-				LOGGER.info("User pressed X.");
-				LOGGER.info("Initial Octave: " + octave);
-				if (octave.equals("middle"))
-					octave = "upper";
-				else if (octave.equals("lower"))
-					octave = "middle";
-				LOGGER.info("Final Octave: " + octave);
-			}
-
-			if (octave.equals("lower"))
-				key -= 12;
-			else if (octave.equals("upper"))
-				key += 12;
-			return key;
+		if (letter.equals("A")) {
+			key = 7;
+		} else if (letter.equals("W")) {
+			key = 8;
+		} else if (letter.equals("S")) {
+			key = 9;
+		} else if (letter.equals("E")) {
+			key = 10;
+		} else if (letter.equals("D")) {
+			key = 11;
+		} else if (letter.equals("F")) {
+			key = 12;
+		} else if (letter.equals("T")) {
+			key = 13;
+		} else if (letter.equals("G")) {
+			key = 14;
+		} else if (letter.equals("Y")) {
+			key = 15;
+		} else if (letter.equals("H")) {
+			key = 16;
+		} else if (letter.equals("J")) {
+			key = 17;
+		} else if (letter.equals("I")) {
+			key = 18;
+		} else if (letter.equals("K")) {
+			key = 19;
+		} else if (letter.equals("O")) {
+			key = 20;
+		} else if (letter.equals("L")) {
+			key = 21;
+		} else if (letter.equals("P")) {
+			key = 22;
+		} else if (letter.equals(";")) {
+			key = 23;
+		} else if (letter.equals("'")) {
+			key = 24;
+		} else if (letter.equals("]")) {
+			key = 25;
+		} else if (letter.equals("Z")) {
+			LOGGER.info("User pressed Z.");
+			LOGGER.info("Initial Octave: " + octave);
+			if (octave.equals("upper"))
+				octave = "middle";
+			else if (octave.equals("middle"))
+				octave = "lower";
+			LOGGER.info("Final Octave: " + octave);
+		} else if (letter.equals("X")) {
+			LOGGER.info("User pressed X.");
+			LOGGER.info("Initial Octave: " + octave);
+			if (octave.equals("middle"))
+				octave = "upper";
+			else if (octave.equals("lower"))
+				octave = "middle";
+			LOGGER.info("Final Octave: " + octave);
 		}
+
+		if (octave.equals("lower"))
+			key -= 12;
+		else if (octave.equals("upper"))
+			key += 12;
+		return key;
 	}
 
 	class HelpMenuListener implements ActionListener {
