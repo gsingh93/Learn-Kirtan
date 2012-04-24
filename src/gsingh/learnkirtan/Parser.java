@@ -56,11 +56,6 @@ public class Parser {
 	private static Key[] keys = Main.keys;
 
 	/**
-	 * The key to be played
-	 */
-	private static int key = 0;
-
-	/**
 	 * The number of beats to hold the note
 	 */
 	private static int holdCount;
@@ -88,7 +83,7 @@ public class Parser {
 	/**
 	 * Set to true when two notes will be played in one beat
 	 */
-	static boolean doubleNote = false;
+	private static boolean doubleNote = false;
 
 	/**
 	 * Plays the shabad on the keyboard
@@ -103,11 +98,13 @@ public class Parser {
 
 		play = true;
 
+		// Convert all inputs to uppercase
 		start = start.toUpperCase();
 		end = end.toUpperCase();
 		shabad = shabad.toUpperCase();
 		LOGGER.info("Shabad: " + shabad);
 
+		// Validate the shabad
 		if (!validateShabad(shabad, start, end)) {
 			JOptionPane
 					.showMessageDialog(
@@ -119,7 +116,6 @@ public class Parser {
 			return;
 		}
 
-		// TODO: Make labels work with numbers
 		reset(shabad, start);
 
 		while (!stop) {
@@ -178,7 +174,8 @@ public class Parser {
 				finished = true;
 			}
 
-			if (!calculateKey(note))
+			int key = calculateKey(note);
+			if (key == -1)
 				break;
 
 			if (key >= 0 && key < 36) {
@@ -189,11 +186,13 @@ public class Parser {
 					String note1 = note.substring(0, index);
 					String note2 = note.substring(index + 1);
 
-					if (!calculateKey(note1))
+					key = calculateKey(note1);
+					if (key == -1)
 						break;
 					keys[key].playOnce((int) (.5 * holdCount * gap / tempo));
 
-					if (!calculateKey(note2))
+					key = calculateKey(note2);
+					if (key == -1)
 						break;
 					keys[key].playOnce((int) (.5 * holdCount * gap / tempo));
 
@@ -230,12 +229,13 @@ public class Parser {
 		finished = false;
 	}
 
-	public static boolean calculateKey(String note) {
+	public static int calculateKey(String note) {
 
+		int key = 0;
 		// Check for double note
 		if (note.matches("[.']*[A-Z]{2,3}[.']*\\-[.']*[A-Z]{2,3}[.']*")) {
 			doubleNote = true;
-			return true;
+			return key;
 		}
 
 		// Determine the length of the prefix
@@ -287,7 +287,7 @@ public class Parser {
 			JOptionPane.showMessageDialog(null, "Error: Invalid note '"
 					+ prefix + note + suffix + "'", "Error",
 					JOptionPane.ERROR_MESSAGE);
-			return false;
+			return -1;
 		}
 
 		// Apply the modifiers in the prefix and suffix to calculate the
@@ -307,13 +307,13 @@ public class Parser {
 		}
 
 		if (key >= 0 && key < 36)
-			return true;
+			return key;
 		else {
 			LOGGER.warning("Invalid note: " + prefix + note + suffix);
 			JOptionPane.showMessageDialog(null, "Error: Invalid note '"
 					+ prefix + note + suffix + "' is too low or too high",
 					"Error", JOptionPane.ERROR_MESSAGE);
-			return false;
+			return -1;
 		}
 	}
 
