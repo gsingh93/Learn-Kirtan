@@ -38,6 +38,9 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
 
+import javax.help.CSH;
+import javax.help.HelpBroker;
+import javax.help.HelpSet;
 import javax.swing.AbstractAction;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -409,10 +412,20 @@ public class Main {
 		editItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_E,
 				ActionEvent.ALT_MASK));
 
-		HelpMenuListener l3 = new HelpMenuListener();
 		helpItem.setActionCommand("help");
-		helpItem.addActionListener(l3);
+
+		// 1. create HelpSet and HelpBroker objects
+		HelpSet hs = getHelpSet("Sample.hs");
+		HelpBroker hb = hs.createHelpBroker();
+
+		// 2. assign help to components
+		CSH.setHelpIDString(helpItem, "top");
+
+		// 3. handle events
+		helpItem.addActionListener(new CSH.DisplayHelpFromSource(hb));
+		HelpMenuListener l3 = new HelpMenuListener();
 		helpItem.setAccelerator(KeyStroke.getKeyStroke("F1"));
+
 		aboutItem.setActionCommand("about");
 		aboutItem.addActionListener(l3);
 
@@ -442,6 +455,22 @@ public class Main {
 		frame.setJMenuBar(menuBar);
 
 		LOGGER.fine("Menu initialization completed.");
+	}
+
+	/**
+	 * find the helpset file and create a HelpSet object
+	 */
+	public HelpSet getHelpSet(String helpsetfile) {
+		HelpSet hs = null;
+		ClassLoader cl = this.getClass().getClassLoader();
+		try {
+			URL hsURL = HelpSet.findHelpSet(cl, helpsetfile);
+			hs = new HelpSet(null, hsURL);
+		} catch (Exception ee) {
+			System.out.println("HelpSet: " + ee.getMessage());
+			System.out.println("HelpSet: " + helpsetfile + " not found");
+		}
+		return hs;
 	}
 
 	/**

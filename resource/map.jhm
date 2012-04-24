@@ -1,0 +1,24 @@
+<?xml version='1.0' encoding='ISO-8859-1' ?>
+<!DOCTYPE map
+  PUBLIC "-//Sun Microsystems Inc.//DTD JavaHelp Map Version 1.0//EN"
+         "http://java.sun.com/javase/technologies/desktop/javahelp/map_1_0.dtd">
+
+<map version="1.0">
+	<mapID target="top" url="help/intro.html" />
+	<mapID target="gettingstarted" url="help/gettingstarted.html" />
+	
+	<mapID target="features" url="help/features.html" />
+        <mapID target="komaltheevra" url="help/komaltheevra.html" />
+		<mapID target="octaves" url="help/octaves.html" />
+		<mapID target="holdingnotes" url="help/holdingnotes.html" />
+		<mapID target="twonotes" url="help/twonotes.html" />
+		<mapID target="tempo" url="help/tempo.html" />
+		<mapID target="repeat" url="help/repeat.html" />
+		<mapID target="labels" url="help/labels.html" />
+		<mapID target="changesa" url="help/changesa.html" />
+		<mapID target="shortcuts" url="help/shortcuts.html" />
+		<mapID target="files" url="help/files.html" />
+
+	<mapID target="logfiles" url="help/logfiles.html" />
+	<mapID target="acknowledgements" url="help/acknowledgements.html" />
+</map>

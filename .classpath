@@ -8,5 +8,7 @@
 			<attribute name="javadoc_location" value="jar:file:/C:/Users/Gulshan/Downloads/commons-io-2.1-bin/commons-io-2.1/commons-io-2.1-javadoc.jar!/"/>
 		</attributes>
 	</classpathentry>
+	<classpathentry kind="lib" path="lib/jh/javahelp/bin/jhindexer.jar"/>
+	<classpathentry kind="lib" path="lib/jh/javahelp/bin/jhsearch.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
