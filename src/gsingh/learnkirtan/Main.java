@@ -33,6 +33,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.text.DecimalFormat;
+import java.util.Calendar;
 import java.util.logging.FileHandler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -160,7 +161,12 @@ public class Main {
 		// Set up logging
 		LOGGER.setLevel(Level.INFO);
 		try {
-			logFile = new FileHandler("log");
+			Calendar cal = Calendar.getInstance();
+			logFile = new FileHandler("log\\log_" + cal.get(Calendar.YEAR)
+					+ "_" + cal.get(Calendar.MONTH) + "_"
+					+ cal.get(Calendar.DAY_OF_MONTH) + "_"
+					+ cal.get(Calendar.HOUR_OF_DAY) + cal.get(Calendar.MINUTE)
+					+ cal.get(Calendar.SECOND));
 			SimpleFormatter formatter = new SimpleFormatter();
 			logFile.setFormatter(formatter);
 			LOGGER.addHandler(logFile);
