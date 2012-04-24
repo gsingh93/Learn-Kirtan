@@ -313,6 +313,10 @@ public class Main {
 					LOGGER.info("Application closed.");
 					System.exit(0);
 				} else {
+					LOGGER.info("Application close canceled.");
+				}
+
+				if (result == -1) {
 					LOGGER.info("Application closed.");
 					System.exit(0);
 				}
