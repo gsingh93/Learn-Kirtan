@@ -438,7 +438,7 @@ public class Main {
 		fileMenu.add(openItem);
 		fileMenu.add(saveItem);
 
-		editMenu.setMnemonic(KeyEvent.VK_E);
+		editMenu.setMnemonic(KeyEvent.VK_D);
 		editMenu.add(undoItem);
 		editMenu.add(redoItem);
 		editMenu.add(cutItem);
@@ -448,6 +448,7 @@ public class Main {
 		optionsMenu.setMnemonic(KeyEvent.VK_O);
 		optionsMenu.add(saItem);
 
+		keyboardMenu.setMnemonic(KeyEvent.VK_K);
 		keyboardMenu.add(playItem);
 		keyboardMenu.add(composeItem);
 		keyboardMenu.add(editItem);
