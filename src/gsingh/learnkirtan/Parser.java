@@ -1,8 +1,7 @@
 package gsingh.learnkirtan;
 
-import gsingh.learnkirtan.keys.Key;
-
-import java.util.Scanner;
+import java.util.Arrays;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -24,7 +23,8 @@ public class Parser {
 	private static final int gap = 500;
 
 	/**
-	 * If set, loop will terminate
+	 * If set, loop will terminate. Also used for immediate stops, such as
+	 * reaching a ending label
 	 */
 	private static boolean stop = false;
 
@@ -36,7 +36,7 @@ public class Parser {
 	/**
 	 * True if playing, false otherwise.
 	 */
-	private static boolean play = false;
+	private static boolean isPlaying = false;
 
 	/**
 	 * If set, end of file or playback region has been reached. If
@@ -51,357 +51,270 @@ public class Parser {
 	private static boolean repeat = false;
 
 	/**
-	 * An array of the keyboard keys
-	 */
-	private static Key[] keys = Main.keys;
-
-	/**
-	 * The number of beats to hold the note
-	 */
-	private static int holdCount;
-
-	/**
 	 * The note to play
 	 */
-	private static String note;
-
-	/**
-	 * The next note to play
-	 */
-	private static String nextNote;
+	private static DoubleNote doubleNote;
 
 	/**
 	 * The Sa key
 	 */
 	private static int saKey = 10;
 
-	/**
-	 * The scanner which reads in input from the {@code shabadEditor}
-	 */
-	private static Scanner scanner = null;
+	private static List<String> wordList;
 
-	/**
-	 * Set to true when two notes will be played in one beat
-	 */
-	private static boolean doubleNote = false;
+	private static int maxLen;
 
-	/**
-	 * Plays the shabad on the keyboard
-	 * 
-	 * @param shabad
-	 *            - The shabad to play
-	 * @param tempo
-	 *            - The speed multiplier
-	 */
+	private static int index = 0;
+
 	public static void parseAndPlay(String shabad, String start, String end,
 			double tempo) {
 
-		play = true;
+		// TODO: Add Exception class
+		shabad = shabad.toUpperCase();
+		LOGGER.info(shabad);
+		wordList = Arrays.asList(shabad.split("\\s+"));
+		maxLen = wordList.size();
 
-		// Convert all inputs to uppercase
+		// Find starting label if present
 		start = start.toUpperCase();
 		end = end.toUpperCase();
-		shabad = shabad.toUpperCase();
-		LOGGER.info("Shabad: " + shabad);
-
-		// Validate the shabad
-		if (!validateShabad(shabad, start, end)) {
-			JOptionPane
-					.showMessageDialog(
-							null,
-							"Error: You specified that playback should start/stop at a label, "
-									+ "but that label could not be found. Make sure there is a "
-									+ "'#' before the label.", "Error",
-							JOptionPane.ERROR_MESSAGE);
-			return;
-		}
-
-		reset(shabad, start);
+		moveCursorToStart(start);
 
 		while (!stop) {
-
-			// Pause the thread if necessary
-			if (isPaused())
+			if (pause)
 				pause();
 
-			// If the end label is found, finish. If another label is found,
-			// skip it.
-			if (note != null) {
-				while (note.charAt(0) == '#') {
-					if (!end.equals("")) {
-						if (note.equals("#" + end)) {
-							LOGGER.info("Reached end label");
-							finished = true;
-						}
-					}
-					note = nextNote;
-					nextNote = getNextNote();
+			// Read in note
+			getNextNote(end);
 
-					LOGGER.info("Label skipped");
-
-					LOGGER.info("Next note to be played: " + note);
-					LOGGER.info("Next nextNote to be played: " + nextNote);
-
-					if (note == null) {
-						LOGGER.info("Reached end after label - note is null");
-						finished = true;
-						break;
-					}
-				}
-			} else {
-				LOGGER.info("Reached end - note is null");
-				finished = true;
+			// Check for immediate end
+			if (stop) {
+				if (finish(start)) {
+					stop = false;
+					continue;
+				} else
+					break;
 			}
 
-			// If we have reached the end of the shabad or specified lines,
-			// check if we should repeat. Otherwise, break.
+			// Play notes if valid
+			if (!playNote(doubleNote.getNote1(), tempo)
+					|| !playNote(doubleNote.getNote2(), tempo))
+				break;
+
+			// Check for non-immediate end
 			if (finished) {
-				if (repeat) {
-					LOGGER.info("Finished. Repeating.");
-					reset(shabad, start);
+				if (finish(start)) {
 					finished = false;
 					continue;
-				} else {
-					LOGGER.info("Finished. Returning.");
+				} else
 					break;
-				}
-			}
-
-			// Check if we've reached the end of the shabad or specified lines
-			// TODO: Unnecessary?
-			if (nextNote == null) {
-				LOGGER.info("Reached end - nextNote is null.");
-				finished = true;
-			}
-
-			int key = calculateKey(note);
-			if (key == -1)
-				break;
-
-			if (key >= 0 && key < 36) {
-				LOGGER.info("Key: " + key);
-
-				if (doubleNote) {
-					int index = note.indexOf("-");
-					String note1 = note.substring(0, index);
-					String note2 = note.substring(index + 1);
-
-					key = calculateKey(note1);
-					if (key == -1)
-						break;
-					keys[key].playOnce((int) (.5 * holdCount * gap / tempo));
-
-					key = calculateKey(note2);
-					if (key == -1)
-						break;
-					keys[key].playOnce((int) (.5 * holdCount * gap / tempo));
-
-					doubleNote = false;
-
-				} else {
-					keys[key].playOnce((int) (holdCount * gap / tempo));
-				}
-				note = nextNote;
-				nextNote = getNextNote();
-
-				LOGGER.info("Next note to be played: " + note);
-				LOGGER.info("Next nextNote to be played: " + nextNote);
-
-				// If note is equal to a dash, we've reached the end of the file
-				if (note != null)
-					if (note.equals("-")) {
-						LOGGER.info("Dash reached at end of file.");
-						finished = true;
-					}
-			} else {
-				// TODO Missing prefix/suffix
-				LOGGER.warning("Invalid note: " + note);
-				JOptionPane.showMessageDialog(null, "Error: Invalid note '"
-						+ note + "'", "Error", JOptionPane.ERROR_MESSAGE);
-				break;
 			}
 		}
 
 		LOGGER.info("Left Loop. Returning.");
-		play = false;
-		doubleNote = false;
+		index = 0;
+		pause = false;
+		isPlaying = false;
 		stop = false;
 		finished = false;
 	}
 
-	public static int calculateKey(String note) {
+	private static void moveCursorToStart(String start) {
+		if (!start.equals("")) {
+			String input = wordList.get(index++);
+			while (!input.equals("#" + start)) {
+				if (index < maxLen) {
+					input = wordList.get(index++);
+				} else {
+					LOGGER.warning("No starting label was found. Stopping playback.");
+					stop = true;
+					JOptionPane
+							.showMessageDialog(
+									null,
+									"Error: You specified that playback should start at a label, "
+											+ "but that label could not be found. Make sure there is a "
+											+ "'#' before the label.", "Error",
+									JOptionPane.ERROR_MESSAGE);
+					return;
+				}
+			}
+		} else
+			LOGGER.info("No starting label supplied.");
+	}
 
-		int key = 0;
-		// Check for double note
-		if (note.matches("[.']*[A-Z]{2,3}[.']*\\-[.']*[A-Z]{2,3}[.']*")) {
-			doubleNote = true;
-			return key;
+	// TODO: Refactor
+	private static void getNextNote(String end) {
+		String input;
+		if (index < maxLen) {
+			input = wordList.get(index++);
+			LOGGER.info("Input: " + input);
+		} else {
+			LOGGER.info("Reached End");
+			finished = true;
+			return;
 		}
 
-		// Determine the length of the prefix
-		int count = 0;
-		if (note.length() > 1) {
-			LOGGER.info("Checking for prefix.");
-			for (int i = 0; i < 3; i++) {
-				if (note.substring(i, i + 1).matches("[A-Z\\-]"))
-					break;
-				count++;
+		// Check if label
+		while (input.charAt(0) == '#') {
+			LOGGER.info("Checking Label: " + input);
+			// Check if end label
+
+			if (index >= maxLen) {
+				LOGGER.info("Reached End");
+				finished = true;
+				return;
+			}
+
+			if (input.equals("#" + end)) {
+				LOGGER.info("Reached End Label");
+				stop = true;
+				return;
+			}
+
+			input = wordList.get(index++);
+			LOGGER.info("Input: " + input);
+		}
+
+		// Construct a note
+		doubleNote = new DoubleNote(input);
+
+		if (index < maxLen) {
+			input = wordList.get(index++);
+			LOGGER.info("Input: " + input);
+		} else {
+			LOGGER.info("Reached End");
+			finished = true;
+			return;
+		}
+
+		int holdCount = 1;
+		while (input.equals("-")) {
+			holdCount++;
+			if (index < maxLen) {
+				input = wordList.get(index++);
+				LOGGER.info("Input: " + input);
+
+				// Check if label
+				while (input.charAt(0) == '#') {
+					LOGGER.info("Checking Label: " + input);
+					// Check if end label
+					if (index >= maxLen) {
+						LOGGER.info("Reached End");
+						finished = true;
+						break;
+					}
+
+					if (input.equals("#" + end)) {
+						LOGGER.info("Reached End Label");
+						finished = true;
+						break;
+					}
+
+					input = wordList.get(index++);
+					LOGGER.info("Input: " + input);
+				}
+			} else {
+				LOGGER.info("Reached End");
+				finished = true;
+				break;
 			}
 		}
 
-		LOGGER.info("Prefix Length: " + count);
+		index--;
+		if (doubleNote.getNote2() == null)
+			doubleNote.getNote1().setHoldCount(holdCount);
+		else
+			doubleNote.getNote2().setHoldCount(holdCount);
 
-		// Break the input into a prefix, a suffix and a note
-		String prefix = note.substring(0, count);
-		String suffix = "";
-		note = note.substring(count);
-		int index = note.indexOf(".");
-		if (index == -1)
-			index = note.indexOf("'");
-		if (index != -1) {
-			suffix = note.substring(index);
-			note = note.substring(0, index);
+		LOGGER.info("holdCount: " + holdCount);
+	}
+
+	private static boolean playNote(Note note, double tempo) {
+		if (note != null) {
+			LOGGER.info("Note is null.");
+			if (note.isValid()) {
+				play(note, tempo);
+			} else {
+				String fullNote = note.getPrefix() + note.getNote()
+						+ note.getSuffix();
+				LOGGER.warning("Invalid note: " + fullNote);
+				JOptionPane.showMessageDialog(null, "Error: Invalid note '"
+						+ fullNote + "'", "Error", JOptionPane.ERROR_MESSAGE);
+				return false;
+			}
 		}
 
-		LOGGER.info("Prefix: " + prefix);
-		LOGGER.info("Note: " + note);
-		LOGGER.info("Suffix: " + suffix);
+		return true;
+	}
 
+	public static void play(Note note, double tempo) {
+		// Calculate key for note
+		int key = calculateKey(note);
+
+		// Play note
+		double doubleMult;
+		if (doubleNote.getNote2() != null)
+			doubleMult = .5;
+		else
+			doubleMult = 1.0;
+		LOGGER.info("Playing Key: " + key);
+		Main.keys[key]
+				.playOnce((int) (doubleMult * note.getHoldCount() * gap / tempo));
+	}
+
+	public static int calculateKey(Note note) {
+		int key = -1;
+
+		String noteName = note.getNote();
 		// Set the key number of the note to be played
-		if (note.equals("SA")) {
+		if (noteName.equals("SA")) {
 			key = saKey;
-		} else if (note.equals("RE")) {
+		} else if (noteName.equals("RE")) {
 			key = saKey + 2;
-		} else if (note.equals("GA")) {
+		} else if (noteName.equals("GA")) {
 			key = saKey + 4;
-		} else if (note.equals("MA")) {
+		} else if (noteName.equals("MA")) {
 			key = saKey + 5;
-		} else if (note.equals("PA")) {
+		} else if (noteName.equals("PA")) {
 			key = saKey + 7;
-		} else if (note.equals("DHA")) {
+		} else if (noteName.equals("DHA")) {
 			key = saKey + 9;
-		} else if (note.equals("NI")) {
+		} else if (noteName.equals("NI")) {
 			key = saKey + 11;
-		} else {
-			LOGGER.warning("Invalid note: " + prefix + note + suffix);
-			JOptionPane.showMessageDialog(null, "Error: Invalid note '"
-					+ prefix + note + suffix + "'", "Error",
-					JOptionPane.ERROR_MESSAGE);
-			return -1;
 		}
 
-		// Apply the modifiers in the prefix and suffix to calculate the
-		// actual key number
-		// TODO: Check if notes have valid modifiers
-		if (prefix.contains("'")) {
+		if (note.isKomal())
 			key--;
-		}
-		if (prefix.contains(".")) {
+		if (note.isLower())
 			key -= 12;
-		}
-		if (suffix.contains("'")) {
+		if (note.isTheevra())
 			key++;
-		}
-		if (suffix.contains(".")) {
+		if (note.isUpper())
 			key += 12;
-		}
 
 		if (key >= 0 && key < 36)
 			return key;
 		else {
-			LOGGER.warning("Invalid note: " + prefix + note + suffix);
+			String fullNote = note.getPrefix() + noteName + note.getSuffix();
+			LOGGER.warning("Invalid note: " + fullNote);
 			JOptionPane.showMessageDialog(null, "Error: Invalid note '"
-					+ prefix + note + suffix + "' is too low or too high",
-					"Error", JOptionPane.ERROR_MESSAGE);
+					+ fullNote + "' is too low or too high", "Error",
+					JOptionPane.ERROR_MESSAGE);
 			return -1;
 		}
+
 	}
 
-	/**
-	 * Gets the next note if one exists
-	 * 
-	 * @param holdCount
-	 *            - this is incremented each time a dash is found
-	 * @return the next note (after skipping any dashes) if it exists. If there
-	 *         is no next note, return null
-	 */
-	private static String getNextNote() {
-		String next = null;
-		holdCount = 1;
-		while (scanner.hasNext()) {
-			next = scanner.next();
-			if (next.equals("-"))
-				holdCount++;
-			else
-				break;
+	private static boolean finish(String start) {
+		if (repeat) {
+			LOGGER.info("Finished. Repeating.");
+			index = 0;
+			moveCursorToStart(start);
+			return true;
+		} else {
+			LOGGER.info("Finished. Returning.");
+			return false;
 		}
-
-		return next;
-	}
-
-	/**
-	 * Sets the state of the scanner so we are starting from the beginning
-	 * 
-	 * @param shabad
-	 *            - the shabad to reset
-	 * @param start
-	 *            - the point in the shabad to reset too.
-	 */
-	private static void reset(String shabad, String start) {
-		scanner = new Scanner(shabad);
-		note = getFirstNote(start);
-		nextNote = getNextNote();
-	}
-
-	/**
-	 * Gets the first note to parse and sets the scanner to that position.
-	 * 
-	 * @param scanner
-	 *            - the scanner reading the shabad
-	 * @return the first note of the shabad
-	 */
-	private static String getFirstNote(String start) {
-		String note;
-		if (!start.equals("")) {
-			LOGGER.info("Searching for starting label");
-			note = scanner.next();
-			while (!note.equals("#" + start)) {
-				LOGGER.info("While searching, skipped: " + note);
-				note = scanner.next();
-			}
-		}
-
-		note = scanner.next();
-
-		return note;
-	}
-
-	/**
-	 * Checks whether the shabad input is valid. Checks whether labels are
-	 * present and in valid format
-	 * 
-	 * @return true if input is valid. False otherwise.
-	 */
-	private static boolean validateShabad(String shabad, String start,
-			String end) {
-		if (!start.equals("")) {
-			LOGGER.info("A starting label was specified.");
-			if (!shabad.contains("#" + start)) {
-				LOGGER.warning("No starting label was found. Stopping playback.");
-				return false;
-			}
-		}
-
-		if (!end.equals("")) {
-			LOGGER.info("An ending label was specified.");
-			if (!shabad.contains("#" + end)) {
-				LOGGER.warning("No ending label was found. Stopping playback.");
-				return false;
-			}
-		}
-
-		LOGGER.info("Validation completed successfully");
-		return true;
 	}
 
 	/**
@@ -410,7 +323,7 @@ public class Parser {
 	public static void stop() {
 		stop = true;
 		pause = false;
-		play = false;
+		isPlaying = false;
 	}
 
 	/**
@@ -418,7 +331,7 @@ public class Parser {
 	 */
 	public static void setPause() {
 		pause = true;
-		play = false;
+		isPlaying = false;
 	}
 
 	/**
@@ -445,16 +358,15 @@ public class Parser {
 	 * Returns true if playing, false otherwise
 	 */
 	public static boolean isPlaying() {
-		return play;
+		return isPlaying;
 	}
 
 	/**
-	 * Sets pause to false, so that playback resumes. This is note used to play
-	 * the shabad, only to unpause.
+	 * Sets isPlaying to true and pause to false.
 	 */
 	public static void play() {
 		pause = false;
-		play = true;
+		isPlaying = true;
 	}
 
 	/**
