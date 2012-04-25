@@ -147,6 +147,11 @@ public class Main {
 	 */
 	private JFrame frame;
 
+	/**
+	 * Settings Manager for this application
+	 */
+	private SettingsManager settingsManager;
+
 	public static Main main;
 
 	private UndoManager undo = new UndoManager();
@@ -165,8 +170,8 @@ public class Main {
 			logFile = new FileHandler("log\\log_" + cal.get(Calendar.YEAR)
 					+ "_" + cal.get(Calendar.MONTH) + "_"
 					+ cal.get(Calendar.DAY_OF_MONTH) + "_"
-					+ cal.get(Calendar.HOUR_OF_DAY) + cal.get(Calendar.MINUTE)
-					+ cal.get(Calendar.SECOND));
+					+ cal.get(Calendar.HOUR_OF_DAY) + "_"
+					+ cal.get(Calendar.MINUTE) + "_" + cal.get(Calendar.SECOND));
 			SimpleFormatter formatter = new SimpleFormatter();
 			logFile.setFormatter(formatter);
 			LOGGER.addHandler(logFile);
@@ -204,6 +209,7 @@ public class Main {
 		// Check for updates
 		checkForUpdate();
 
+		settingsManager = new SettingsManager(10);
 		createAndShowGui();
 	}
 
@@ -742,7 +748,8 @@ public class Main {
 									Parser.parseAndPlay(shabadEditor.getText(),
 											startField.getText(),
 											endField.getText(),
-											(Double) tempoControl.getValue());
+											(Double) tempoControl.getValue(),
+											settingsManager.getSaKey());
 									setInputBoxes(true);
 								}
 							}).start();
@@ -833,7 +840,7 @@ public class Main {
 
 			if (command.equals("changesa")) {
 				SpinnerModel saModel = new SpinnerNumberModel(
-						Parser.getSaKey() + 1, 1, 36, 1);
+						settingsManager.getSaKey() + 1, 1, 36, 1);
 				JSpinner saSpinner = new JSpinner(saModel);
 
 				JPanel panel = new JPanel();
@@ -847,10 +854,10 @@ public class Main {
 				if (result == JOptionPane.OK_OPTION) {
 					int value = (Integer) saSpinner.getValue();
 
-					int difference = value - Parser.getSaKey() - 1;
+					int difference = value - settingsManager.getSaKey() - 1;
 
 					LOGGER.info("Sa key changed to: " + value);
-					Parser.setSaKey(value);
+					settingsManager.setSaKey(value);
 
 					if (difference > 0) {
 						for (int i = 0; i < difference; i++) {

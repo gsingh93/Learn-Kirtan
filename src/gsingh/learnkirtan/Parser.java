@@ -56,24 +56,22 @@ public class Parser {
 	private static DoubleNote doubleNote;
 
 	/**
-	 * The Sa key
+	 * An array list of shabad
 	 */
-	private static int saKey = 10;
-
 	private static List<String> wordList;
 
-	private static int maxLen;
-
+	/**
+	 * The index in {@code wordList} from which to get notes
+	 */
 	private static int index = 0;
 
 	public static void parseAndPlay(String shabad, String start, String end,
-			double tempo) {
+			double tempo, int saKey) {
 
 		// TODO: Add Exception class
 		shabad = shabad.toUpperCase();
 		LOGGER.info(shabad);
 		wordList = Arrays.asList(shabad.split("\\s+"));
-		maxLen = wordList.size();
 
 		// Find starting label if present
 		start = start.toUpperCase();
@@ -97,8 +95,8 @@ public class Parser {
 			}
 
 			// Play notes if valid
-			if (!playNote(doubleNote.getNote1(), tempo)
-					|| !playNote(doubleNote.getNote2(), tempo))
+			if (!playNote(doubleNote.getNote1(), tempo, saKey)
+					|| !playNote(doubleNote.getNote2(), tempo, saKey))
 				break;
 
 			// Check for non-immediate end
@@ -123,7 +121,7 @@ public class Parser {
 		if (!start.equals("")) {
 			String input = wordList.get(index++);
 			while (!input.equals("#" + start)) {
-				if (index < maxLen) {
+				if (index < wordList.size()) {
 					input = wordList.get(index++);
 				} else {
 					LOGGER.warning("No starting label was found. Stopping playback.");
@@ -144,6 +142,8 @@ public class Parser {
 
 	// TODO: Refactor
 	private static void getNextNote(String end) {
+		int maxLen = wordList.size();
+
 		String input;
 		if (index < maxLen) {
 			input = wordList.get(index++);
@@ -229,11 +229,11 @@ public class Parser {
 		LOGGER.info("holdCount: " + holdCount);
 	}
 
-	private static boolean playNote(Note note, double tempo) {
+	private static boolean playNote(Note note, double tempo, int saKey) {
 		if (note != null) {
 			LOGGER.info("Note is null.");
 			if (note.isValid()) {
-				play(note, tempo);
+				play(note, tempo, saKey);
 			} else {
 				String fullNote = note.getPrefix() + note.getNote()
 						+ note.getSuffix();
@@ -247,9 +247,9 @@ public class Parser {
 		return true;
 	}
 
-	public static void play(Note note, double tempo) {
+	public static void play(Note note, double tempo, int saKey) {
 		// Calculate key for note
-		int key = calculateKey(note);
+		int key = calculateKey(note, saKey);
 
 		// Play note
 		double doubleMult;
@@ -262,7 +262,7 @@ public class Parser {
 				.playOnce((int) (doubleMult * note.getHoldCount() * gap / tempo));
 	}
 
-	public static int calculateKey(Note note) {
+	public static int calculateKey(Note note, int saKey) {
 		int key = -1;
 
 		String noteName = note.getNote();
@@ -377,23 +377,5 @@ public class Parser {
 	 */
 	public static void setRepeat(boolean bool) {
 		repeat = bool;
-	}
-
-	/**
-	 * Sets {@code saKey} to whatever key number the user input minus 1, as the
-	 * user counts keys starting from 1
-	 * 
-	 * @param key
-	 *            - the key number input by the user from 1 to 36
-	 */
-	public static void setSaKey(int key) {
-		saKey = key - 1;
-	}
-
-	/**
-	 * Returns {@code saKey}
-	 */
-	public static int getSaKey() {
-		return saKey;
 	}
 }
