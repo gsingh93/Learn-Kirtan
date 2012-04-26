@@ -5,5 +5,32 @@
 </head>
 <body>
 	<h2>Starting and Ending Labels</h2>
+	Labels are a useful feature that allow you to select certain
+	regions of the shabad to play. Let's say your shabad looked like
+	<br><br>
+	<span style="text-align:center">sa re ga ma pa dha ni sa.</span>
+	Let's say you only want to practice the first four notes. To do
+	this, simply put a label after the fourth note like so,
+	<br>
+	<br>
+	<div style="text-align:center">
+		sa re ga ma #a pa dha ni sa.
+	</div>
+	<br>
+	Now if you put the letter "a" in the "End Label" box in the control
+	panel and press play, playback will stop when this label is
+	reached. Let's now say you want to practice the last four notes
+	Remove "a" from the "End Label" box and put "a" in the "Start Label"
+	box. Now when you click play, playback starts from the label
+	"#a" and ends at the end of the shabad. You can specify both
+	starting and ending labels or simply specify one.
+	<br>
+	<br>
+	Note that if you specify a starting label, it must be present
+	in the shabad or you will receive an error. Also note
+	that labels appear in the shabad as "#label", but only "label" is
+	put in the boxes. Finally, if you specify a starting label,
+	make sure it is not followed by a dash (as the program will
+	not know which note to hold)
 </body>
 </html>
