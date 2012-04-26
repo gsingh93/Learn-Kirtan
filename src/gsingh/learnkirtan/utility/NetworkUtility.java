@@ -1,5 +1,6 @@
 package gsingh.learnkirtan.utility;
 
+import gsingh.learnkirtan.Constants.Duration;
 import gsingh.learnkirtan.Main;
 import gsingh.learnkirtan.SettingsManager;
 
@@ -63,7 +64,7 @@ public class NetworkUtility {
 						Desktop.getDesktop().browse(new URI(UPDATE_SITE));
 
 					settingsManager.setRemind(!checked,
-							reminder.getSelectedIndex());
+							Duration.values()[reminder.getSelectedIndex()]);
 				}
 			} catch (MalformedURLException e) {
 				e.printStackTrace();

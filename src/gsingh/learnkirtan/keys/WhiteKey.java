@@ -1,12 +1,14 @@
 package gsingh.learnkirtan.keys;
 
+import static gsingh.learnkirtan.Constants.WHITE_KEY_HEIGHT;
+import static gsingh.learnkirtan.Constants.WHITE_KEY_WIDTH;
+
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Insets;
 
+@SuppressWarnings("serial")
 public class WhiteKey extends Key {
-
-	private static final long serialVersionUID = 1L;
 
 	/**
 	 * Font to use for note labels

@@ -1,13 +1,15 @@
 package gsingh.learnkirtan.keys;
 
+import static gsingh.learnkirtan.Constants.BLACK_KEY_HEIGHT;
+import static gsingh.learnkirtan.Constants.BLACK_KEY_WIDTH;
+
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Insets;
 import java.awt.event.MouseListener;
 
+@SuppressWarnings("serial")
 public class BlackKey extends Key implements MouseListener {
-
-	private static final long serialVersionUID = 1L;
 
 	/**
 	 * Font to use for note labels

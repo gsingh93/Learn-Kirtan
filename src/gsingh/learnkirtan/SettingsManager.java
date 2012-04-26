@@ -1,5 +1,9 @@
 package gsingh.learnkirtan;
 
+import static gsingh.learnkirtan.Constants.Duration.DAY;
+import static gsingh.learnkirtan.Constants.Duration.MONTH;
+import static gsingh.learnkirtan.Constants.Duration.WEEK;
+import gsingh.learnkirtan.Constants.Duration;
 import gsingh.learnkirtan.utility.FileUtility;
 
 import java.io.IOException;
@@ -72,7 +76,7 @@ public class SettingsManager {
 	 *            - used to specify length of time not to remind. 0 is 1 day, 1
 	 *            is 1 week, and 2 is 1 month
 	 */
-	public void setRemind(boolean bool, int duration) {
+	public void setRemind(boolean bool, Duration duration) {
 		if (!bool) {
 			changeSetting("remind", "no");
 			changeSetting("until", calculateDate(duration));
@@ -85,15 +89,15 @@ public class SettingsManager {
 	 * Calculates the date until reminders will be turned back on
 	 * 
 	 */
-	private String calculateDate(int duration) {
+	private String calculateDate(Duration duration) {
 		long time = System.currentTimeMillis();
 		long dur = 0;
 
-		if (duration == 0) {
+		if (duration == DAY) {
 			dur = 86400000;
-		} else if (duration == 1) {
+		} else if (duration == WEEK) {
 			dur = 7 * 86400000;
-		} else if (duration == 2) {
+		} else if (duration == MONTH) {
 			dur = 24 * 86400000;
 		}
 

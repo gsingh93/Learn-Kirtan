@@ -19,17 +19,11 @@ import javax.sound.midi.MidiUnavailableException;
 import javax.sound.midi.Synthesizer;
 import javax.swing.JButton;
 
+@SuppressWarnings("serial")
 public class Key extends JButton implements MouseListener {
 
 	private static final Logger LOGGER = Logger.getLogger(Parser.class
 			.getName());
-
-	private static final long serialVersionUID = 1L;
-
-	public static final int WHITE_KEY_HEIGHT = 200;
-	public static final int WHITE_KEY_WIDTH = 40;
-	public static final int BLACK_KEY_WIDTH = 20;
-	public static final int BLACK_KEY_HEIGHT = 120;
 
 	/**
 	 * A counter used to assign midi note numbers to the keys

@@ -1,5 +1,6 @@
 package gsingh.learnkirtan;
 
+import static gsingh.learnkirtan.Constants.MAX_KEYS;
 import gsingh.learnkirtan.note.DoubleNote;
 import gsingh.learnkirtan.note.Note;
 
@@ -316,7 +317,7 @@ public class Parser {
 		if (note.isUpper())
 			key += 12;
 
-		if (key >= 0 && key < 36)
+		if (key >= 0 && key < MAX_KEYS)
 			return key;
 		else {
 			String fullNote = note.getPrefix() + noteName + note.getSuffix();

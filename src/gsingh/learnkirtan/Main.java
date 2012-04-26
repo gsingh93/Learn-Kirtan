@@ -1,5 +1,9 @@
 package gsingh.learnkirtan;
 
+import static gsingh.learnkirtan.Constants.BLACK_KEY_WIDTH;
+import static gsingh.learnkirtan.Constants.MAX_KEYS;
+import static gsingh.learnkirtan.Constants.WHITE_KEY_HEIGHT;
+import static gsingh.learnkirtan.Constants.WHITE_KEY_WIDTH;
 import gsingh.learnkirtan.keys.BlackKey;
 import gsingh.learnkirtan.keys.Key;
 import gsingh.learnkirtan.keys.WhiteKey;
@@ -92,13 +96,12 @@ public class Main {
 	/**
 	 * Width of the screen
 	 */
-	private final int WIDTH = 3 * (Key.WHITE_KEY_WIDTH * 7)
-			+ Key.WHITE_KEY_WIDTH - 20;
+	private final int WIDTH = 3 * (WHITE_KEY_WIDTH * 7) + WHITE_KEY_WIDTH - 62;
 
 	/**
 	 * Stores all of the keys on the keyboard
 	 */
-	public static Key keys[] = new Key[36];
+	public static Key keys[] = new Key[MAX_KEYS];
 
 	/**
 	 * The index used when adding the keys to the keyboard
@@ -157,11 +160,11 @@ public class Main {
 	private UndoAction undoAction = new UndoAction();
 	private RedoAction redoAction = new RedoAction();
 
-	public String mode = "edit";
-	public String octave = "middle";
+	private String mode = "edit";
+	private String octave = "middle";
 
-	public static final String SPACE = "space";
-	public static final String BACK_SPACE = "back space";
+	private static final String SPACE = "space";
+	private static final String BACK_SPACE = "back space";
 
 	public static void main(String[] args) {
 
@@ -277,7 +280,7 @@ public class Main {
 
 		ShabadEditorListener listener = new ShabadEditorListener();
 
-		shabadEditor = new JTextArea(16, 60);
+		shabadEditor = new JTextArea(16, 57);
 		shabadEditor.setDisabledTextColor(Color.GRAY);
 		shabadEditor.setFont(new Font("Dialog", Font.BOLD, 16));
 		shabadEditor.getDocument().addDocumentListener(listener);
@@ -319,7 +322,7 @@ public class Main {
 				}
 			}
 		});
-		frame.setSize(WIDTH, Key.WHITE_KEY_HEIGHT * 3 + 30);
+		frame.setSize(WIDTH, WHITE_KEY_HEIGHT * 3 + 30);
 		frame.setLocation(250, 60);
 		frame.setResizable(false);
 		frame.setVisible(true);
@@ -570,10 +573,12 @@ public class Main {
 	 *            - a number which is used to calculate the position of the key
 	 */
 	void addWhiteKey(Container panel, int i) {
-		WhiteKey b = new WhiteKey(settingsManager.getSaKey());
-		b.setLocation(i++ * Key.WHITE_KEY_WIDTH, 0);
-		panel.add(b, 0, -1);
-		keys[index++] = b;
+		if (index < MAX_KEYS) {
+			WhiteKey b = new WhiteKey(settingsManager.getSaKey());
+			b.setLocation(i++ * WHITE_KEY_WIDTH, 0);
+			panel.add(b, 0, -1);
+			keys[index++] = b;
+		}
 	}
 
 	/**
@@ -585,11 +590,13 @@ public class Main {
 	 *            - a number which is used to calculate the position of the key
 	 */
 	void addBlackKey(Container panel, int factor) {
-		BlackKey b = new BlackKey(settingsManager.getSaKey());
-		b.setLocation(Key.WHITE_KEY_WIDTH - Key.BLACK_KEY_WIDTH / 2 + factor
-				* Key.WHITE_KEY_WIDTH, 0);
-		panel.add(b, 1, -1);
-		keys[index++] = b;
+		if (index < MAX_KEYS) {
+			BlackKey b = new BlackKey(settingsManager.getSaKey());
+			b.setLocation(WHITE_KEY_WIDTH - BLACK_KEY_WIDTH / 2 + factor
+					* WHITE_KEY_WIDTH, 0);
+			panel.add(b, 1, -1);
+			keys[index++] = b;
+		}
 	}
 
 	/**
@@ -615,8 +622,8 @@ public class Main {
 		c.gridy = 1;
 		c.weightx = 1.0;
 		c.anchor = GridBagConstraints.NORTHWEST;
-		pianoPanel.setPreferredSize(new Dimension(WIDTH - 18,
-				Key.WHITE_KEY_HEIGHT));
+		pianoPanel
+				.setPreferredSize(new Dimension(WIDTH - 18, WHITE_KEY_HEIGHT));
 		mainPanel.add(pianoPanel, c);
 
 		c.gridx = 0;
@@ -690,7 +697,7 @@ public class Main {
 	public void notePressed(KeyEvent e) {
 		final int key = letterToKey(String.valueOf(e.getKeyChar())
 				.toUpperCase());
-		if (key < 36 && key >= 0) {
+		if (key < MAX_KEYS && key >= 0) {
 			new Thread(new Runnable() {
 				public void run() {
 					keys[key].playOnce(500);
@@ -819,7 +826,7 @@ public class Main {
 
 			if (command.equals("changesa")) {
 				SpinnerModel saModel = new SpinnerNumberModel(
-						settingsManager.getSaKey() + 1, 1, 36, 1);
+						settingsManager.getSaKey() + 1, 1, MAX_KEYS, 1);
 				JSpinner saSpinner = new JSpinner(saModel);
 
 				JPanel panel = new JPanel();
@@ -898,7 +905,7 @@ public class Main {
 				if (mode.equals("compose")) {
 					final int key = letterToKey(String.valueOf(e.getKeyChar())
 							.toUpperCase());
-					if (key < 36 && key >= 0) {
+					if (key < MAX_KEYS && key >= 0) {
 						int firstSa = Key.notes.indexOf("Sa");
 						String prefix = "";
 						String suffix = "";
