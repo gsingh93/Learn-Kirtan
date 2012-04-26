@@ -43,8 +43,11 @@ import javax.help.CSH;
 import javax.help.HelpBroker;
 import javax.help.HelpSet;
 import javax.swing.AbstractAction;
+import javax.swing.ActionMap;
+import javax.swing.InputMap;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
+import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JLayeredPane;
@@ -160,6 +163,9 @@ public class Main {
 
 	public String mode = "edit";
 	public String octave = "middle";
+
+	public static final String SPACE = "space";
+	public static final String BACK_SPACE = "back space";
 
 	public static void main(String[] args) {
 
@@ -314,6 +320,15 @@ public class Main {
 		shabadEditor.getDocument().addUndoableEditListener(listener);
 		shabadEditor.addKeyListener(new KeyboardListener());
 		shabadEditor.addFocusListener(new EditorFocusListener());
+
+		InputMap inputMap = shabadEditor.getInputMap(JComponent.WHEN_FOCUSED);
+		ActionMap actionMap = shabadEditor.getActionMap();
+
+		inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_SPACE, 0), SPACE);
+		inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_BACK_SPACE, 0),
+				BACK_SPACE);
+		actionMap.put(SPACE, new KeyAction(shabadEditor, SPACE));
+		actionMap.put(BACK_SPACE, new KeyAction(shabadEditor, BACK_SPACE));
 
 		constructKeyboard(pianoPanel);
 
@@ -928,32 +943,6 @@ public class Main {
 							}
 						}).start();
 					}
-
-					if (e.getKeyChar() == KeyEvent.VK_BACK_SPACE) {
-						int pos = shabadEditor.getCaretPosition();
-						try {
-							int start = shabadEditor.getSelectionStart();
-							int end = shabadEditor.getSelectionEnd();
-							if (start != end) {
-								shabadEditor.getDocument().remove(start,
-										end - start);
-							}
-
-							if (pos != 0 && start == end) {
-								shabadEditor.getDocument().remove(pos - 1, 1);
-							}
-						} catch (BadLocationException e1) {
-							e1.printStackTrace();
-						}
-					}
-
-					if (e.getKeyChar() == KeyEvent.VK_SPACE) {
-						shabadEditor.insert(" ",
-								shabadEditor.getCaretPosition());
-					}
-				}
-				if (mode.equals("edit")) {
-
 				}
 			}
 		}
@@ -1161,6 +1150,37 @@ public class Main {
 			} else {
 				if (!title.contains("*"))
 					frame.setTitle(frame.getTitle() + "*");
+			}
+		}
+	}
+
+	@SuppressWarnings("serial")
+	class KeyAction extends AbstractAction {
+		private String title;
+
+		public KeyAction(JTextArea textArea, String title) {
+			this.title = title;
+		}
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			if (title.equals(SPACE)) {
+				shabadEditor.insert(" ", shabadEditor.getCaretPosition());
+			} else if (title.equals(BACK_SPACE)) {
+				int pos = shabadEditor.getCaretPosition();
+				try {
+					int start = shabadEditor.getSelectionStart();
+					int end = shabadEditor.getSelectionEnd();
+					if (start != end) {
+						shabadEditor.getDocument().remove(start, end - start);
+					}
+
+					if (pos != 0 && start == end) {
+						shabadEditor.getDocument().remove(pos - 1, 1);
+					}
+				} catch (BadLocationException e1) {
+					e1.printStackTrace();
+				}
 			}
 		}
 	}
