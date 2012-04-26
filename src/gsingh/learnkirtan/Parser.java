@@ -1,6 +1,10 @@
 package gsingh.learnkirtan;
 
 import static gsingh.learnkirtan.Constants.MAX_KEYS;
+import gsingh.learnkirtan.exceptions.DashFirstNoteException;
+import gsingh.learnkirtan.exceptions.InvalidNoteException;
+import gsingh.learnkirtan.exceptions.NoStartLabelException;
+import gsingh.learnkirtan.exceptions.NoteOutOfBoundsException;
 import gsingh.learnkirtan.note.DoubleNote;
 import gsingh.learnkirtan.note.Note;
 
@@ -8,8 +12,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import javax.swing.JOptionPane;
 
 public class Parser {
 
@@ -80,8 +82,13 @@ public class Parser {
 		// Find starting label if present
 		start = start.toUpperCase();
 		end = end.toUpperCase();
-		if (!moveCursorToStart(start))
+		try {
+			moveCursorToStart(start);
+		} catch (NoStartLabelException e) {
 			stop = true;
+		} catch (DashFirstNoteException e) {
+			stop = true;
+		}
 
 		while (!stop) {
 			if (pause)
@@ -100,9 +107,14 @@ public class Parser {
 			}
 
 			// Play notes if valid
-			if (!playNote(doubleNote.getNote1(), tempo, saKey)
-					|| !playNote(doubleNote.getNote2(), tempo, saKey))
+			try {
+				playNote(doubleNote.getNote1(), tempo, saKey);
+				playNote(doubleNote.getNote2(), tempo, saKey);
+			} catch (NoteOutOfBoundsException e) {
 				break;
+			} catch (InvalidNoteException e) {
+				break;
+			}
 
 			// Check for non-immediate end
 			if (finished) {
@@ -123,46 +135,25 @@ public class Parser {
 		finished = false;
 	}
 
-	private static boolean moveCursorToStart(String start) {
+	private static void moveCursorToStart(String start)
+			throws NoStartLabelException, DashFirstNoteException {
 		String input = null;
 		if (!start.equals("")) {
 			input = wordList.get(index++);
 			while (!input.equals("#" + start)) {
-				if (index < wordList.size()) {
+				if (index < wordList.size())
 					input = wordList.get(index++);
-				} else {
-					LOGGER.warning("No starting label was found. Stopping playback.");
-					stop = true;
-					JOptionPane
-							.showMessageDialog(
-									null,
-									"Error: You specified that playback should start at a label, "
-											+ "but that label could not be found. Make sure there is a "
-											+ "'#' before the label.", "Error",
-									JOptionPane.ERROR_MESSAGE);
-					return false;
-				}
+				else
+					throw new NoStartLabelException(LOGGER);
 			}
 		} else
 			LOGGER.info("No starting label supplied.");
-		System.out.println(index);
-		System.out.println(input);
+
 		if (index < wordList.size())
 			input = wordList.get(index);
 
-		System.out.println(input);
-		if (input.equals("-")) {
-			LOGGER.warning("ERROR: Dash found as first note.");
-			JOptionPane
-					.showMessageDialog(
-							null,
-							"Error: The first note found was a dash, which is not allowed.",
-							"Error", JOptionPane.ERROR_MESSAGE);
-			return false;
-		}
-
-		return true;
-
+		if (input.equals("-"))
+			throw new DashFirstNoteException(LOGGER);
 	}
 
 	// TODO: Refactor
@@ -254,7 +245,8 @@ public class Parser {
 		LOGGER.info("holdCount: " + holdCount);
 	}
 
-	private static boolean playNote(Note note, double tempo, int saKey) {
+	private static void playNote(Note note, double tempo, int saKey)
+			throws NoteOutOfBoundsException, InvalidNoteException {
 		if (note != null) {
 			LOGGER.info("Note is null.");
 			if (note.isValid()) {
@@ -262,17 +254,13 @@ public class Parser {
 			} else {
 				String fullNote = note.getPrefix() + note.getNote()
 						+ note.getSuffix();
-				LOGGER.warning("Invalid note: " + fullNote);
-				JOptionPane.showMessageDialog(null, "Error: Invalid note '"
-						+ fullNote + "'", "Error", JOptionPane.ERROR_MESSAGE);
-				return false;
+				throw new InvalidNoteException(LOGGER, fullNote);
 			}
 		}
-
-		return true;
 	}
 
-	public static void play(Note note, double tempo, int saKey) {
+	public static void play(Note note, double tempo, int saKey)
+			throws NoteOutOfBoundsException {
 		// Calculate key for note
 		int key = calculateKey(note, saKey);
 
@@ -287,7 +275,8 @@ public class Parser {
 				.playOnce((int) (doubleMult * note.getHoldCount() * gap / tempo));
 	}
 
-	public static int calculateKey(Note note, int saKey) {
+	public static int calculateKey(Note note, int saKey)
+			throws NoteOutOfBoundsException {
 		int key = -1;
 
 		String noteName = note.getNote();
@@ -321,11 +310,7 @@ public class Parser {
 			return key;
 		else {
 			String fullNote = note.getPrefix() + noteName + note.getSuffix();
-			LOGGER.warning("Invalid note: " + fullNote);
-			JOptionPane.showMessageDialog(null, "Error: Invalid note '"
-					+ fullNote + "' is too low or too high", "Error",
-					JOptionPane.ERROR_MESSAGE);
-			return -1;
+			throw new NoteOutOfBoundsException(LOGGER, fullNote);
 		}
 
 	}
@@ -334,8 +319,14 @@ public class Parser {
 		if (repeat) {
 			LOGGER.info("Finished. Repeating.");
 			index = 0;
-			if (!moveCursorToStart(start))
+			try {
+				moveCursorToStart(start);
+			} catch (NoStartLabelException e) {
 				return false;
+			} catch (DashFirstNoteException e) {
+				return false;
+			}
+
 			return true;
 		} else {
 			LOGGER.info("Finished. Returning.");

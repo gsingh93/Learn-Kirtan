@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?><settings>
 	<sakey>10</sakey>
 	<updatereminder>
-		<remind>no</remind>
+		<remind>yes</remind>
 		<until>1337534160302</until>
 	</updatereminder>
 </settings>
