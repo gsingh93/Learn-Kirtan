@@ -1,7 +1,6 @@
 package gsingh.learnkirtan.keys;
 
 import gsingh.learnkirtan.Main;
-import gsingh.learnkirtan.Parser;
 
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
@@ -22,8 +21,11 @@ import javax.swing.JButton;
 @SuppressWarnings("serial")
 public class Key extends JButton implements MouseListener {
 
-	private static final Logger LOGGER = Logger.getLogger(Parser.class
-			.getName());
+	private static final Logger LOGGER = Logger.getLogger(Key.class.getName());
+	static {
+		LOGGER.addHandler(Main.logFile);
+		LOGGER.setLevel(Level.INFO);
+	}
 
 	/**
 	 * A counter used to assign midi note numbers to the keys

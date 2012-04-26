@@ -1,5 +1,7 @@
 package gsingh.learnkirtan.utility;
 
+import gsingh.learnkirtan.Main;
+
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -7,6 +9,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.swing.JFileChooser;
@@ -32,6 +35,10 @@ public class FileUtility {
 	 */
 	private final static Logger LOGGER = Logger.getLogger(FileUtility.class
 			.getName());
+	static {
+		LOGGER.addHandler(Main.logFile);
+		LOGGER.setLevel(Level.INFO);
+	}
 
 	/**
 	 * The filechooser used for opening and saving files
@@ -177,7 +184,6 @@ public class FileUtility {
 		}
 		LOGGER.fine("File open process finished.");
 
-		System.out.println(file);
 		return file;
 	}
 }

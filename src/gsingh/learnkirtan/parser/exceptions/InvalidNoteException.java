@@ -1,4 +1,4 @@
-package gsingh.learnkirtan.exceptions;
+package gsingh.learnkirtan.parser.exceptions;
 
 import java.util.logging.Logger;
 

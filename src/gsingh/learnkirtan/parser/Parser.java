@@ -1,12 +1,13 @@
-package gsingh.learnkirtan;
+package gsingh.learnkirtan.parser;
 
 import static gsingh.learnkirtan.Constants.MAX_KEYS;
-import gsingh.learnkirtan.exceptions.DashFirstNoteException;
-import gsingh.learnkirtan.exceptions.InvalidNoteException;
-import gsingh.learnkirtan.exceptions.NoStartLabelException;
-import gsingh.learnkirtan.exceptions.NoteOutOfBoundsException;
+import gsingh.learnkirtan.Main;
 import gsingh.learnkirtan.note.DoubleNote;
 import gsingh.learnkirtan.note.Note;
+import gsingh.learnkirtan.parser.exceptions.DashFirstNoteException;
+import gsingh.learnkirtan.parser.exceptions.InvalidNoteException;
+import gsingh.learnkirtan.parser.exceptions.NoStartLabelException;
+import gsingh.learnkirtan.parser.exceptions.NoteOutOfBoundsException;
 
 import java.util.Arrays;
 import java.util.List;
@@ -29,8 +30,7 @@ public class Parser {
 	private static final int gap = 500;
 
 	/**
-	 * If set, loop will terminate. Also used for immediate stops, such as
-	 * reaching a ending label
+	 * If set, loop will terminate.
 	 */
 	private static boolean stop = false;
 
@@ -61,27 +61,22 @@ public class Parser {
 	 */
 	private static DoubleNote doubleNote;
 
-	/**
-	 * An array list of shabad
-	 */
-	private static List<String> wordList;
-
-	/**
-	 * The index in {@code wordList} from which to get notes
-	 */
-	private static int index = 0;
+	private static Scanner scanner;
 
 	public static void parseAndPlay(String shabad, String start, String end,
 			double tempo, int saKey) {
 
-		// TODO: Add Exception class
 		shabad = shabad.toUpperCase();
-		LOGGER.info(shabad);
-		wordList = Arrays.asList(shabad.split("\\s+"));
+		start = "#" + start.toUpperCase();
+		end = "#" + end.toUpperCase();
+		LOGGER.info("Shabad: " + shabad);
+		LOGGER.info("Start: " + start);
+		LOGGER.info("End: " + end);
+
+		List<String> wordList = Arrays.asList(shabad.split("\\s+"));
+		scanner = new Scanner(wordList, end);
 
 		// Find starting label if present
-		start = start.toUpperCase();
-		end = end.toUpperCase();
 		try {
 			moveCursorToStart(start);
 		} catch (NoStartLabelException e) {
@@ -95,16 +90,7 @@ public class Parser {
 				pause();
 
 			// Read in note
-			getNextNote(end);
-
-			// Check for immediate end
-			if (stop) {
-				if (finish(start)) {
-					stop = false;
-					continue;
-				} else
-					break;
-			}
+			getNextNote();
 
 			// Play notes if valid
 			try {
@@ -128,7 +114,6 @@ public class Parser {
 		}
 
 		LOGGER.info("Left Loop. Returning.");
-		index = 0;
 		pause = false;
 		isPlaying = false;
 		stop = false;
@@ -138,67 +123,46 @@ public class Parser {
 	private static void moveCursorToStart(String start)
 			throws NoStartLabelException, DashFirstNoteException {
 		String input = null;
-		if (!start.equals("")) {
-			input = wordList.get(index++);
-			while (!input.equals("#" + start)) {
-				if (index < wordList.size())
-					input = wordList.get(index++);
+		if (!start.equals("#")) {
+			input = scanner.getNext();
+			while (!input.equals(start)) {
+				if (!scanner.isFinished())
+					input = scanner.getNext();
 				else
 					throw new NoStartLabelException(LOGGER);
 			}
 		} else
 			LOGGER.info("No starting label supplied.");
 
-		if (index < wordList.size())
-			input = wordList.get(index);
+		// Check if first note is a dash
+		input = scanner.getNext();
+		scanner.decrementIndex();
+
+		if (scanner.isFinished()) {
+			stop = true;
+			return;
+		}
 
 		if (input.equals("-"))
 			throw new DashFirstNoteException(LOGGER);
 	}
 
-	// TODO: Refactor
-	private static void getNextNote(String end) {
-		int maxLen = wordList.size();
+	private static void getNextNote() {
+		String input = scanner.getNextNote();
 
-		String input;
-		if (index < maxLen) {
-			input = wordList.get(index++);
-			LOGGER.info("Input: " + input);
-		} else {
-			LOGGER.info("Reached End");
+		// Check for end
+		if (scanner.isFinished()) {
 			finished = true;
 			return;
-		}
-
-		// Check if label
-		while (input.charAt(0) == '#' || input.equals("-")) {
-			LOGGER.info("Checking Label: " + input);
-			// Check if end label
-
-			if (index >= maxLen) {
-				LOGGER.info("Reached End");
-				finished = true;
-				return;
-			}
-
-			if (input.equals("#" + end)) {
-				LOGGER.info("Reached End Label");
-				stop = true;
-				return;
-			}
-
-			input = wordList.get(index++);
-			LOGGER.info("Input: " + input);
 		}
 
 		// Construct a note
 		doubleNote = new DoubleNote(input);
 
-		if (index < maxLen) {
-			input = wordList.get(index++);
-			LOGGER.info("Input: " + input);
-		} else {
-			LOGGER.info("Reached End");
+		// Check if next note is a dash
+		input = scanner.getNextNote();
+
+		if (scanner.isFinished()) {
 			finished = true;
 			return;
 		}
@@ -206,37 +170,15 @@ public class Parser {
 		int holdCount = 1;
 		while (input.equals("-")) {
 			holdCount++;
-			if (index < maxLen) {
-				input = wordList.get(index++);
-				LOGGER.info("Input: " + input);
+			input = scanner.getNextNote();
 
-				// Check if label
-				while (input.charAt(0) == '#') {
-					LOGGER.info("Checking Label: " + input);
-					// Check if end label
-					if (index >= maxLen) {
-						LOGGER.info("Reached End");
-						finished = true;
-						break;
-					}
-
-					if (input.equals("#" + end)) {
-						LOGGER.info("Reached End Label");
-						finished = true;
-						break;
-					}
-
-					input = wordList.get(index++);
-					LOGGER.info("Input: " + input);
-				}
-			} else {
-				LOGGER.info("Reached End");
+			if (scanner.isFinished()) {
 				finished = true;
 				break;
 			}
 		}
 
-		index--;
+		scanner.decrementIndex();
 		if (doubleNote.getNote2() == null)
 			doubleNote.getNote1().setHoldCount(holdCount);
 		else
@@ -312,13 +254,12 @@ public class Parser {
 			String fullNote = note.getPrefix() + noteName + note.getSuffix();
 			throw new NoteOutOfBoundsException(LOGGER, fullNote);
 		}
-
 	}
 
 	private static boolean finish(String start) {
 		if (repeat) {
 			LOGGER.info("Finished. Repeating.");
-			index = 0;
+			scanner.reset();
 			try {
 				moveCursorToStart(start);
 			} catch (NoStartLabelException e) {

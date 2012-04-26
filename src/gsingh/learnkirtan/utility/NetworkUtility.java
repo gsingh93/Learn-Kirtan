@@ -15,6 +15,7 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.swing.JCheckBox;
@@ -29,6 +30,10 @@ public class NetworkUtility {
 	 */
 	private final static Logger LOGGER = Logger.getLogger(NetworkUtility.class
 			.getName());
+	static {
+		LOGGER.addHandler(Main.logFile);
+		LOGGER.setLevel(Level.INFO);
+	}
 
 	private static JComboBox reminder;
 

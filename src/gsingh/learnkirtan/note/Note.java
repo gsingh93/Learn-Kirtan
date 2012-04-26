@@ -72,8 +72,10 @@ public class Note {
 		validateAffix(prefix, true);
 		validateAffix(suffix, false);
 
-		if ((isTheevra && isKomal) || (isUpper && isLower))
+		if ((isTheevra && isKomal) || (isUpper && isLower)) {
+			LOGGER.warning("Note contains two opposite properties");
 			isValid = false;
+		}
 
 		validateNote(name);
 	}
@@ -86,8 +88,10 @@ public class Note {
 				count1++;
 			else if (s.charAt(i) == '\'')
 				count2++;
-			else
+			else {
+				LOGGER.warning("Character " + s.charAt(i) + " found in affix");
 				isValid = false;
+			}
 		}
 
 		if (prefix) {
@@ -118,13 +122,13 @@ public class Note {
 			return;
 		}
 
-		if (note.equals("MA") && isTheevra) {
+		if (!note.equals("MA") && isTheevra) {
 			LOGGER.warning("Invalid Note Name: " + note);
 			isValid = false;
 			return;
 		}
 
-		if ((note.equals("RE") || note.equals("GA") || note.equals("DHA") || note
+		if (!(note.equals("RE") || note.equals("GA") || note.equals("DHA") || note
 				.equals("NI")) && isKomal) {
 			LOGGER.warning("Invalid Note Name: " + note);
 			isValid = false;
