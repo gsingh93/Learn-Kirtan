@@ -76,7 +76,8 @@ public class Parser {
 		// Find starting label if present
 		start = start.toUpperCase();
 		end = end.toUpperCase();
-		moveCursorToStart(start);
+		if (!moveCursorToStart(start))
+			stop = true;
 
 		while (!stop) {
 			if (pause)
@@ -107,6 +108,7 @@ public class Parser {
 				} else
 					break;
 			}
+
 		}
 
 		LOGGER.info("Left Loop. Returning.");
@@ -117,9 +119,10 @@ public class Parser {
 		finished = false;
 	}
 
-	private static void moveCursorToStart(String start) {
+	private static boolean moveCursorToStart(String start) {
+		String input = null;
 		if (!start.equals("")) {
-			String input = wordList.get(index++);
+			input = wordList.get(index++);
 			while (!input.equals("#" + start)) {
 				if (index < wordList.size()) {
 					input = wordList.get(index++);
@@ -133,11 +136,29 @@ public class Parser {
 											+ "but that label could not be found. Make sure there is a "
 											+ "'#' before the label.", "Error",
 									JOptionPane.ERROR_MESSAGE);
-					return;
+					return false;
 				}
 			}
 		} else
 			LOGGER.info("No starting label supplied.");
+		System.out.println(index);
+		System.out.println(input);
+		if (index < wordList.size())
+			input = wordList.get(index);
+
+		System.out.println(input);
+		if (input.equals("-")) {
+			LOGGER.warning("ERROR: Dash found as first note.");
+			JOptionPane
+					.showMessageDialog(
+							null,
+							"Error: The first note found was a dash, which is not allowed.",
+							"Error", JOptionPane.ERROR_MESSAGE);
+			return false;
+		}
+
+		return true;
+
 	}
 
 	// TODO: Refactor
@@ -155,7 +176,7 @@ public class Parser {
 		}
 
 		// Check if label
-		while (input.charAt(0) == '#') {
+		while (input.charAt(0) == '#' || input.equals("-")) {
 			LOGGER.info("Checking Label: " + input);
 			// Check if end label
 
@@ -309,7 +330,8 @@ public class Parser {
 		if (repeat) {
 			LOGGER.info("Finished. Repeating.");
 			index = 0;
-			moveCursorToStart(start);
+			if (!moveCursorToStart(start))
+				return false;
 			return true;
 		} else {
 			LOGGER.info("Finished. Returning.");
