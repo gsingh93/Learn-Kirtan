@@ -16,6 +16,7 @@
 		<mapID target="repeat" url="help/repeat.html" />
 		<mapID target="labels" url="help/labels.html" />
 		<mapID target="changesa" url="help/changesa.html" />
+		<mapID target="modes" url="help/modes.html" />
 		<mapID target="shortcuts" url="help/shortcuts.html" />
 		<mapID target="files" url="help/files.html" />
 

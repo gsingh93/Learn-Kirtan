@@ -17,6 +17,7 @@
 			<tocitem text="Starting and Ending Labels" target="labels"/>
 			<tocitem text="Repeat" target="repeat"/>
 			<tocitem text="Changing Sa" target="changesa"/>
+			<tocitem text="Keyboard Modes" target="modes"/>
 			<tocitem text="Shortcut Keys" target="shortcuts"/>
 			<tocitem text="Opening and Saving Files" target="files"/>
 		</tocitem>
