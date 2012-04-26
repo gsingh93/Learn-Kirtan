@@ -27,7 +27,6 @@ public class SettingsManager {
 	 */
 	Document dom;
 
-	// TODO: Read settings from file
 	public SettingsManager() {
 		// Retrieve DOM from XML file
 		DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();

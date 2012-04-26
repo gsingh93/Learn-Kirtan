@@ -899,8 +899,16 @@ public class Main {
 					final int key = letterToKey(String.valueOf(e.getKeyChar())
 							.toUpperCase());
 					if (key < 36 && key >= 0) {
-						shabadEditor.insert(Key.notes.get(key) + " ",
-								shabadEditor.getCaretPosition());
+						int firstSa = Key.notes.indexOf("Sa");
+						String prefix = "";
+						String suffix = "";
+						if (key < firstSa)
+							prefix = ".";
+						else if (key > firstSa + 12)
+							suffix = ".";
+						shabadEditor
+								.insert(prefix + Key.notes.get(key) + suffix
+										+ " ", shabadEditor.getCaretPosition());
 						new Thread(new Runnable() {
 							public void run() {
 								keys[key].playOnce(500);
