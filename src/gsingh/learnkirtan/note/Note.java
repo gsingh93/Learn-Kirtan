@@ -1,4 +1,6 @@
-package gsingh.learnkirtan;
+package gsingh.learnkirtan.note;
+
+import gsingh.learnkirtan.Main;
 
 import java.util.Arrays;
 import java.util.List;

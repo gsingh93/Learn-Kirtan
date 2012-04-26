@@ -1,5 +1,8 @@
 package gsingh.learnkirtan;
 
+import gsingh.learnkirtan.note.DoubleNote;
+import gsingh.learnkirtan.note.Note;
+
 import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Level;

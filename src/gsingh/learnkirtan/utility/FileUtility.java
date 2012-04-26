@@ -1,4 +1,4 @@
-package gsingh.learnkirtan;
+package gsingh.learnkirtan.utility;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;

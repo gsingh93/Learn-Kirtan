@@ -1,4 +1,5 @@
-package gsingh.learnkirtan;
+package gsingh.learnkirtan.note;
+
 
 public class DoubleNote {
 	private Note note1 = null;

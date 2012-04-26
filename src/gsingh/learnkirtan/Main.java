@@ -3,10 +3,11 @@ package gsingh.learnkirtan;
 import gsingh.learnkirtan.keys.BlackKey;
 import gsingh.learnkirtan.keys.Key;
 import gsingh.learnkirtan.keys.WhiteKey;
+import gsingh.learnkirtan.utility.FileUtility;
+import gsingh.learnkirtan.utility.NetworkUtility;
 
 import java.awt.Color;
 import java.awt.Container;
-import java.awt.Desktop;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
@@ -21,16 +22,11 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.OutputStream;
-import java.net.MalformedURLException;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.net.URL;
 import java.text.DecimalFormat;
 import java.util.Calendar;
@@ -190,12 +186,19 @@ public class Main {
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
 				main = new Main();
+
+				// Check for updates
+				NetworkUtility.checkForUpdate(VERSION);
 			}
 		});
 	}
 
 	public static Main getMain() {
 		return main;
+	}
+
+	public SettingsManager getSettingsManager() {
+		return settingsManager;
 	}
 
 	public Main() {
@@ -211,9 +214,6 @@ public class Main {
 									+ " please contact the developer for assistance.",
 							"Error", JOptionPane.ERROR_MESSAGE);
 		}
-
-		// Check for updates
-		checkForUpdate();
 
 		settingsManager = new SettingsManager();
 		createAndShowGui();
@@ -260,42 +260,6 @@ public class Main {
 
 		LOGGER.info("Soundbank installation successful.");
 		return true;
-	}
-
-	/**
-	 * Connects to the server to see if there is a later update. If found, offer
-	 * to go to download page
-	 */
-	public void checkForUpdate() {
-		String url = "http://michigangurudwara.com/version.txt";
-		String updateSite = "https://github.com/gsingh93/Learn-Kirtan/wiki";
-		String line = VERSION;
-		try {
-			BufferedReader reader = new BufferedReader(new InputStreamReader(
-					new URL(url).openStream()));
-			line = reader.readLine();
-
-			if (!line.equals(VERSION)) {
-				int result = JOptionPane
-						.showOptionDialog(
-								frame,
-								"The software has detected that an update is available. Would you like to go to the download page?",
-								"Update Available", JOptionPane.YES_NO_OPTION,
-								JOptionPane.INFORMATION_MESSAGE, null, null,
-								null);
-
-				LOGGER.info("Update Available");
-
-				if (result == JOptionPane.YES_OPTION)
-					Desktop.getDesktop().browse(new URI(updateSite));
-			}
-		} catch (MalformedURLException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		} catch (URISyntaxException e) {
-			e.printStackTrace();
-		}
 	}
 
 	private void createAndShowGui() {
