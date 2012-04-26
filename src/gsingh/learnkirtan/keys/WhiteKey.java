@@ -13,8 +13,8 @@ public class WhiteKey extends Key {
 	 */
 	private static Font font = new Font("Dialog", Font.PLAIN, 14);
 
-	public WhiteKey() {
-		super();
+	public WhiteKey(int saKey) {
+		super(saKey);
 		setMargin(new Insets(100, 0, 0, 0));
 		setFont(font);
 		setBackground(Color.WHITE);

@@ -19,8 +19,8 @@ public class BlackKey extends Key implements MouseListener {
 	 */
 	private static Font dhaFont = new Font("Dialog", Font.PLAIN, 7);
 
-	public BlackKey() {
-		super();
+	public BlackKey(int saKey) {
+		super(saKey);
 		setBackground(Color.BLACK);
 		setForeground(Color.WHITE);
 		setMargin(new Insets(0, 0, 0, 0));

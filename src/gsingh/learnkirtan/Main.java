@@ -209,7 +209,7 @@ public class Main {
 		// Check for updates
 		checkForUpdate();
 
-		settingsManager = new SettingsManager(10);
+		settingsManager = new SettingsManager();
 		createAndShowGui();
 	}
 
@@ -591,7 +591,7 @@ public class Main {
 	 *            - a number which is used to calculate the position of the key
 	 */
 	void addWhiteKey(Container panel, int i) {
-		WhiteKey b = new WhiteKey();
+		WhiteKey b = new WhiteKey(settingsManager.getSaKey());
 		b.setLocation(i++ * Key.WHITE_KEY_WIDTH, 0);
 		panel.add(b, 0, -1);
 		keys[index++] = b;
@@ -606,7 +606,7 @@ public class Main {
 	 *            - a number which is used to calculate the position of the key
 	 */
 	void addBlackKey(Container panel, int factor) {
-		BlackKey b = new BlackKey();
+		BlackKey b = new BlackKey(settingsManager.getSaKey());
 		b.setLocation(Key.WHITE_KEY_WIDTH - Key.BLACK_KEY_WIDTH / 2 + factor
 				* Key.WHITE_KEY_WIDTH, 0);
 		panel.add(b, 1, -1);
@@ -688,7 +688,7 @@ public class Main {
 	private void save() {
 		int success = -1;
 		try {
-			success = FileIO.save(shabadEditor, curFile);
+			success = FileUtility.save(shabadEditor, curFile);
 		} catch (IOException e1) {
 			e1.printStackTrace();
 		}
@@ -793,7 +793,7 @@ public class Main {
 						save();
 
 					File tempFile = curFile;
-					if ((curFile = FileIO.openFile(shabadEditor, curFile)) != null) {
+					if ((curFile = FileUtility.openFile(shabadEditor, curFile)) != null) {
 						frame.setTitle(BASETITLE + curFile.getName());
 						startField.setText("");
 						endField.setText("");
@@ -856,9 +856,6 @@ public class Main {
 
 					int difference = value - settingsManager.getSaKey() - 1;
 
-					LOGGER.info("Sa key changed to: " + value);
-					settingsManager.setSaKey(value);
-
 					if (difference > 0) {
 						for (int i = 0; i < difference; i++) {
 							Key.notes.add(0,
@@ -882,6 +879,9 @@ public class Main {
 							}
 						}
 					}
+
+					LOGGER.info("Sa key changed to: " + value);
+					settingsManager.setSaKey(value);
 				}
 
 			}

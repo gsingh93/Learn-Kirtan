@@ -53,6 +53,11 @@ public class Key extends JButton implements MouseListener {
 
 	private static Synthesizer synth = null;
 
+	/**
+	 * Allows for a one time shift of keys based on user settings at startup
+	 */
+	private static boolean shifted = false;
+
 	static {
 		try {
 			synth = MidiSystem.getSynthesizer();
@@ -63,11 +68,12 @@ public class Key extends JButton implements MouseListener {
 	}
 	MidiChannel channel[];
 
-	public Key() {
+	public Key(int saKey) {
 		LOGGER.addHandler(Main.logFile);
 		LOGGER.setLevel(Level.INFO);
 
 		note = noteCount++;
+		shiftKeys(saKey);
 		label();
 		channel = synth.getChannels();
 		addKeyListener(new KeyboardListener());
@@ -75,6 +81,25 @@ public class Key extends JButton implements MouseListener {
 		// Sets the instrument to an instrument close to a harmonium
 		channel[0].programChange(20);
 		addMouseListener(this);
+
+	}
+
+	public static void shiftKeys(int saKey) {
+
+		if (!shifted) {
+			int difference = saKey - 10;
+
+			if (difference > 0) {
+				for (int i = 0; i < difference; i++) {
+					Key.notes.add(0, Key.notes.remove((Key.notes.size() - 1)));
+				}
+			} else if (difference < 0) {
+				for (int i = 0; i < -1 * difference; i++) {
+					Key.notes.add(Key.notes.size() - 1, Key.notes.remove(0));
+				}
+			}
+			shifted = true;
+		}
 	}
 
 	public void label() {
