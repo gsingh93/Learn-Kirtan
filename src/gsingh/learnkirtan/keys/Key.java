@@ -1,5 +1,6 @@
 package gsingh.learnkirtan.keys;
 
+import gsingh.learnkirtan.Constants.Octave;
 import gsingh.learnkirtan.Main;
 
 import java.awt.event.KeyAdapter;
@@ -7,6 +8,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
@@ -47,6 +49,25 @@ public class Key extends JButton implements MouseListener {
 					"Re", "'Ga", "Ga", "Ma", "Ma'", "Pa", "'Dha", "Dha", "'Ni",
 					"Ni", "Sa", "'Re" }));
 
+	private static List<String> keys = new LinkedList<String>(
+			Arrays.asList(new String[] { "A", "W", "S", "E", "D", "F", "T",
+					"G", "Y", "H", "J", "I", "K", "O", "L", "P", ";", "'", "]" }));
+	private static HashMap<Integer, String> keyMapLower = new HashMap<Integer, String>();
+	private static HashMap<Integer, String> keyMapMiddle = new HashMap<Integer, String>();
+	private static HashMap<Integer, String> keyMapUpper = new HashMap<Integer, String>();
+
+	static {
+		for (int i = 0; i < 13; i++) {
+			keyMapLower.put(40 + i, keys.get(i + 5));
+		}
+		for (int i = 0; i < 19; i++) {
+			keyMapMiddle.put(47 + i, keys.get(i));
+		}
+		for (int i = 0; i < 15; i++) {
+			keyMapUpper.put(59 + i, keys.get(i));
+		}
+	}
+
 	private static Synthesizer synth = null;
 
 	/**
@@ -70,14 +91,14 @@ public class Key extends JButton implements MouseListener {
 
 		note = noteCount++;
 		shiftKeys(saKey);
-		label();
+		labelSargamNotes();
+		labelKeyboardNotes(Octave.MIDDLE);
 		channel = synth.getChannels();
 		addKeyListener(new KeyboardListener());
 
 		// Sets the instrument to an instrument close to a harmonium
 		channel[0].programChange(20);
 		addMouseListener(this);
-
 	}
 
 	public static void shiftKeys(int saKey) {
@@ -98,8 +119,25 @@ public class Key extends JButton implements MouseListener {
 		}
 	}
 
-	public void label() {
+	public void labelSargamNotes() {
 		setText(notes.get(note - 40));
+	}
+
+	public void labelKeyboardNotes(Octave octave) {
+		if (octave == Octave.LOWER) {
+			if (keyMapLower.containsKey(note))
+				setText("<html><div style='text-align:center'>" + getText()
+						+ "<br>" + keyMapLower.get(note) + "</div></html>");
+		} else if (octave == Octave.MIDDLE) {
+			if (keyMapMiddle.containsKey(note))
+				setText("<html><div style='text-align:center'>" + getText()
+						+ "<br>" + keyMapMiddle.get(note) + "</div></html>");
+		} else if (octave == Octave.UPPER) {
+			if (keyMapUpper.containsKey(note))
+				setText("<html><div style='text-align:center'>" + getText()
+						+ "<br>" + keyMapUpper.get(note) + "</div></html>");
+		}
+
 	}
 
 	/**

@@ -4,6 +4,7 @@ import static gsingh.learnkirtan.Constants.BLACK_KEY_WIDTH;
 import static gsingh.learnkirtan.Constants.MAX_KEYS;
 import static gsingh.learnkirtan.Constants.WHITE_KEY_HEIGHT;
 import static gsingh.learnkirtan.Constants.WHITE_KEY_WIDTH;
+import gsingh.learnkirtan.Constants.Octave;
 import gsingh.learnkirtan.keys.BlackKey;
 import gsingh.learnkirtan.keys.Key;
 import gsingh.learnkirtan.keys.WhiteKey;
@@ -89,6 +90,14 @@ public class Main {
 	 */
 	private final static Logger LOGGER = Logger.getLogger(Main.class.getName());
 
+	private static enum Mode {
+		EDIT, COMPOSE
+	}
+
+	private enum SpaceKey {
+		SPACE, BACKSPACE
+	}
+
 	/**
 	 * The {@link FileHandler} to which log messages are written
 	 */
@@ -161,11 +170,8 @@ public class Main {
 	private UndoAction undoAction = new UndoAction();
 	private RedoAction redoAction = new RedoAction();
 
-	private String mode = "edit";
-	private String octave = "middle";
-
-	private static final String SPACE = "space";
-	private static final String BACK_SPACE = "back space";
+	private Mode mode = Mode.EDIT;
+	private Octave octave = Octave.MIDDLE;
 
 	public static void main(String[] args) {
 
@@ -292,11 +298,14 @@ public class Main {
 		InputMap inputMap = shabadEditor.getInputMap(JComponent.WHEN_FOCUSED);
 		ActionMap actionMap = shabadEditor.getActionMap();
 
-		inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_SPACE, 0), SPACE);
+		inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_SPACE, 0),
+				SpaceKey.SPACE);
 		inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_BACK_SPACE, 0),
-				BACK_SPACE);
-		actionMap.put(SPACE, new KeyAction(shabadEditor, SPACE));
-		actionMap.put(BACK_SPACE, new KeyAction(shabadEditor, BACK_SPACE));
+				SpaceKey.BACKSPACE);
+		actionMap.put(SpaceKey.SPACE, new KeyAction(shabadEditor,
+				SpaceKey.SPACE));
+		actionMap.put(SpaceKey.BACKSPACE, new KeyAction(shabadEditor,
+				SpaceKey.BACKSPACE));
 
 		constructKeyboard(pianoPanel);
 
@@ -857,7 +866,8 @@ public class Main {
 
 					// Relabel the keys
 					for (Key key : keys) {
-						key.label();
+						key.labelSargamNotes();
+						key.labelKeyboardNotes(octave);
 						if (key instanceof BlackKey) {
 							if (key.getText().contains("Dha")) {
 								key.setFont(new Font("Dialog", Font.PLAIN, 7));
@@ -879,14 +889,11 @@ public class Main {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			String command = e.getActionCommand();
-			if (command.equals("playmode")) {
-				mode = "play";
-				shabadEditor.setEditable(false);
-			} else if (command.equals("composemode")) {
-				mode = "compose";
+			if (command.equals("composemode")) {
+				mode = Mode.COMPOSE;
 				shabadEditor.setEditable(false);
 			} else if (command.equals("editmode")) {
-				mode = "edit";
+				mode = Mode.EDIT;
 				shabadEditor.setEditable(true);
 			}
 		}
@@ -903,7 +910,7 @@ public class Main {
 		@Override
 		public void keyTyped(KeyEvent e) {
 			if (!e.isAltDown() && !e.isControlDown()) {
-				if (mode.equals("compose")) {
+				if (mode == Mode.COMPOSE) {
 					final int key = letterToKey(String.valueOf(e.getKeyChar())
 							.toUpperCase());
 					if (key < MAX_KEYS && key >= 0) {
@@ -972,24 +979,34 @@ public class Main {
 		} else if (letter.equals("Z")) {
 			LOGGER.info("User pressed Z.");
 			LOGGER.info("Initial Octave: " + octave);
-			if (octave.equals("upper"))
-				octave = "middle";
-			else if (octave.equals("middle"))
-				octave = "lower";
+			if (octave == Octave.UPPER)
+				octave = Octave.MIDDLE;
+			else if (octave == Octave.MIDDLE)
+				octave = Octave.LOWER;
 			LOGGER.info("Final Octave: " + octave);
+
+			for (Key k : keys) {
+				k.labelSargamNotes();
+				k.labelKeyboardNotes(octave);
+			}
 		} else if (letter.equals("X")) {
 			LOGGER.info("User pressed X.");
 			LOGGER.info("Initial Octave: " + octave);
-			if (octave.equals("middle"))
-				octave = "upper";
-			else if (octave.equals("lower"))
-				octave = "middle";
+			if (octave == Octave.MIDDLE)
+				octave = Octave.UPPER;
+			else if (octave == Octave.LOWER)
+				octave = Octave.MIDDLE;
 			LOGGER.info("Final Octave: " + octave);
+
+			for (Key k : keys) {
+				k.labelSargamNotes();
+				k.labelKeyboardNotes(octave);
+			}
 		}
 
-		if (octave.equals("lower"))
+		if (octave == Octave.LOWER)
 			key -= 12;
-		else if (octave.equals("upper"))
+		else if (octave == Octave.UPPER)
 			key += 12;
 		return key;
 	}
@@ -1136,17 +1153,17 @@ public class Main {
 
 	@SuppressWarnings("serial")
 	class KeyAction extends AbstractAction {
-		private String title;
+		private SpaceKey key;
 
-		public KeyAction(JTextArea textArea, String title) {
-			this.title = title;
+		public KeyAction(JTextArea textArea, SpaceKey key) {
+			this.key = key;
 		}
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			if (title.equals(SPACE)) {
+			if (key.equals(SpaceKey.SPACE) && mode == Mode.COMPOSE) {
 				shabadEditor.insert(" ", shabadEditor.getCaretPosition());
-			} else if (title.equals(BACK_SPACE)) {
+			} else if (key.equals(SpaceKey.BACKSPACE)) {
 				int pos = shabadEditor.getCaretPosition();
 				try {
 					int start = shabadEditor.getSelectionStart();
