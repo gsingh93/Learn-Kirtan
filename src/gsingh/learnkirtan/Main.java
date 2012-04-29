@@ -392,6 +392,8 @@ public class Main {
 		// Intialize helpMenu items
 		JMenuItem helpItem = new JMenuItem("Help", KeyEvent.VK_H);
 		JMenuItem aboutItem = new JMenuItem("About", KeyEvent.VK_A);
+		JMenuItem checkForUpdateItem = new JMenuItem("Check For Updates",
+				KeyEvent.VK_C);
 
 		// Set listeners
 		FileMenuListener l1 = new FileMenuListener();
@@ -453,6 +455,8 @@ public class Main {
 
 		aboutItem.setActionCommand("about");
 		aboutItem.addActionListener(l4);
+		checkForUpdateItem.setActionCommand("checkforupdate");
+		checkForUpdateItem.addActionListener(l4);
 
 		fileMenu.setMnemonic(KeyEvent.VK_F);
 		fileMenu.add(createItem);
@@ -478,6 +482,7 @@ public class Main {
 		helpMenu.setMnemonic(KeyEvent.VK_H);
 		helpMenu.add(helpItem);
 		helpMenu.add(aboutItem);
+		helpMenu.add(checkForUpdateItem);
 
 		frame.setJMenuBar(menuBar);
 
@@ -1088,6 +1093,12 @@ public class Main {
 										+ "\n Version " + VERSION, "About",
 								JOptionPane.DEFAULT_OPTION,
 								JOptionPane.INFORMATION_MESSAGE);
+			} else if (command.equals("checkforupdate")) {
+				if (!NetworkUtility.checkForUpdate(VERSION))
+					JOptionPane.showConfirmDialog(frame,
+							"The software is up to date.", "No Updates",
+							JOptionPane.DEFAULT_OPTION,
+							JOptionPane.INFORMATION_MESSAGE);
 			}
 		}
 	}

@@ -47,7 +47,7 @@ public class NetworkUtility {
 	 * Connects to the server to see if there is a later update. If found, offer
 	 * to go to download page
 	 */
-	public static void checkForUpdate(final String VERSION) {
+	public static boolean checkForUpdate(final String VERSION) {
 		String line = VERSION;
 		SettingsManager settingsManager = Main.getMain().getSettingsManager();
 		if (settingsManager.getRemind()) {
@@ -70,6 +70,7 @@ public class NetworkUtility {
 
 					settingsManager.setRemind(!checked,
 							Duration.values()[reminder.getSelectedIndex()]);
+					return true;
 				}
 			} catch (MalformedURLException e) {
 				e.printStackTrace();
@@ -81,6 +82,8 @@ public class NetworkUtility {
 		} else {
 			settingsManager.checkReminderOffDurationReached();
 		}
+
+		return false;
 	}
 
 	private static JPanel constructUpdateDialog() {
