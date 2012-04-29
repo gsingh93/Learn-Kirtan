@@ -239,7 +239,7 @@ public class Main {
 	 * @return - true if file is present or was installed correctly. False if
 	 *         there was an error.
 	 */
-	public boolean installSoundBank() {
+	private boolean installSoundBank() {
 		// Determine where the JRE is installed
 		File file = new File("C:\\Program Files (x86)\\Java\\jre6");
 		if (!file.exists()) {
@@ -438,14 +438,14 @@ public class Main {
 
 		helpItem.setActionCommand("help");
 
-		// 1. create HelpSet and HelpBroker objects
+		// Create HelpSet and HelpBroker objects
 		HelpSet hs = getHelpSet("Sample.hs");
 		HelpBroker hb = hs.createHelpBroker();
 
-		// 2. assign help to components
+		// Assign help to components
 		CSH.setHelpIDString(helpItem, "top");
 
-		// 3. handle events
+		// Handle events
 		helpItem.addActionListener(new CSH.DisplayHelpFromSource(hb));
 		HelpMenuListener l4 = new HelpMenuListener();
 		helpItem.setAccelerator(KeyStroke.getKeyStroke("F1"));
@@ -486,7 +486,7 @@ public class Main {
 	/**
 	 * find the helpset file and create a HelpSet object
 	 */
-	public HelpSet getHelpSet(String helpsetfile) {
+	private HelpSet getHelpSet(String helpsetfile) {
 		HelpSet hs = null;
 		ClassLoader cl = this.getClass().getClassLoader();
 		try {
@@ -505,7 +505,7 @@ public class Main {
 	 * @param controlPanel
 	 *            - the panel to initialize
 	 */
-	void initControlPanel(JPanel controlPanel) {
+	private void initControlPanel(JPanel controlPanel) {
 		LOGGER.fine("Control panel initialization started.");
 
 		JButton playButton = new JButton("Play");
@@ -564,7 +564,7 @@ public class Main {
 	 * @param panel
 	 *            - the layer in which to construct the piano
 	 */
-	void constructKeyboard(Container panel) {
+	private void constructKeyboard(Container panel) {
 		LOGGER.fine("Keyboard construction started.");
 
 		int i = 0;
@@ -598,7 +598,7 @@ public class Main {
 	 * @param i
 	 *            - a number which is used to calculate the position of the key
 	 */
-	void addWhiteKey(Container panel, int i) {
+	private void addWhiteKey(Container panel, int i) {
 		if (index < MAX_KEYS) {
 			WhiteKey b = new WhiteKey(settingsManager.getSaKey());
 			b.setLocation(i++ * WHITE_KEY_WIDTH, 0);
@@ -615,7 +615,7 @@ public class Main {
 	 * @param factor
 	 *            - a number which is used to calculate the position of the key
 	 */
-	void addBlackKey(Container panel, int factor) {
+	private void addBlackKey(Container panel, int factor) {
 		if (index < MAX_KEYS) {
 			BlackKey b = new BlackKey(settingsManager.getSaKey());
 			b.setLocation(WHITE_KEY_WIDTH - BLACK_KEY_WIDTH / 2 + factor
@@ -631,7 +631,7 @@ public class Main {
 	 * {@link GridBagLayout}.
 	 * 
 	 */
-	void initMainPanel(JPanel mainPanel, JPanel controlPanel,
+	private void initMainPanel(JPanel mainPanel, JPanel controlPanel,
 			JLayeredPane pianoPanel) {
 		LOGGER.fine("Main panel initialization started.");
 
@@ -670,7 +670,7 @@ public class Main {
 	 *            - true if the inputs should be enabled, false if they should
 	 *            be disabled.
 	 */
-	public void setInputBoxes(boolean bool) {
+	private void setInputBoxes(boolean bool) {
 		LOGGER.info("Input boxes " + (bool ? "enabled." : "disabled."));
 
 		shabadEditor.setEnabled(bool);

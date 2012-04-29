@@ -66,6 +66,8 @@ public class Parser {
 	public static void parseAndPlay(String shabad, String start, String end,
 			double tempo, int saKey) {
 
+		isPlaying = true;
+
 		shabad = shabad.toUpperCase();
 		start = "#" + start.toUpperCase();
 		end = "#" + end.toUpperCase();
