@@ -26,6 +26,11 @@ public class SettingsManager {
 	 */
 	private int saKey;
 
+	private boolean remind;
+	private long until;
+	private boolean showSargam;
+	private boolean showKeys;
+
 	/**
 	 * Settings XML document
 	 */
@@ -48,9 +53,37 @@ public class SettingsManager {
 		}
 
 		// Get saKey
-		saKey = Integer.valueOf(dom.getElementsByTagName("sakey").item(0)
-				.getTextContent());
+		saKey = Integer.valueOf(getSetting("sakey"));
 		LOGGER.info("Retrieved saKey: " + saKey);
+
+		// Get remind and until values
+		until = Long.valueOf(getSetting("until"));
+		if (getSetting("remind").equals("yes")) {
+			remind = true;
+		} else {
+			remind = false;
+			LOGGER.info("until: " + until);
+		}
+		LOGGER.info("remind: " + remind);
+
+		// Get label values
+		if (getSetting("showsargam").equals("yes")) {
+			showSargam = true;
+		} else {
+			showSargam = false;
+		}
+		LOGGER.info("showSargam: " + showSargam);
+
+		if (getSetting("showkeys").equals("yes")) {
+			showKeys = true;
+		} else {
+			showKeys = false;
+		}
+		LOGGER.info("showKeys: " + showKeys);
+	}
+
+	private String getSetting(String name) {
+		return dom.getElementsByTagName(name).item(0).getTextContent();
 	}
 
 	/**
@@ -67,6 +100,36 @@ public class SettingsManager {
 		FileUtility.saveSettings(dom);
 	}
 
+	public void setShowSargamLabels(boolean bool) {
+		String value;
+		if (bool)
+			value = "yes";
+		else
+			value = "no";
+
+		showSargam = bool;
+		changeSetting("showsargam", value);
+	}
+
+	public void setShowKeyboardLabels(boolean bool) {
+		String value;
+		if (bool)
+			value = "yes";
+		else
+			value = "no";
+
+		showKeys = bool;
+		changeSetting("showkeys", value);
+	}
+
+	public boolean getShowSargamLabels() {
+		return showSargam;
+	}
+
+	public boolean getShowKeyboardLabels() {
+		return showKeys;
+	}
+
 	/**
 	 * Turns the update reminder off if {@code bool} is false.
 	 * 
@@ -78,15 +141,20 @@ public class SettingsManager {
 	 */
 	public void setRemind(boolean bool, Duration duration) {
 		if (!bool) {
+			String d = calculateDate(duration);
+			remind = false;
+			until = Long.valueOf(d);
 			changeSetting("remind", "no");
-			changeSetting("until", calculateDate(duration));
+			changeSetting("until", d);
 		} else {
+			remind = true;
 			changeSetting("remind", "yes");
 		}
 	}
 
 	/**
-	 * Calculates the date until reminders will be turned back on
+	 * Calculates the date (in milliseconds) until reminders will be turned back
+	 * on
 	 * 
 	 */
 	private String calculateDate(Duration duration) {
@@ -108,11 +176,7 @@ public class SettingsManager {
 	 * @return - true if reminders are on, false otherwise
 	 */
 	public boolean getRemind() {
-		if (dom.getElementsByTagName("remind").item(0).getTextContent()
-				.equals("yes"))
-			return true;
-		else
-			return false;
+		return remind;
 	}
 
 	/**
@@ -120,13 +184,12 @@ public class SettingsManager {
 	 * completed
 	 */
 	public void checkReminderOffDurationReached() {
-		long until = Long.valueOf(dom.getElementsByTagName("until").item(0)
-				.getTextContent());
 		long time = System.currentTimeMillis();
 
 		if (until < time) {
 			LOGGER.info("Reminder duration reached.");
 			changeSetting("remind", "yes");
+			remind = true;
 		}
 	}
 

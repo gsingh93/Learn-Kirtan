@@ -381,8 +381,9 @@ public class Main {
 				"Show Sargam Labels");
 		JCheckBoxMenuItem showKeyboardLabelsItem = new JCheckBoxMenuItem(
 				"Show Keyboard Labels");
-		showSargamLabelsItem.setSelected(true);
-		showKeyboardLabelsItem.setSelected(true);
+		showSargamLabelsItem.setSelected(settingsManager.getShowSargamLabels());
+		showKeyboardLabelsItem.setSelected(settingsManager
+				.getShowKeyboardLabels());
 
 		// Initialize KeyboardMenu items
 		JMenuItem composeItem = new JMenuItem("Compose", KeyEvent.VK_C);
@@ -600,7 +601,8 @@ public class Main {
 	 */
 	private void addWhiteKey(Container panel, int i) {
 		if (index < MAX_KEYS) {
-			WhiteKey b = new WhiteKey(settingsManager.getSaKey());
+			WhiteKey b = new WhiteKey(settingsManager.getSaKey(),
+					settingsManager);
 			b.setLocation(i++ * WHITE_KEY_WIDTH, 0);
 			panel.add(b, 0, -1);
 			keys[index++] = b;
@@ -617,7 +619,8 @@ public class Main {
 	 */
 	private void addBlackKey(Container panel, int factor) {
 		if (index < MAX_KEYS) {
-			BlackKey b = new BlackKey(settingsManager.getSaKey());
+			BlackKey b = new BlackKey(settingsManager.getSaKey(),
+					settingsManager);
 			b.setLocation(WHITE_KEY_WIDTH - BLACK_KEY_WIDTH / 2 + factor
 					* WHITE_KEY_WIDTH, 0);
 			panel.add(b, 1, -1);
@@ -913,28 +916,30 @@ public class Main {
 			Object source = e.getItemSelectable();
 			if (source == sargamLabels) {
 				if (e.getStateChange() == ItemEvent.SELECTED) {
+					sargamLabeled = true;
 					for (Key key : keys) {
 						key.labelSargamNote();
-						sargamLabeled = true;
 					}
 				} else {
+					sargamLabeled = false;
 					for (Key key : keys) {
 						key.clearSargamNote();
-						sargamLabeled = false;
 					}
 				}
+				settingsManager.setShowSargamLabels(sargamLabeled);
 			} else if (source == keyboardLabels) {
 				if (e.getStateChange() == ItemEvent.SELECTED) {
+					keyLabeled = true;
 					for (Key key : keys) {
 						key.labelKeyboardNote(octave);
-						keyLabeled = true;
 					}
 				} else {
+					keyLabeled = false;
 					for (Key key : keys) {
 						key.clearKeyboardNote(octave);
-						keyLabeled = false;
 					}
 				}
+				settingsManager.setShowKeyboardLabels(keyLabeled);
 			}
 
 		}

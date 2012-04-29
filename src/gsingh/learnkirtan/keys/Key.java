@@ -2,6 +2,7 @@ package gsingh.learnkirtan.keys;
 
 import gsingh.learnkirtan.Constants.Octave;
 import gsingh.learnkirtan.Main;
+import gsingh.learnkirtan.SettingsManager;
 
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
@@ -85,15 +86,17 @@ public class Key extends JButton implements MouseListener {
 	}
 	MidiChannel channel[];
 
-	public Key(int saKey) {
+	public Key(int saKey, SettingsManager sm) {
 		LOGGER.addHandler(Main.logFile);
 		LOGGER.setLevel(Level.INFO);
 
 		note = noteCount++;
 		shiftKeys(saKey);
 		setText("<html><div style='text-align:center'><span id='sargam'></span><br><span id='key'></span></div></html>");
-		labelSargamNote();
-		labelKeyboardNote(Octave.MIDDLE);
+		if (sm.getShowSargamLabels())
+			labelSargamNote();
+		if (sm.getShowKeyboardLabels())
+			labelKeyboardNote(Octave.MIDDLE);
 		channel = synth.getChannels();
 		addKeyListener(new KeyboardListener());
 

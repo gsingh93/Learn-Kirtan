@@ -4,4 +4,8 @@
 		<remind>yes</remind>
 		<until>1337534160302</until>
 	</updatereminder>
+	<labels>
+		<showsargam>no</showsargam>
+		<showkeys>no</showkeys>
+	</labels>
 </settings>
