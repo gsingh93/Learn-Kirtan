@@ -49,6 +49,7 @@ import javax.swing.ActionMap;
 import javax.swing.InputMap;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
+import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -172,6 +173,9 @@ public class Main {
 
 	private Mode mode = Mode.EDIT;
 	private Octave octave = Octave.MIDDLE;
+
+	private boolean sargamLabeled = true;
+	private boolean keyLabeled = true;
 
 	public static void main(String[] args) {
 
@@ -373,6 +377,12 @@ public class Main {
 
 		// Initialize optionsMenu items
 		JMenuItem saItem = new JMenuItem("Change Sa Key", KeyEvent.VK_C);
+		JCheckBoxMenuItem showSargamLabelsItem = new JCheckBoxMenuItem(
+				"Show Sargam Labels");
+		JCheckBoxMenuItem showKeyboardLabelsItem = new JCheckBoxMenuItem(
+				"Show Keyboard Labels");
+		showSargamLabelsItem.setSelected(true);
+		showKeyboardLabelsItem.setSelected(true);
 
 		// Initialize KeyboardMenu items
 		JMenuItem composeItem = new JMenuItem("Compose", KeyEvent.VK_C);
@@ -407,18 +417,22 @@ public class Main {
 		copyItem.setText("Copy");
 		pasteItem.setText("Paste");
 
-		OptionsMenuListener l2 = new OptionsMenuListener();
+		OptionsMenuListener l2 = new OptionsMenuListener(showSargamLabelsItem,
+				showKeyboardLabelsItem);
 		saItem.setActionCommand("changesa");
 		saItem.addActionListener(l2);
+		showSargamLabelsItem.setActionCommand("sargamlabels");
+		showSargamLabelsItem.addItemListener(l2);
+		showKeyboardLabelsItem.setActionCommand("keyboardlabels");
+		showKeyboardLabelsItem.addItemListener(l2);
 
-		KeyboardMenuListener l4 = new KeyboardMenuListener();
-		;
+		KeyboardMenuListener l3 = new KeyboardMenuListener();
 		composeItem.setActionCommand("composemode");
-		composeItem.addActionListener(l4);
+		composeItem.addActionListener(l3);
 		composeItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_C,
 				ActionEvent.ALT_MASK));
 		editItem.setActionCommand("editmode");
-		editItem.addActionListener(l4);
+		editItem.addActionListener(l3);
 		editItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_E,
 				ActionEvent.ALT_MASK));
 
@@ -433,11 +447,11 @@ public class Main {
 
 		// 3. handle events
 		helpItem.addActionListener(new CSH.DisplayHelpFromSource(hb));
-		HelpMenuListener l3 = new HelpMenuListener();
+		HelpMenuListener l4 = new HelpMenuListener();
 		helpItem.setAccelerator(KeyStroke.getKeyStroke("F1"));
 
 		aboutItem.setActionCommand("about");
-		aboutItem.addActionListener(l3);
+		aboutItem.addActionListener(l4);
 
 		fileMenu.setMnemonic(KeyEvent.VK_F);
 		fileMenu.add(createItem);
@@ -453,6 +467,8 @@ public class Main {
 
 		optionsMenu.setMnemonic(KeyEvent.VK_O);
 		optionsMenu.add(saItem);
+		optionsMenu.add(showSargamLabelsItem);
+		optionsMenu.add(showKeyboardLabelsItem);
 
 		keyboardMenu.setMnemonic(KeyEvent.VK_K);
 		keyboardMenu.add(composeItem);
@@ -477,8 +493,8 @@ public class Main {
 			URL hsURL = HelpSet.findHelpSet(cl, helpsetfile);
 			hs = new HelpSet(null, hsURL);
 		} catch (Exception ee) {
-			System.out.println("HelpSet: " + ee.getMessage());
-			System.out.println("HelpSet: " + helpsetfile + " not found");
+			LOGGER.warning("HelpSet: " + ee.getMessage());
+			LOGGER.warning("HelpSet: " + helpsetfile + " not found");
 		}
 		return hs;
 	}
@@ -827,7 +843,16 @@ public class Main {
 		}
 	}
 
-	class OptionsMenuListener implements ActionListener {
+	class OptionsMenuListener implements ActionListener, ItemListener {
+
+		JCheckBoxMenuItem sargamLabels;
+		JCheckBoxMenuItem keyboardLabels;
+
+		public OptionsMenuListener(JCheckBoxMenuItem item1,
+				JCheckBoxMenuItem item2) {
+			sargamLabels = item1;
+			keyboardLabels = item2;
+		}
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
@@ -866,8 +891,8 @@ public class Main {
 
 					// Relabel the keys
 					for (Key key : keys) {
-						key.labelSargamNotes();
-						key.labelKeyboardNotes(octave);
+						if (sargamLabeled)
+							key.labelSargamNote();
 						if (key instanceof BlackKey) {
 							if (key.getText().contains("Dha")) {
 								key.setFont(new Font("Dialog", Font.PLAIN, 7));
@@ -880,8 +905,38 @@ public class Main {
 					LOGGER.info("Sa key changed to: " + value);
 					settingsManager.setSaKey(value);
 				}
-
 			}
+		}
+
+		@Override
+		public void itemStateChanged(ItemEvent e) {
+			Object source = e.getItemSelectable();
+			if (source == sargamLabels) {
+				if (e.getStateChange() == ItemEvent.SELECTED) {
+					for (Key key : keys) {
+						key.labelSargamNote();
+						sargamLabeled = true;
+					}
+				} else {
+					for (Key key : keys) {
+						key.clearSargamNote();
+						sargamLabeled = false;
+					}
+				}
+			} else if (source == keyboardLabels) {
+				if (e.getStateChange() == ItemEvent.SELECTED) {
+					for (Key key : keys) {
+						key.labelKeyboardNote(octave);
+						keyLabeled = true;
+					}
+				} else {
+					for (Key key : keys) {
+						key.clearKeyboardNote(octave);
+						keyLabeled = false;
+					}
+				}
+			}
+
 		}
 	}
 
@@ -986,8 +1041,8 @@ public class Main {
 			LOGGER.info("Final Octave: " + octave);
 
 			for (Key k : keys) {
-				k.labelSargamNotes();
-				k.labelKeyboardNotes(octave);
+				if (keyLabeled)
+					k.labelKeyboardNote(octave);
 			}
 		} else if (letter.equals("X")) {
 			LOGGER.info("User pressed X.");
@@ -999,8 +1054,8 @@ public class Main {
 			LOGGER.info("Final Octave: " + octave);
 
 			for (Key k : keys) {
-				k.labelSargamNotes();
-				k.labelKeyboardNotes(octave);
+				if (keyLabeled)
+					k.labelKeyboardNote(octave);
 			}
 		}
 
@@ -1062,7 +1117,7 @@ public class Main {
 			try {
 				undo.undo();
 			} catch (CannotUndoException ex) {
-				System.out.println("Unable to undo: " + ex);
+				LOGGER.warning("Unable to undo: " + ex);
 				ex.printStackTrace();
 			}
 			updateUndoState();
@@ -1092,7 +1147,7 @@ public class Main {
 			try {
 				undo.redo();
 			} catch (CannotRedoException ex) {
-				System.out.println("Unable to redo: " + ex);
+				LOGGER.warning("Unable to redo: " + ex);
 				ex.printStackTrace();
 			}
 			updateRedoState();

@@ -91,8 +91,9 @@ public class Key extends JButton implements MouseListener {
 
 		note = noteCount++;
 		shiftKeys(saKey);
-		labelSargamNotes();
-		labelKeyboardNotes(Octave.MIDDLE);
+		setText("<html><div style='text-align:center'><span id='sargam'></span><br><span id='key'></span></div></html>");
+		labelSargamNote();
+		labelKeyboardNote(Octave.MIDDLE);
 		channel = synth.getChannels();
 		addKeyListener(new KeyboardListener());
 
@@ -119,25 +120,37 @@ public class Key extends JButton implements MouseListener {
 		}
 	}
 
-	public void labelSargamNotes() {
-		setText(notes.get(note - 40));
+	public void labelSargamNote() {
+		clearSargamNote();
+		setText(getText().replace("<span id='sargam'>",
+				"<span id='sargam'>" + notes.get(note - 40)));
 	}
 
-	public void labelKeyboardNotes(Octave octave) {
+	public void labelKeyboardNote(Octave octave) {
+		clearKeyboardNote(octave);
 		if (octave == Octave.LOWER) {
 			if (keyMapLower.containsKey(note))
-				setText("<html><div style='text-align:center'>" + getText()
-						+ "<br>" + keyMapLower.get(note) + "</div></html>");
+				setText(getText().replace("<span id='key'>",
+						"<span id='key'>" + keyMapLower.get(note)));
 		} else if (octave == Octave.MIDDLE) {
 			if (keyMapMiddle.containsKey(note))
-				setText("<html><div style='text-align:center'>" + getText()
-						+ "<br>" + keyMapMiddle.get(note) + "</div></html>");
+				setText(getText().replace("<span id='key'>",
+						"<span id='key'>" + keyMapMiddle.get(note)));
 		} else if (octave == Octave.UPPER) {
 			if (keyMapUpper.containsKey(note))
-				setText("<html><div style='text-align:center'>" + getText()
-						+ "<br>" + keyMapUpper.get(note) + "</div></html>");
+				setText(getText().replace("<span id='key'>",
+						"<span id='key'>" + keyMapUpper.get(note)));
 		}
+	}
 
+	public void clearSargamNote() {
+		setText(getText().replaceAll("<span id='sargam'>[A-Za-z'.]*</span>",
+				"<span id='sargam'></span>"));
+	}
+
+	public void clearKeyboardNote(Octave octave) {
+		setText(getText().replaceAll("<span id='key'>[A-Z;'\\]]*</span>",
+				"<span id='key'></span>"));
 	}
 
 	/**
