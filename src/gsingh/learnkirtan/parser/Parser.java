@@ -82,7 +82,7 @@ public class Parser {
 		try {
 			moveCursorToStart(start);
 		} catch (NoStartLabelException e) {
-			stop = true;
+			;
 		} catch (DashFirstNoteException e) {
 			stop = true;
 		}
@@ -108,6 +108,7 @@ public class Parser {
 			if (finished) {
 				if (finish(start)) {
 					finished = false;
+					// stop = false;
 					continue;
 				} else
 					break;

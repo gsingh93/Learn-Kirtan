@@ -94,10 +94,11 @@ public class Scanner {
 	}
 
 	/**
-	 * Resets the scanner index to 0
+	 * Resets the scanner index to 0 and finished to false
 	 */
 	public void reset() {
 		index = 0;
+		finished = false;
 	}
 
 	/**
