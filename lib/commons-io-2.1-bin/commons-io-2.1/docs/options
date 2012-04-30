@@ -1,0 +1,31 @@
+-classpath
+'C:/svn/org/apache/commons/trunks-proper/io/target/classes'
+-encoding
+'iso-8859-1'
+-protected
+-quiet
+-source
+'1.5'
+-sourcepath
+'C:/svn/org/apache/commons/trunks-proper/io/src/main/java'
+-author
+-bottom
+'Copyright &#169; 2002-2011 <a href="http://www.apache.org/">The Apache Software Foundation</a>. All Rights Reserved.'
+-charset
+'iso-8859-1'
+-d
+'C:/svn/org/apache/commons/trunks-proper/io/target/site/apidocs'
+-docencoding
+'iso-8859-1'
+-doctitle
+'Commons IO 2.1 API'
+-link
+'http://download.oracle.com/javase/6/docs/api'
+-link
+'http://download.oracle.com/javaee/6/api'
+-linkoffline
+'http://download.oracle.com/javase/1.5.0/docs/api' 'C:/svn/org/apache/commons/trunks-proper/io/target/javadoc-bundle-options'
+-use
+-version
+-windowtitle
+'Commons IO 2.1 API'

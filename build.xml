@@ -1,0 +1,63 @@
+<project name="LearnKirtan" basedir="." default="main">
+
+	<property name="version" value="0.4" />
+
+	<property name="src.dir" value="src" />
+	<property name="lib.dir" value="lib" />
+	<property name="resource.dir" value="resource" />
+
+	<property name="build.dir" value="build" />
+	<property name="classes.dir" value="${build.dir}/classes" />
+	<property name="jar.dir" value="${build.dir}/jar" />
+	<property name="release.dir" value="${build.dir}/release" />
+
+	<property name="main-class" value="gsingh.learnkirtan.Main" />
+
+	<path id="classpath">
+		<fileset dir="${lib.dir}" includes="**/*.jar" />
+	</path>
+
+	<target name="clean">
+		<delete dir="${build.dir}" />
+	</target>
+
+	<target name="compile">
+		<mkdir dir="${classes.dir}" />
+		<javac srcdir="${src.dir}" destdir="${classes.dir}" includeantruntime="false" classpathref="classpath" />
+	</target>
+
+	<target name="jar" depends="compile">
+		<mkdir dir="${jar.dir}" />
+		<jar destfile="${jar.dir}/${ant.project.name}.jar" basedir="${classes.dir}">
+			<manifest>
+				<attribute name="Main-Class" value="${main-class}" />
+			</manifest>
+			<fileset dir="${resource.dir}" />
+			<zipgroupfileset dir="${lib.dir}" includes="**/*.jar" />
+		</jar>
+	</target>
+
+	<target name="run" depends="jar">
+		<java classname="${main-class}" fork="true">
+			<classpath>
+				<path refid="classpath" />
+				<path location="${jar.dir}/${ant.project.name}.jar - v${version}" />
+			</classpath>
+		</java>
+	</target>
+
+	<target name="release" depends="clean,jar">
+		<mkdir dir="${release.dir}/log" />
+		<copy file="${jar.dir}/${ant.project.name}.jar" todir="${release.dir}" />
+		<copy file="configtemplate.xml" tofile="${release.dir}/config" />
+		<copy todir="${release.dir}/Sample Shabads">
+			<fileset dir="Shabad Files" />
+		</copy>
+		<zip basedir="${release.dir}" destfile="${release.dir}/LearnKirtan${version}.zip" />
+	</target>
+
+	<target name="clean-build" depends="clean,jar" />
+
+	<target name="main" depends="clean,run" />
+
+</project>

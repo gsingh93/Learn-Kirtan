@@ -165,6 +165,9 @@ public class Main {
 	 */
 	private SettingsManager settingsManager;
 
+	/**
+	 * The sole instance of main in the application
+	 */
 	public static Main main;
 
 	private UndoManager undo = new UndoManager();
@@ -348,8 +351,6 @@ public class Main {
 	 * Initializes the menu bar
 	 */
 	private void initMenu() {
-		LOGGER.fine("Menu initialization started.");
-
 		JMenuBar menuBar = new JMenuBar();
 		JMenu fileMenu = new JMenu("File");
 		JMenu editMenu = new JMenu("Edit");
@@ -485,8 +486,6 @@ public class Main {
 		helpMenu.add(checkForUpdateItem);
 
 		frame.setJMenuBar(menuBar);
-
-		LOGGER.fine("Menu initialization completed.");
 	}
 
 	/**
@@ -512,8 +511,6 @@ public class Main {
 	 *            - the panel to initialize
 	 */
 	private void initControlPanel(JPanel controlPanel) {
-		LOGGER.fine("Control panel initialization started.");
-
 		JButton playButton = new JButton("Play");
 		JButton pauseButton = new JButton("Pause");
 		JButton stopButton = new JButton("Stop");
@@ -560,8 +557,6 @@ public class Main {
 		controlPanel.add(startField);
 		controlPanel.add(endLabel);
 		controlPanel.add(endField);
-
-		LOGGER.fine("Control panel initialization completed.");
 	}
 
 	/**
@@ -571,8 +566,6 @@ public class Main {
 	 *            - the layer in which to construct the piano
 	 */
 	private void constructKeyboard(Container panel) {
-		LOGGER.fine("Keyboard construction started.");
-
 		int i = 0;
 		int j = 0;
 
@@ -592,8 +585,6 @@ public class Main {
 			j++;
 			addWhiteKey(panel, i++);
 		}
-
-		LOGGER.fine("Keyboard construction completed.");
 	}
 
 	/**
@@ -641,8 +632,6 @@ public class Main {
 	 */
 	private void initMainPanel(JPanel mainPanel, JPanel controlPanel,
 			JLayeredPane pianoPanel) {
-		LOGGER.fine("Main panel initialization started.");
-
 		GridBagConstraints c = new GridBagConstraints();
 
 		// Add the piano panel and shabad editor to the window
@@ -666,8 +655,6 @@ public class Main {
 		c.weighty = 1.0;
 		c.anchor = GridBagConstraints.NORTHWEST;
 		mainPanel.add(new JScrollPane(shabadEditor), c);
-
-		LOGGER.fine("Main panel initialization completed.");
 	}
 
 	/**
@@ -732,13 +719,15 @@ public class Main {
 		final int key = letterToKey(String.valueOf(e.getKeyChar())
 				.toUpperCase());
 		if (key < MAX_KEYS && key >= 0) {
-			if (!keys[key].isPressed())
+			if (!keys[key].isPressed()) {
+				LOGGER.info("Note was pressed");
 				new Thread(new Runnable() {
 					public void run() {
 						keys[key].mousePressed(null);
 						keys[key].startDoClick();
 					}
 				}).start();
+			}
 		} else {
 			LOGGER.warning("User pressed key in play mode that"
 					+ " is not playable.");
@@ -749,6 +738,7 @@ public class Main {
 		final int key = letterToKey(String.valueOf(e.getKeyChar())
 				.toUpperCase());
 		if (key < MAX_KEYS && key >= 0) {
+			LOGGER.info("Pressed note was released");
 			keys[key].mouseReleased(null);
 		}
 	}
