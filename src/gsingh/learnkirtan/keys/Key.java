@@ -57,6 +57,8 @@ public class Key extends JButton implements MouseListener {
 	private static HashMap<Integer, String> keyMapMiddle = new HashMap<Integer, String>();
 	private static HashMap<Integer, String> keyMapUpper = new HashMap<Integer, String>();
 
+	private boolean pressed = false;
+
 	static {
 		for (int i = 0; i < 13; i++) {
 			keyMapLower.put(40 + i, keys.get(i + 5));
@@ -187,6 +189,16 @@ public class Key extends JButton implements MouseListener {
 		channel[0].noteOff(note);
 	}
 
+	public boolean isPressed() {
+		return pressed;
+	}
+
+	public void startDoClick() {
+		while (pressed) {
+			doClick(50);
+		}
+	}
+
 	@Override
 	public void mouseClicked(MouseEvent e) {
 		LOGGER.info("Key clicked: " + note);
@@ -194,31 +206,34 @@ public class Key extends JButton implements MouseListener {
 
 	@Override
 	public void mouseEntered(MouseEvent e) {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
 	public void mouseExited(MouseEvent e) {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
 	public void mousePressed(MouseEvent e) {
+		pressed = true;
 		play();
 
 	}
 
 	@Override
 	public void mouseReleased(MouseEvent e) {
+		pressed = false;
 		stop();
 	}
 
 	class KeyboardListener extends KeyAdapter {
 		@Override
-		public void keyTyped(KeyEvent e) {
+		public void keyPressed(KeyEvent e) {
 			Main.getMain().notePressed(e);
+		}
+
+		@Override
+		public void keyReleased(KeyEvent e) {
+			Main.getMain().noteReleased(e);
 		}
 	}
 }

@@ -732,14 +732,24 @@ public class Main {
 		final int key = letterToKey(String.valueOf(e.getKeyChar())
 				.toUpperCase());
 		if (key < MAX_KEYS && key >= 0) {
-			new Thread(new Runnable() {
-				public void run() {
-					keys[key].playOnce(500);
-				}
-			}).start();
+			if (!keys[key].isPressed())
+				new Thread(new Runnable() {
+					public void run() {
+						keys[key].mousePressed(null);
+						keys[key].startDoClick();
+					}
+				}).start();
 		} else {
 			LOGGER.warning("User pressed key in play mode that"
 					+ " is not playable.");
+		}
+	}
+
+	public void noteReleased(KeyEvent e) {
+		final int key = letterToKey(String.valueOf(e.getKeyChar())
+				.toUpperCase());
+		if (key < MAX_KEYS && key >= 0) {
+			keys[key].mouseReleased(null);
 		}
 	}
 
