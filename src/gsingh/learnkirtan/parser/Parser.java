@@ -68,7 +68,7 @@ public class Parser {
 
 		isPlaying = true;
 
-		shabad = shabad.toUpperCase();
+		shabad = shabad.toUpperCase().trim();
 		start = "#" + start.toUpperCase();
 		end = "#" + end.toUpperCase();
 		LOGGER.info("Shabad: " + shabad);

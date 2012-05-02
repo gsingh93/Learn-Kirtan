@@ -81,7 +81,7 @@ import org.apache.commons.io.IOUtils;
 
 public class Main {
 
-	public static final String VERSION = "0.3.1";
+	public static final String VERSION = "0.4";
 
 	public static final String BASETITLE = "Learn Kirtan v" + VERSION
 			+ " Beta - ";
@@ -735,8 +735,37 @@ public class Main {
 	}
 
 	public void noteReleased(KeyEvent e) {
-		final int key = letterToKey(String.valueOf(e.getKeyChar())
-				.toUpperCase());
+		String letter = String.valueOf(e.getKeyChar()).toUpperCase();
+
+		if (letter.equals("Z")) {
+			LOGGER.info("User pressed Z.");
+			LOGGER.info("Initial Octave: " + octave);
+			if (octave == Octave.UPPER)
+				octave = Octave.MIDDLE;
+			else if (octave == Octave.MIDDLE)
+				octave = Octave.LOWER;
+			LOGGER.info("Final Octave: " + octave);
+
+			for (Key k : keys) {
+				if (keyLabeled)
+					k.labelKeyboardNote(octave);
+			}
+		} else if (letter.equals("X")) {
+			LOGGER.info("User pressed X.");
+			LOGGER.info("Initial Octave: " + octave);
+			if (octave == Octave.MIDDLE)
+				octave = Octave.UPPER;
+			else if (octave == Octave.LOWER)
+				octave = Octave.MIDDLE;
+			LOGGER.info("Final Octave: " + octave);
+
+			for (Key k : keys) {
+				if (keyLabeled)
+					k.labelKeyboardNote(octave);
+			}
+		}
+
+		final int key = letterToKey(letter);
 		if (key < MAX_KEYS && key >= 0) {
 			LOGGER.info("Pressed note was released");
 			keys[key].mouseReleased(null);
@@ -1041,32 +1070,6 @@ public class Main {
 			key = 24;
 		} else if (letter.equals("]")) {
 			key = 25;
-		} else if (letter.equals("Z")) {
-			LOGGER.info("User pressed Z.");
-			LOGGER.info("Initial Octave: " + octave);
-			if (octave == Octave.UPPER)
-				octave = Octave.MIDDLE;
-			else if (octave == Octave.MIDDLE)
-				octave = Octave.LOWER;
-			LOGGER.info("Final Octave: " + octave);
-
-			for (Key k : keys) {
-				if (keyLabeled)
-					k.labelKeyboardNote(octave);
-			}
-		} else if (letter.equals("X")) {
-			LOGGER.info("User pressed X.");
-			LOGGER.info("Initial Octave: " + octave);
-			if (octave == Octave.MIDDLE)
-				octave = Octave.UPPER;
-			else if (octave == Octave.LOWER)
-				octave = Octave.MIDDLE;
-			LOGGER.info("Final Octave: " + octave);
-
-			for (Key k : keys) {
-				if (keyLabeled)
-					k.labelKeyboardNote(octave);
-			}
 		}
 
 		if (octave == Octave.LOWER)
