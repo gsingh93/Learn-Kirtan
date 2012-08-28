@@ -1,0 +1,13 @@
+gsingh.learnkirtan
+gsingh.learnkirtan.component
+gsingh.learnkirtan.component.menu
+gsingh.learnkirtan.component.shabadeditor
+gsingh.learnkirtan.controller
+gsingh.learnkirtan.controller.menu
+gsingh.learnkirtan.installer
+gsingh.learnkirtan.keys
+gsingh.learnkirtan.note
+gsingh.learnkirtan.parser
+gsingh.learnkirtan.parser.exceptions
+gsingh.learnkirtan.shabad
+gsingh.learnkirtan.utility

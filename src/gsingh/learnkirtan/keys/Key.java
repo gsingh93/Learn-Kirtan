@@ -1,207 +1,135 @@
 package gsingh.learnkirtan.keys;
 
-import gsingh.learnkirtan.Constants.Octave;
-import gsingh.learnkirtan.Main;
-import gsingh.learnkirtan.SettingsManager;
+import static gsingh.learnkirtan.keys.LabelManager.EMPTY_KEY_SPAN_TAG;
+import static gsingh.learnkirtan.keys.LabelManager.EMPTY_SARGAM_SPAN_TAG;
+import gsingh.learnkirtan.Constants;
+import gsingh.learnkirtan.utility.Utility;
 
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
-import javax.sound.midi.MidiChannel;
-import javax.sound.midi.MidiSystem;
-import javax.sound.midi.MidiUnavailableException;
-import javax.sound.midi.Synthesizer;
 import javax.swing.JButton;
 
 @SuppressWarnings("serial")
 public class Key extends JButton implements MouseListener {
 
-	private static final Logger LOGGER = Logger.getLogger(Key.class.getName());
-	static {
-		LOGGER.addHandler(Main.logFile);
-		LOGGER.setLevel(Level.INFO);
-	}
+	/** The default label for this key */
+	private static final String DEFAULT_TEXT = String.format(
+			"<html><div style='text-align:center'>%s<br>%s</div></html>",
+			EMPTY_SARGAM_SPAN_TAG, EMPTY_KEY_SPAN_TAG);
 
 	/**
-	 * A counter used to assign midi note numbers to the keys
+	 * A counter used to assign MIDI note numbers to the keys
 	 */
-	private static int noteCount = 40;
+	private static int noteCount = Constants.STARTING_MIDI_NOTE_ID;
 
 	/**
-	 * The midi note number of the key
+	 * The MIDI note ID of the key
 	 */
-	public int note;
+	private final int midiNoteId;
 
-	/**
-	 * The note names for all the notes on the keyboard
-	 */
-	public static List<String> notes = new LinkedList<String>(
-			Arrays.asList(new String[] { "Re", "'Ga", "Ga", "Ma", "Ma'", "Pa",
-					"'Dha", "Dha", "'Ni", "Ni", "Sa", "'Re", "Re", "'Ga", "Ga",
-					"Ma", "Ma'", "Pa", "'Dha", "Dha", "'Ni", "Ni", "Sa", "'Re",
-					"Re", "'Ga", "Ga", "Ma", "Ma'", "Pa", "'Dha", "Dha", "'Ni",
-					"Ni", "Sa", "'Re" }));
+	/** The pressed state of this key */
+	private boolean pressed;
 
-	private static List<String> keys = new LinkedList<String>(
-			Arrays.asList(new String[] { "A", "W", "S", "E", "D", "F", "T",
-					"G", "Y", "H", "J", "I", "K", "O", "L", "P", ";", "'", "]" }));
-	private static HashMap<Integer, String> keyMapLower = new HashMap<Integer, String>();
-	private static HashMap<Integer, String> keyMapMiddle = new HashMap<Integer, String>();
-	private static HashMap<Integer, String> keyMapUpper = new HashMap<Integer, String>();
+	/** The clicked state of this key */
+	private boolean clicked;
 
-	private boolean pressed = false;
+	/** The MidiPlayer responsible for playing note corresponding to this key */
+	private MidiPlayer midiPlayer;
 
-	static {
-		for (int i = 0; i < 13; i++) {
-			keyMapLower.put(40 + i, keys.get(i + 5));
-		}
-		for (int i = 0; i < 19; i++) {
-			keyMapMiddle.put(47 + i, keys.get(i));
-		}
-		for (int i = 0; i < 15; i++) {
-			keyMapUpper.put(59 + i, keys.get(i));
-		}
-	}
+	public Key(LabelManager labelManager) {
 
-	private static Synthesizer synth = null;
-
-	/**
-	 * Allows for a one time shift of keys based on user settings at startup
-	 */
-	private static boolean shifted = false;
-
-	static {
-		try {
-			synth = MidiSystem.getSynthesizer();
-			synth.open();
-		} catch (MidiUnavailableException e) {
-			e.printStackTrace();
-		}
-	}
-	MidiChannel channel[];
-
-	public Key(int saKey, SettingsManager sm) {
-		LOGGER.addHandler(Main.logFile);
-		LOGGER.setLevel(Level.INFO);
-
-		note = noteCount++;
-		shiftKeys(saKey);
-		setText("<html><div style='text-align:center'><span id='sargam'></span><br><span id='key'></span></div></html>");
-		if (sm.getShowSargamLabels())
-			labelSargamNote();
-		if (sm.getShowKeyboardLabels())
-			labelKeyboardNote(Octave.MIDDLE);
-		channel = synth.getChannels();
-		addKeyListener(new KeyboardListener());
-
-		// Sets the instrument to an instrument close to a harmonium
-		channel[0].programChange(20);
+		this.midiNoteId = noteCount++;
+		setText(DEFAULT_TEXT);
+		addKeyListener(new KeyboardListener(labelManager));
 		addMouseListener(this);
+
+		// TODO: Move to shabadPlayer?
+		midiPlayer = new MidiPlayer(midiNoteId);
 	}
 
-	public static void shiftKeys(int saKey) {
+	/**
+	 * Checks if the key label contains the provided text
+	 * 
+	 * @param text
+	 *            the text to search for
+	 * @return true if the text is found, false otherwise
+	 */
+	public boolean contains(String text) {
+		return getText().contains(text);
+	}
 
-		if (!shifted) {
-			int difference = saKey - 10;
+	/**
+	 * Replaces a literal string in the label
+	 * 
+	 * @param target
+	 *            the text to be replaced
+	 * @param replacement
+	 *            the text to replace with
+	 */
+	public void replaceText(String target, String replacement) {
+		setText(getText().replace(target, replacement));
+	}
 
-			if (difference > 0) {
-				for (int i = 0; i < difference; i++) {
-					Key.notes.add(0, Key.notes.remove((Key.notes.size() - 1)));
-				}
-			} else if (difference < 0) {
-				for (int i = 0; i < -1 * difference; i++) {
-					Key.notes.add(Key.notes.size() - 1, Key.notes.remove(0));
+	/**
+	 * Replaces all text that matches a regex expression
+	 * 
+	 * @param regex
+	 *            the regex expression to replace
+	 * @param replacement
+	 *            the text to replace with
+	 */
+	public void replaceAll(String regex, String replacement) {
+		setText(getText().replaceAll(regex, replacement));
+	}
+
+	/** @return the midiNoteId of this key */
+	public int getMIDINoteId() {
+		return midiNoteId;
+	}
+
+	/** @return true if this key is pressed, false otherwise */
+	public boolean isPressed() {
+		return pressed;
+	}
+
+	/**
+	 * A wrapper for the {@code doClick} method, so that it is executed if the
+	 * key is pressed or clicked
+	 */
+	public void startDoClick() {
+		new Thread(new Runnable() {
+			@Override
+			public void run() {
+				while (pressed || clicked) {
+					doClick(200);
 				}
 			}
-			shifted = true;
-		}
-	}
-
-	public void labelSargamNote() {
-		clearSargamNote();
-		setText(getText().replace("<span id='sargam'>",
-				"<span id='sargam'>" + notes.get(note - 40)));
-	}
-
-	public void labelKeyboardNote(Octave octave) {
-		clearKeyboardNote(octave);
-		if (octave == Octave.LOWER) {
-			if (keyMapLower.containsKey(note))
-				setText(getText().replace("<span id='key'>",
-						"<span id='key'>" + keyMapLower.get(note)));
-		} else if (octave == Octave.MIDDLE) {
-			if (keyMapMiddle.containsKey(note))
-				setText(getText().replace("<span id='key'>",
-						"<span id='key'>" + keyMapMiddle.get(note)));
-		} else if (octave == Octave.UPPER) {
-			if (keyMapUpper.containsKey(note))
-				setText(getText().replace("<span id='key'>",
-						"<span id='key'>" + keyMapUpper.get(note)));
-		}
-	}
-
-	public void clearSargamNote() {
-		setText(getText().replaceAll("<span id='sargam'>[A-Za-z'.]*</span>",
-				"<span id='sargam'></span>"));
-	}
-
-	public void clearKeyboardNote(Octave octave) {
-		setText(getText().replaceAll("<span id='key'>[A-Z;'\\]]*</span>",
-				"<span id='key'></span>"));
+		}).start();
 	}
 
 	/**
-	 * Plays the midi note of this key for the specified amount of time
+	 * Plays this key one time for the specified amount of time
 	 * 
 	 * @param time
-	 *            - the length of time to play the note in milliseconds
+	 *            the amount of time to hold this key down
 	 */
-	public void playOnce(int time) {
-		play();
+	public void playOnce(final int time) {
+		midiPlayer.play();
 		doClick(time);
 		try {
 			Thread.sleep(10);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
-		stop();
-	}
-
-	/**
-	 * Starts playing the midi note for this key
-	 */
-	public void play() {
-		channel[0].noteOn(note, 60);
-	}
-
-	/**
-	 * Stops playing the midi note of this key
-	 */
-	public void stop() {
-		channel[0].noteOff(note);
-	}
-
-	public boolean isPressed() {
-		return pressed;
-	}
-
-	public void startDoClick() {
-		while (pressed) {
-			doClick(50);
-		}
+		midiPlayer.stop();
 	}
 
 	@Override
 	public void mouseClicked(MouseEvent e) {
-		LOGGER.info("Key clicked: " + note);
+		System.out.println("Key clicked: " + midiNoteId);
 	}
 
 	@Override
@@ -214,26 +142,91 @@ public class Key extends JButton implements MouseListener {
 
 	@Override
 	public void mousePressed(MouseEvent e) {
-		pressed = true;
-		play();
-
+		// e will be null if called this function ourselves when a key was
+		// pressed
+		if (e == null) {
+			pressed = true;
+		} else {
+			clicked = true;
+		}
+		midiPlayer.play();
 	}
 
 	@Override
 	public void mouseReleased(MouseEvent e) {
-		pressed = false;
-		stop();
-	}
-
-	class KeyboardListener extends KeyAdapter {
-		@Override
-		public void keyPressed(KeyEvent e) {
-			Main.getMain().notePressed(e);
+		// e will be null if called this function ourselves when a key was
+		// released
+		if (e == null) {
+			pressed = false;
+		} else {
+			clicked = false;
 		}
 
+		// If the note is neither pressed or clicked, stop playing it
+		// If one of the two is true, then stop playing it and restart,
+		// so that only one note is played at a time
+		if (!pressed && !clicked)
+			midiPlayer.stop();
+		else {
+			// TODO: Should MidiPlayer handle if the note is already being
+			// played?
+			midiPlayer.stop();
+			midiPlayer.play();
+		}
+	}
+
+	private class KeyboardListener extends KeyAdapter {
+
+		private LabelManager labelManager;
+
+		public KeyboardListener(LabelManager labelManager) {
+			this.labelManager = labelManager;
+		}
+
+		// TODO: Look into an alternative for each key being responsible for
+		// every other key. If a fix is not possible, don't worry about it.
+		/**
+		 * Play the key that was pressed if it is playable. Note that this does
+		 * not have to be this key; it can be any playable key.
+		 */
+		@Override
+		public void keyPressed(KeyEvent e) {
+			// Get the keyId of the key that was pressed
+			final int keyId = Utility.letterToKeyId(
+					String.valueOf(e.getKeyChar()), labelManager.getOctave());
+
+			// If that key is playable and not already pressed, play it
+			if (keyId < Constants.MAX_KEYS && keyId >= 0) {
+				final Key key = KeyMapper.getInstance().getKeys()[keyId];
+				if (!key.isPressed()) {
+					key.mousePressed(null);
+					key.startDoClick();
+				}
+			}
+		}
+
+		/**
+		 * Unpress the key or shift the octave depending on which key was
+		 * released
+		 */
 		@Override
 		public void keyReleased(KeyEvent e) {
-			Main.getMain().noteReleased(e);
+			String letter = String.valueOf(e.getKeyChar()).toUpperCase();
+
+			if (letter.equals("Z")) {
+				labelManager.shiftOctaveDown();
+				labelManager.labelKeyboardNotes();
+			} else if (letter.equals("X")) {
+				labelManager.shiftOctaveUp();
+				labelManager.labelKeyboardNotes();
+			} else {
+				int keyId = Utility.letterToKeyId(letter,
+						labelManager.getOctave());
+				if (keyId < Constants.MAX_KEYS && keyId >= 0) {
+					Key key = KeyMapper.getInstance().getKeys()[keyId];
+					key.mouseReleased(null);
+				}
+			}
 		}
 	}
 }

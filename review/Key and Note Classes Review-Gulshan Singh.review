@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Review id="Key and Note Classes Review">
+  <ReviewIssue id="H65MI8OY">
+    <ReviewIssueMeta>
+      <CreationDate format="yyyy-MM-dd :: HH:mm:ss:SSS z">2012-08-21 :: 19:26:57:154 EDT</CreationDate>
+      <LastModificationDate format="yyyy-MM-dd :: HH:mm:ss:SSS z">2012-08-21 :: 19:27:43:739 EDT</LastModificationDate>
+    </ReviewIssueMeta>
+    <ReviewerId>Gulshan Singh</ReviewerId>
+    <AssignedTo>Gulshan Singh</AssignedTo>
+    <File line="28">src/gsingh/learnkirtan/keys/BlackKey.java</File>
+    <Type>item.type.label.codingStandards</Type>
+    <Severity>item.severity.label.normal</Severity>
+    <Summary>Isn't responsible for setting font</Summary>
+    <Description>LabelManager will set the font so this class doesn't need to worry about it. Both font member variables can be removed.</Description>
+    <Annotation></Annotation>
+    <Revision></Revision>
+    <Resolution>item.resolution.label.validNeedsfixing</Resolution>
+    <Status>item.status.label.open</Status>
+  </ReviewIssue>
+  <ReviewIssue id="H65MJRC4">
+    <ReviewIssueMeta>
+      <CreationDate format="yyyy-MM-dd :: HH:mm:ss:SSS z">2012-08-21 :: 19:28:07:972 EDT</CreationDate>
+      <LastModificationDate format="yyyy-MM-dd :: HH:mm:ss:SSS z">2012-08-21 :: 19:29:37:071 EDT</LastModificationDate>
+    </ReviewIssueMeta>
+    <ReviewerId>Gulshan Singh</ReviewerId>
+    <AssignedTo>Gulshan Singh</AssignedTo>
+    <File line="21">src/gsingh/learnkirtan/keys/WhiteKey.java</File>
+    <Type>item.type.label.codingStandards</Type>
+    <Severity>item.severity.label.normal</Severity>
+    <Summary>Should this set the font?</Summary>
+    <Description>Unlike BlackKey, the font here won't change. I think this code is fine but LabelManager should be checked to see if it chooses the font.</Description>
+    <Annotation></Annotation>
+    <Revision></Revision>
+    <Resolution>item.resolution.label.validNeedsfixing</Resolution>
+    <Status>item.status.label.open</Status>
+  </ReviewIssue>
+  <ReviewIssue id="H65Q1HSF">
+    <ReviewIssueMeta>
+      <CreationDate format="yyyy-MM-dd :: HH:mm:ss:SSS z">2012-08-21 :: 21:05:54:255 EDT</CreationDate>
+      <LastModificationDate format="yyyy-MM-dd :: HH:mm:ss:SSS z">2012-08-21 :: 21:07:16:400 EDT</LastModificationDate>
+    </ReviewIssueMeta>
+    <ReviewerId>Gulshan Singh</ReviewerId>
+    <AssignedTo>Gulshan Singh</AssignedTo>
+    <File line="199">src/gsingh/learnkirtan/keys/Key.java</File>
+    <Type>item.type.label.codingStandards</Type>
+    <Severity>item.severity.label.normal</Severity>
+    <Summary>Should be a function call, not an implementation</Summary>
+    <Description>Should be a function call, not an implementation. If getKeys() returns null this might be better.</Description>
+    <Annotation></Annotation>
+    <Revision></Revision>
+    <Resolution>item.resolution.label.validNeedsfixing</Resolution>
+    <Status>item.status.label.open</Status>
+  </ReviewIssue>
+  <ReviewIssue id="H65QQI29">
+    <ReviewIssueMeta>
+      <CreationDate format="yyyy-MM-dd :: HH:mm:ss:SSS z">2012-08-21 :: 21:25:21:009 EDT</CreationDate>
+      <LastModificationDate format="yyyy-MM-dd :: HH:mm:ss:SSS z">2012-08-21 :: 21:25:36:741 EDT</LastModificationDate>
+    </ReviewIssueMeta>
+    <ReviewerId>Gulshan Singh</ReviewerId>
+    <AssignedTo>Gulshan Singh</AssignedTo>
+    <File line="92">src/gsingh/learnkirtan/keys/NoteList.java</File>
+    <Type>item.type.label.programLogic</Type>
+    <Severity>item.severity.label.normal</Severity>
+    <Summary>Should this be greater than or equal to?</Summary>
+    <Description>Should this be greater than or equal to?</Description>
+    <Annotation></Annotation>
+    <Revision></Revision>
+    <Resolution>item.resolution.label.validNeedsfixing</Resolution>
+    <Status>item.status.label.open</Status>
+  </ReviewIssue>
+  <ReviewIssue id="H65QXWVC">
+    <ReviewIssueMeta>
+      <CreationDate format="yyyy-MM-dd :: HH:mm:ss:SSS z">2012-08-21 :: 21:31:06:792 EDT</CreationDate>
+      <LastModificationDate format="yyyy-MM-dd :: HH:mm:ss:SSS z">2012-08-21 :: 21:32:06:797 EDT</LastModificationDate>
+    </ReviewIssueMeta>
+    <ReviewerId>Gulshan Singh</ReviewerId>
+    <AssignedTo>Gulshan Singh</AssignedTo>
+    <File line="100">src/gsingh/learnkirtan/keys/NoteList.java</File>
+    <Type>item.type.label.codingStandards</Type>
+    <Severity>item.severity.label.normal</Severity>
+    <Summary>Abstract into another function</Summary>
+    <Description>Three functions contain the same code structure with different variables. This code can be abstracted to another function.</Description>
+    <Annotation></Annotation>
+    <Revision></Revision>
+    <Resolution>item.resolution.label.validNeedsfixing</Resolution>
+    <Status>item.status.label.open</Status>
+  </ReviewIssue>
+</Review>

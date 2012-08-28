@@ -1,15 +1,11 @@
 package gsingh.learnkirtan.parser.exceptions;
 
-import java.util.logging.Logger;
-
-import javax.swing.JOptionPane;
+import gsingh.learnkirtan.utility.DialogUtility;
 
 @SuppressWarnings("serial")
 public class NoteOutOfBoundsException extends Exception {
-	public NoteOutOfBoundsException(Logger LOGGER, String invalidNote) {
-		LOGGER.warning("Invalid note: " + invalidNote);
-		JOptionPane.showMessageDialog(null, "Error: Invalid note '"
-				+ invalidNote + "' is too low or too high", "Error",
-				JOptionPane.ERROR_MESSAGE);
+	public NoteOutOfBoundsException(String invalidNote) {
+		DialogUtility.showNoteOutOfBoundsDialog(invalidNote);
+
 	}
 }

@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Review id="Settings and Label Manager review">
+  <ReviewIssue id="H5LVWGI7">
+    <ReviewIssueMeta>
+      <CreationDate format="yyyy-MM-dd :: HH:mm:ss:SSS z">2012-08-07 :: 23:54:33:487 EDT</CreationDate>
+      <LastModificationDate format="yyyy-MM-dd :: HH:mm:ss:SSS z">2012-08-20 :: 13:43:20:336 EDT</LastModificationDate>
+    </ReviewIssueMeta>
+    <ReviewerId>Gulshan Singh</ReviewerId>
+    <AssignedTo>Gulshan Singh</AssignedTo>
+    <File line="35">src/gsingh/learnkirtan/SettingsManager.java</File>
+    <Type>item.type.label.codingStandards</Type>
+    <Severity>item.severity.label.normal</Severity>
+    <Summary>Descreases cohesion</Summary>
+    <Description>These variables decrease the cohesiveness of the SettingsManager and should be refactored into a Settings class.</Description>
+    <Annotation></Annotation>
+    <Revision></Revision>
+    <Resolution>item.resolution.label.invalidWontfix</Resolution>
+    <Status>item.status.label.resolved</Status>
+  </ReviewIssue>
+  <ReviewIssue id="H5LWENHA">
+    <ReviewIssueMeta>
+      <CreationDate format="yyyy-MM-dd :: HH:mm:ss:SSS z">2012-08-08 :: 00:08:42:334 EDT</CreationDate>
+      <LastModificationDate format="yyyy-MM-dd :: HH:mm:ss:SSS z">2012-08-20 :: 22:54:19:266 EDT</LastModificationDate>
+    </ReviewIssueMeta>
+    <ReviewerId>Gulshan Singh</ReviewerId>
+    <AssignedTo>Gulshan Singh</AssignedTo>
+    <File line="104">src/gsingh/learnkirtan/SettingsManager.java</File>
+    <Type>item.type.label.codingStandards</Type>
+    <Severity>item.severity.label.normal</Severity>
+    <Summary>Should take a specific path</Summary>
+    <Description>This should take a specific path (possibly using XPath) and not just use a tag name</Description>
+    <Annotation></Annotation>
+    <Revision></Revision>
+    <Resolution>item.resolution.label.validNeedsfixing</Resolution>
+    <Status>item.status.label.resolved</Status>
+  </ReviewIssue>
+  <ReviewIssue id="H5LWKCGF">
+    <ReviewIssueMeta>
+      <CreationDate format="yyyy-MM-dd :: HH:mm:ss:SSS z">2012-08-08 :: 00:13:07:983 EDT</CreationDate>
+      <LastModificationDate format="yyyy-MM-dd :: HH:mm:ss:SSS z">2012-08-20 :: 13:43:32:442 EDT</LastModificationDate>
+    </ReviewIssueMeta>
+    <ReviewerId>Gulshan Singh</ReviewerId>
+    <AssignedTo>Gulshan Singh</AssignedTo>
+    <File line="221">src/gsingh/learnkirtan/SettingsManager.java</File>
+    <Type>item.type.label.codingStandards</Type>
+    <Severity>item.severity.label.normal</Severity>
+    <Summary>Make a constant</Summary>
+    <Description>Make this a constant</Description>
+    <Annotation></Annotation>
+    <Revision></Revision>
+    <Resolution>item.resolution.label.validNeedsfixing</Resolution>
+    <Status>item.status.label.resolved</Status>
+  </ReviewIssue>
+  <ReviewIssue id="H5MLDEXT">
+    <ReviewIssueMeta>
+      <CreationDate format="yyyy-MM-dd :: HH:mm:ss:SSS z">2012-08-08 :: 11:47:35:009 EDT</CreationDate>
+      <LastModificationDate format="yyyy-MM-dd :: HH:mm:ss:SSS z">2012-08-20 :: 13:43:14:986 EDT</LastModificationDate>
+    </ReviewIssueMeta>
+    <ReviewerId>Gulshan Singh</ReviewerId>
+    <AssignedTo>Gulshan Singh</AssignedTo>
+    <File line="145">src/gsingh/learnkirtan/keys/LabelManager.java</File>
+    <Type>item.type.label.codingStandards</Type>
+    <Severity>item.severity.label.normal</Severity>
+    <Summary>Abstract out</Summary>
+    <Description>This can be moved to a function or maybe just put in a constant.</Description>
+    <Annotation></Annotation>
+    <Revision></Revision>
+    <Resolution>item.resolution.label.validNeedsfixing</Resolution>
+    <Status>item.status.label.resolved</Status>
+  </ReviewIssue>
+  <ReviewIssue id="H5RDEQA6">
+    <ReviewIssueMeta>
+      <CreationDate format="yyyy-MM-dd :: HH:mm:ss:SSS z">2012-08-11 :: 20:03:30:318 EDT</CreationDate>
+      <LastModificationDate format="yyyy-MM-dd :: HH:mm:ss:SSS z">2012-08-20 :: 22:54:09:002 EDT</LastModificationDate>
+    </ReviewIssueMeta>
+    <ReviewerId>Gulshan Singh</ReviewerId>
+    <AssignedTo>Gulshan Singh</AssignedTo>
+    <File line="260">src/gsingh/learnkirtan/settings/SettingsManager.java</File>
+    <Type>item.type.label.optimization</Type>
+    <Severity>item.severity.label.normal</Severity>
+    <Summary>Determine DOM alternatives</Summary>
+    <Description>There may be a better way to parse XML</Description>
+    <Annotation></Annotation>
+    <Revision></Revision>
+    <Resolution>item.resolution.label.validNeedsfixing</Resolution>
+    <Status>item.status.label.resolved</Status>
+  </ReviewIssue>
+</Review>

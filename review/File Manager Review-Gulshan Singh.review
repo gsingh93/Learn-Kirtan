@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Review id="File Manager Review">
+  <ReviewIssue id="H50DZALD">
+    <ReviewIssueMeta>
+      <CreationDate format="yyyy-MM-dd :: HH:mm:ss:SSS z">2012-07-23 :: 22:49:43:009 EDT</CreationDate>
+      <LastModificationDate format="yyyy-MM-dd :: HH:mm:ss:SSS z">2012-07-24 :: 13:03:17:149 EDT</LastModificationDate>
+    </ReviewIssueMeta>
+    <ReviewerId>Gulshan Singh</ReviewerId>
+    <AssignedTo>Gulshan Singh</AssignedTo>
+    <File line="62">src/gsingh/learnkirtan/FileManager.java</File>
+    <Type>item.type.label.programLogic</Type>
+    <Severity>item.severity.label.normal</Severity>
+    <Summary>Exception should not be caught</Summary>
+    <Description>If this method fails, it fails silently. It should throw the exception so a message can be handled</Description>
+    <Annotation></Annotation>
+    <Revision></Revision>
+    <Resolution>item.label.unset</Resolution>
+    <Status>item.status.label.resolved</Status>
+  </ReviewIssue>
+  <ReviewIssue id="H50E3UBF">
+    <ReviewIssueMeta>
+      <CreationDate format="yyyy-MM-dd :: HH:mm:ss:SSS z">2012-07-23 :: 22:53:15:195 EDT</CreationDate>
+      <LastModificationDate format="yyyy-MM-dd :: HH:mm:ss:SSS z">2012-08-01 :: 22:22:53:652 EDT</LastModificationDate>
+    </ReviewIssueMeta>
+    <ReviewerId>Gulshan Singh</ReviewerId>
+    <AssignedTo>Gulshan Singh</AssignedTo>
+    <File line="86">src/gsingh/learnkirtan/FileManager.java</File>
+    <Type>item.type.label.codingStandards</Type>
+    <Severity>item.severity.label.normal</Severity>
+    <Summary>TitleManager should not be used to see if a file is modified</Summary>
+    <Description>The TitleManager class has the responsibility of changing the title based on the state of the document. However, it does not have the responsibility of telling other classes the state of the file.</Description>
+    <Annotation></Annotation>
+    <Revision></Revision>
+    <Resolution>item.label.unset</Resolution>
+    <Status>item.status.label.resolved</Status>
+  </ReviewIssue>
+  <ReviewIssue id="H50EIMY3">
+    <ReviewIssueMeta>
+      <CreationDate format="yyyy-MM-dd :: HH:mm:ss:SSS z">2012-07-23 :: 23:04:45:483 EDT</CreationDate>
+      <LastModificationDate format="yyyy-MM-dd :: HH:mm:ss:SSS z">2012-07-24 :: 13:26:24:514 EDT</LastModificationDate>
+    </ReviewIssueMeta>
+    <ReviewerId>Gulshan Singh</ReviewerId>
+    <AssignedTo>Gulshan Singh</AssignedTo>
+    <File line="87">src/gsingh/learnkirtan/FileManager.java</File>
+    <Type>item.type.label.codingStandards</Type>
+    <Severity>item.severity.label.normal</Severity>
+    <Summary>Implementation</Summary>
+    <Description>This should be abstracted into a method, along with the other "result == JOptionPane.&lt;Value&gt;" references</Description>
+    <Annotation></Annotation>
+    <Revision></Revision>
+    <Resolution>item.label.unset</Resolution>
+    <Status>item.status.label.resolved</Status>
+  </ReviewIssue>
+  <ReviewIssue id="H50ENGMV">
+    <ReviewIssueMeta>
+      <CreationDate format="yyyy-MM-dd :: HH:mm:ss:SSS z">2012-07-23 :: 23:08:30:583 EDT</CreationDate>
+      <LastModificationDate format="yyyy-MM-dd :: HH:mm:ss:SSS z">2012-07-24 :: 13:13:28:115 EDT</LastModificationDate>
+    </ReviewIssueMeta>
+    <ReviewerId>Gulshan Singh</ReviewerId>
+    <AssignedTo>Gulshan Singh</AssignedTo>
+    <File line="114">src/gsingh/learnkirtan/FileManager.java</File>
+    <Type>item.type.label.codingStandards</Type>
+    <Severity>item.severity.label.normal</Severity>
+    <Summary>Implementation</Summary>
+    <Description>Change to an interface</Description>
+    <Annotation></Annotation>
+    <Revision></Revision>
+    <Resolution>item.label.unset</Resolution>
+    <Status>item.status.label.resolved</Status>
+  </ReviewIssue>
+  <ReviewIssue id="H50EXBEZ">
+    <ReviewIssueMeta>
+      <CreationDate format="yyyy-MM-dd :: HH:mm:ss:SSS z">2012-07-23 :: 23:16:10:379 EDT</CreationDate>
+      <LastModificationDate format="yyyy-MM-dd :: HH:mm:ss:SSS z">2012-07-24 :: 12:58:13:170 EDT</LastModificationDate>
+    </ReviewIssueMeta>
+    <ReviewerId>Gulshan Singh</ReviewerId>
+    <AssignedTo>Gulshan Singh</AssignedTo>
+    <File line="119">src/gsingh/learnkirtan/FileManager.java</File>
+    <Type>item.type.label.codingStandards</Type>
+    <Severity>item.severity.label.normal</Severity>
+    <Summary>Implementation</Summary>
+    <Description>Move to a function</Description>
+    <Annotation></Annotation>
+    <Revision></Revision>
+    <Resolution>item.label.unset</Resolution>
+    <Status>item.status.label.resolved</Status>
+  </ReviewIssue>
+  <ReviewIssue id="H50F2TF6">
+    <ReviewIssueMeta>
+      <CreationDate format="yyyy-MM-dd :: HH:mm:ss:SSS z">2012-07-23 :: 23:20:26:994 EDT</CreationDate>
+      <LastModificationDate format="yyyy-MM-dd :: HH:mm:ss:SSS z">2012-07-24 :: 13:10:29:280 EDT</LastModificationDate>
+    </ReviewIssueMeta>
+    <ReviewerId>Gulshan Singh</ReviewerId>
+    <AssignedTo>Gulshan Singh</AssignedTo>
+    <File line="109">src/gsingh/learnkirtan/FileManager.java</File>
+    <Type>item.type.label.codingStandards</Type>
+    <Severity>item.severity.label.normal</Severity>
+    <Summary>Should return an Enum, not an int</Summary>
+    <Description>The integers returned by this function represent a state or outcome, and should thus be Enums.</Description>
+    <Annotation></Annotation>
+    <Revision></Revision>
+    <Resolution>item.resolution.label.invalidWontfix</Resolution>
+    <Status>item.status.label.resolved</Status>
+  </ReviewIssue>
+  <ReviewIssue id="H50F7E80">
+    <ReviewIssueMeta>
+      <CreationDate format="yyyy-MM-dd :: HH:mm:ss:SSS z">2012-07-23 :: 23:24:00:576 EDT</CreationDate>
+      <LastModificationDate format="yyyy-MM-dd :: HH:mm:ss:SSS z">2012-07-24 :: 13:36:50:616 EDT</LastModificationDate>
+    </ReviewIssueMeta>
+    <ReviewerId>Gulshan Singh</ReviewerId>
+    <AssignedTo>Gulshan Singh</AssignedTo>
+    <File line="210">src/gsingh/learnkirtan/FileManager.java</File>
+    <Type>item.type.label.clarity</Type>
+    <Severity>item.severity.label.normal</Severity>
+    <Summary>Should return something more logical</Summary>
+    <Description>Should return something more logical</Description>
+    <Annotation></Annotation>
+    <Revision></Revision>
+    <Resolution>item.label.unset</Resolution>
+    <Status>item.status.label.resolved</Status>
+  </ReviewIssue>
+  <ReviewIssue id="H50F9XO0">
+    <ReviewIssueMeta>
+      <CreationDate format="yyyy-MM-dd :: HH:mm:ss:SSS z">2012-07-23 :: 23:25:59:088 EDT</CreationDate>
+      <LastModificationDate format="yyyy-MM-dd :: HH:mm:ss:SSS z">2012-07-24 :: 13:36:34:569 EDT</LastModificationDate>
+    </ReviewIssueMeta>
+    <ReviewerId>Gulshan Singh</ReviewerId>
+    <AssignedTo>Gulshan Singh</AssignedTo>
+    <File line="185">src/gsingh/learnkirtan/FileManager.java</File>
+    <Type>item.type.label.programLogic</Type>
+    <Severity>item.severity.label.major</Severity>
+    <Summary>State of curFile undefined during error</Summary>
+    <Description>curFile should be defined in all cases, including when an exception is thrown</Description>
+    <Annotation></Annotation>
+    <Revision></Revision>
+    <Resolution>item.label.unset</Resolution>
+    <Status>item.status.label.resolved</Status>
+  </ReviewIssue>
+  <ReviewIssue id="H57LGJQL">
+    <ReviewIssueMeta>
+      <CreationDate format="yyyy-MM-dd :: HH:mm:ss:SSS z">2012-07-28 :: 23:53:28:557 EDT</CreationDate>
+      <LastModificationDate format="yyyy-MM-dd :: HH:mm:ss:SSS z">2012-08-01 :: 20:49:19:955 EDT</LastModificationDate>
+    </ReviewIssueMeta>
+    <ReviewerId>Gulshan Singh</ReviewerId>
+    <AssignedTo>Gulshan Singh</AssignedTo>
+    <File></File>
+    <Type>item.type.label.programLogic</Type>
+    <Severity>item.severity.label.major</Severity>
+    <Summary>Shouldn't be called here</Summary>
+    <Description>FileManager shouldn't care about the title. It should simply return an enum of what happened so GUI events can be managed separately.</Description>
+    <Annotation></Annotation>
+    <Revision></Revision>
+    <Resolution>item.label.unset</Resolution>
+    <Status>item.status.label.resolved</Status>
+  </ReviewIssue>
+  <ReviewIssue id="H57M9CPT">
+    <ReviewIssueMeta>
+      <CreationDate format="yyyy-MM-dd :: HH:mm:ss:SSS z">2012-07-29 :: 00:15:52:481 EDT</CreationDate>
+      <LastModificationDate format="yyyy-MM-dd :: HH:mm:ss:SSS z">2012-08-01 :: 20:49:59:350 EDT</LastModificationDate>
+    </ReviewIssueMeta>
+    <ReviewerId>Gulshan Singh</ReviewerId>
+    <AssignedTo>Gulshan Singh</AssignedTo>
+    <File></File>
+    <Type>item.type.label.codingStandards</Type>
+    <Severity>item.severity.label.normal</Severity>
+    <Summary>Unnecessary output</Summary>
+    <Description>This information should not be printed out. It should be specified with a comment</Description>
+    <Annotation></Annotation>
+    <Revision></Revision>
+    <Resolution>item.label.unset</Resolution>
+    <Status>item.status.label.resolved</Status>
+  </ReviewIssue>
+</Review>

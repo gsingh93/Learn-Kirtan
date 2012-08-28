@@ -1,342 +1,125 @@
 package gsingh.learnkirtan.parser;
 
-import static gsingh.learnkirtan.Constants.MAX_KEYS;
-import gsingh.learnkirtan.Main;
-import gsingh.learnkirtan.note.DoubleNote;
+import gsingh.learnkirtan.keys.LabelManager.Octave;
 import gsingh.learnkirtan.note.Note;
-import gsingh.learnkirtan.parser.exceptions.DashFirstNoteException;
-import gsingh.learnkirtan.parser.exceptions.InvalidNoteException;
-import gsingh.learnkirtan.parser.exceptions.NoStartLabelException;
-import gsingh.learnkirtan.parser.exceptions.NoteOutOfBoundsException;
+import gsingh.learnkirtan.note.Note.Modifier;
+import gsingh.learnkirtan.shabad.Shabad;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class Parser {
 
-	private static final Logger LOGGER = Logger.getLogger(Parser.class
-			.getName());
+	private static final int FULL_NOTE = 1000;
+	private static final int HALF_NOTE = 500;
 
-	static {
-		LOGGER.addHandler(Main.logFile);
-		LOGGER.setLevel(Level.INFO);
-	}
+	private static final String modifierRegex = "(?:\\.|'|\\.'|'\\.)";
+	private static final String noteRegex = String.format(
+			"(?:(%s?)(sa|re|ga|ma|pa|dha|ni)(%s?))", modifierRegex,
+			modifierRegex);
+	private static final String regex = String.format("(?:%s(?:-%s)? ?)+",
+			noteRegex, noteRegex);
+	private static final Pattern pattern = Pattern.compile(regex,
+			Pattern.CASE_INSENSITIVE);
 
-	/**
-	 * The default length each note is played
-	 */
-	private static final int gap = 500;
+	public Shabad parse(String shabadText) {
+		Shabad shabad = new Shabad();
 
-	/**
-	 * If set, loop will terminate.
-	 */
-	private static boolean stop = false;
+		shabadText = shabadText.toUpperCase().trim();
 
-	/**
-	 * If set, playback will pause
-	 */
-	private static boolean pause = false;
+		// TODO: Convert to exception
+		if (Validator.validate(shabadText)) {
+			shabad.setShabadText(shabadText);
+			List<String> wordList = Arrays.asList(shabadText.split("\\s+"));
 
-	/**
-	 * True if playing, false otherwise.
-	 */
-	private static boolean isPlaying = false;
+			for (int i = 0; i < wordList.size(); i++) {
+				String word = wordList.get(i);
+				if (isLabel(word)) {
+					shabad.addLabel(word, i);
+				} else if (isNote(word)) {
 
-	/**
-	 * If set, end of file or playback region has been reached. If
-	 * {@code repeat} is set, playback will repeat. Otherwise, this function
-	 * will return
-	 */
-	private static boolean finished = false;
+					Matcher matcher = pattern.matcher(word);
+					if (matcher.matches()) {
+						// for (int j = 1; j <= matcher.groupCount(); j++) {
+						// System.out.println(j);
+						// System.out.println(matcher.group(j));
+						// }
+						String prefix1 = matcher.group(1);
+						String name1 = matcher.group(2);
+						String suffix1 = matcher.group(3);
 
-	/**
-	 * If set, playback region will repeat when finished
-	 */
-	private static boolean repeat = false;
+						String prefix2 = matcher.group(4);
+						String name2 = matcher.group(5);
+						String suffix2 = matcher.group(6);
 
-	/**
-	 * The note to play
-	 */
-	private static DoubleNote doubleNote;
+						if (name2 != null) {
+							Note note1 = buildNote(prefix1, name1, suffix1,
+									HALF_NOTE);
+							Note note2 = buildNote(prefix2, name2, suffix2,
+									HALF_NOTE);
 
-	private static Scanner scanner;
+							shabad.addNote(note1);
+							shabad.addNote(note2);
+						} else {
+							Note note1 = buildNote(prefix1, name1, suffix1,
+									FULL_NOTE);
 
-	public static void parseAndPlay(String shabad, String start, String end,
-			double tempo, int saKey) {
-
-		isPlaying = true;
-
-		shabad = shabad.toUpperCase().trim();
-		start = "#" + start.toUpperCase();
-		end = "#" + end.toUpperCase();
-		LOGGER.info("Shabad: " + shabad);
-		LOGGER.info("Start: " + start);
-		LOGGER.info("End: " + end);
-
-		List<String> wordList = Arrays.asList(shabad.split("\\s+"));
-		scanner = new Scanner(wordList, end);
-
-		// Find starting label if present
-		try {
-			moveCursorToStart(start);
-		} catch (NoStartLabelException e) {
-			;
-		} catch (DashFirstNoteException e) {
-			stop = true;
-		}
-
-		while (!stop) {
-			if (pause)
-				pause();
-
-			// Read in note
-			getNextNote();
-
-			// Play notes if valid
-			try {
-				playNote(doubleNote.getNote1(), tempo, saKey);
-				playNote(doubleNote.getNote2(), tempo, saKey);
-			} catch (NoteOutOfBoundsException e) {
-				break;
-			} catch (InvalidNoteException e) {
-				break;
-			}
-
-			// Check for non-immediate end
-			if (finished) {
-				if (finish(start)) {
-					finished = false;
-					// stop = false;
-					continue;
-				} else
-					break;
-			}
-
-		}
-
-		LOGGER.info("Left Loop. Returning.");
-		pause = false;
-		isPlaying = false;
-		stop = false;
-		finished = false;
-	}
-
-	private static void moveCursorToStart(String start)
-			throws NoStartLabelException, DashFirstNoteException {
-		String input = null;
-		if (!start.equals("#")) {
-			input = scanner.getNext();
-			while (!input.equals(start)) {
-				if (!scanner.isFinished())
-					input = scanner.getNext();
-				else
-					throw new NoStartLabelException(LOGGER);
-			}
-		} else
-			LOGGER.info("No starting label supplied.");
-
-		// Check if first note is a dash
-		input = scanner.getNext();
-		scanner.decrementIndex();
-
-		if (scanner.isFinished()) {
-			stop = true;
-			return;
-		}
-
-		if (input.equals("-"))
-			throw new DashFirstNoteException(LOGGER);
-	}
-
-	private static void getNextNote() {
-		String input = scanner.getNextNote();
-
-		// Check for end
-		if (scanner.isFinished()) {
-			finished = true;
-			return;
-		}
-
-		// Construct a note
-		doubleNote = new DoubleNote(input);
-
-		// Check if next note is a dash
-		input = scanner.getNextNote();
-
-		if (scanner.isFinished()) {
-			finished = true;
-			return;
-		}
-
-		int holdCount = 1;
-		while (input.equals("-")) {
-			holdCount++;
-			input = scanner.getNextNote();
-
-			if (scanner.isFinished()) {
-				finished = true;
-				break;
+							shabad.addNote(note1);
+						}
+					} else if (word.equals("-")) {
+						shabad.addLongNote();
+					}
+				} else {
+					System.out.println("Invalid Note " + word);
+				}
 			}
 		}
-
-		scanner.decrementIndex();
-		if (doubleNote.getNote2() == null)
-			doubleNote.getNote1().setHoldCount(holdCount);
-		else
-			doubleNote.getNote2().setHoldCount(holdCount);
-
-		LOGGER.info("holdCount: " + holdCount);
+		return shabad;
 	}
 
-	private static void playNote(Note note, double tempo, int saKey)
-			throws NoteOutOfBoundsException, InvalidNoteException {
-		if (note != null) {
-			LOGGER.info("Note is null.");
-			if (note.isValid()) {
-				play(note, tempo, saKey);
-			} else {
-				String fullNote = note.getPrefix() + note.getNote()
-						+ note.getSuffix();
-				throw new InvalidNoteException(LOGGER, fullNote);
-			}
-		}
-	}
+	public Note parseNote(String noteText) {
+		Note note = null;
 
-	public static void play(Note note, double tempo, int saKey)
-			throws NoteOutOfBoundsException {
-		// Calculate key for note
-		int key = calculateKey(note, saKey);
+		Matcher matcher = pattern.matcher(noteText);
+		if (matcher.matches()) {
+			// for (int j = 1; j <= matcher.groupCount(); j++) {
+			// System.out.println(j);
+			// System.out.println(matcher.group(j));
+			// }
+			String prefix1 = matcher.group(1);
+			String name1 = matcher.group(2);
+			String suffix1 = matcher.group(3);
 
-		// Play note
-		double doubleMult;
-		if (doubleNote.getNote2() != null)
-			doubleMult = .5;
-		else
-			doubleMult = 1.0;
-		LOGGER.info("Playing Key: " + key);
-		Main.keys[key]
-				.playOnce((int) (doubleMult * note.getHoldCount() * gap / tempo));
-	}
-
-	public static int calculateKey(Note note, int saKey)
-			throws NoteOutOfBoundsException {
-		int key = -1;
-
-		String noteName = note.getNote();
-		// Set the key number of the note to be played
-		if (noteName.equals("SA")) {
-			key = saKey;
-		} else if (noteName.equals("RE")) {
-			key = saKey + 2;
-		} else if (noteName.equals("GA")) {
-			key = saKey + 4;
-		} else if (noteName.equals("MA")) {
-			key = saKey + 5;
-		} else if (noteName.equals("PA")) {
-			key = saKey + 7;
-		} else if (noteName.equals("DHA")) {
-			key = saKey + 9;
-		} else if (noteName.equals("NI")) {
-			key = saKey + 11;
+			note = buildNote(prefix1, name1, suffix1, HALF_NOTE);
 		}
 
-		if (note.isKomal())
-			key--;
-		if (note.isLower())
-			key -= 12;
-		if (note.isTheevra())
-			key++;
-		if (note.isUpper())
-			key += 12;
-
-		if (key >= 0 && key < MAX_KEYS)
-			return key;
-		else {
-			String fullNote = note.getPrefix() + noteName + note.getSuffix();
-			throw new NoteOutOfBoundsException(LOGGER, fullNote);
-		}
+		return note;
 	}
 
-	private static boolean finish(String start) {
-		if (repeat) {
-			LOGGER.info("Finished. Repeating.");
-			scanner.reset();
-			try {
-				moveCursorToStart(start);
-			} catch (NoStartLabelException e) {
-				return false;
-			} catch (DashFirstNoteException e) {
-				return false;
-			}
+	private Note buildNote(String prefix, String name, String suffix, int length) {
+		Octave octave = Octave.MIDDLE;
+		Modifier modifier = Modifier.NONE;
+		if (prefix.contains("."))
+			octave = Octave.LOWER;
+		else if (suffix.contains("."))
+			octave = Octave.UPPER;
+		if (prefix.contains("'"))
+			modifier = Modifier.KOMAL;
+		else if (suffix.contains("'"))
+			modifier = Modifier.THEEVRA;
+		return new Note(name, octave, modifier, length);
+	}
 
+	private boolean isLabel(String word) {
+		if (word.charAt(0) == '#')
 			return true;
-		} else {
-			LOGGER.info("Finished. Returning.");
+		else
 			return false;
-		}
 	}
 
-	/**
-	 * Sets pause to false and stop to true
-	 */
-	public static void stop() {
-		stop = true;
-		pause = false;
-		isPlaying = false;
-	}
-
-	/**
-	 * Sets pause to true
-	 */
-	public static void setPause() {
-		pause = true;
-		isPlaying = false;
-	}
-
-	/**
-	 * If pause is true, the thread playing the shabad will sleep
-	 */
-	public static void pause() {
-		while (pause) {
-			try {
-				Thread.sleep(1000);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-		}
-	}
-
-	/**
-	 * Returns true if the playback is paused, false otherwise
-	 */
-	public static boolean isPaused() {
-		return pause;
-	}
-
-	/**
-	 * Returns true if playing, false otherwise
-	 */
-	public static boolean isPlaying() {
-		return isPlaying;
-	}
-
-	/**
-	 * Sets isPlaying to true and pause to false.
-	 */
-	public static void play() {
-		pause = false;
-		isPlaying = true;
-	}
-
-	/**
-	 * Sets the repeat flag
-	 * 
-	 * @param bool
-	 *            - {@code repeat} is set to this value
-	 */
-	public static void setRepeat(boolean bool) {
-		repeat = bool;
+	private boolean isNote(String word) {
+		return true;
 	}
 }

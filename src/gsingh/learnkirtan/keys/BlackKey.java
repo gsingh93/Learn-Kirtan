@@ -2,15 +2,13 @@ package gsingh.learnkirtan.keys;
 
 import static gsingh.learnkirtan.Constants.BLACK_KEY_HEIGHT;
 import static gsingh.learnkirtan.Constants.BLACK_KEY_WIDTH;
-import gsingh.learnkirtan.SettingsManager;
 
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Insets;
-import java.awt.event.MouseListener;
 
 @SuppressWarnings("serial")
-public class BlackKey extends Key implements MouseListener {
+public class BlackKey extends Key {
 
 	/**
 	 * Font to use for note labels
@@ -22,8 +20,8 @@ public class BlackKey extends Key implements MouseListener {
 	 */
 	private static Font dhaFont = new Font("Dialog", Font.PLAIN, 7);
 
-	public BlackKey(int saKey, SettingsManager settingsManager) {
-		super(saKey, settingsManager);
+	public BlackKey(LabelManager labelManager) {
+		super(labelManager);
 		setBackground(Color.BLACK);
 		setForeground(Color.WHITE);
 		setMargin(new Insets(0, 0, 0, 0));
