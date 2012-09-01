@@ -3,11 +3,11 @@
   <ReviewIssue id="H65MI8OY">
     <ReviewIssueMeta>
       <CreationDate format="yyyy-MM-dd :: HH:mm:ss:SSS z">2012-08-21 :: 19:26:57:154 EDT</CreationDate>
-      <LastModificationDate format="yyyy-MM-dd :: HH:mm:ss:SSS z">2012-08-21 :: 19:27:43:739 EDT</LastModificationDate>
+      <LastModificationDate format="yyyy-MM-dd :: HH:mm:ss:SSS z">2012-08-30 :: 23:09:27:811 EDT</LastModificationDate>
     </ReviewIssueMeta>
     <ReviewerId>Gulshan Singh</ReviewerId>
     <AssignedTo>Gulshan Singh</AssignedTo>
-    <File line="28">src/gsingh/learnkirtan/keys/BlackKey.java</File>
+    <File line="17">src/gsingh/learnkirtan/keys/BlackKey.java</File>
     <Type>item.type.label.codingStandards</Type>
     <Severity>item.severity.label.normal</Severity>
     <Summary>Isn't responsible for setting font</Summary>
@@ -15,12 +15,12 @@
     <Annotation></Annotation>
     <Revision></Revision>
     <Resolution>item.resolution.label.validNeedsfixing</Resolution>
-    <Status>item.status.label.open</Status>
+    <Status>item.status.label.resolved</Status>
   </ReviewIssue>
   <ReviewIssue id="H65MJRC4">
     <ReviewIssueMeta>
       <CreationDate format="yyyy-MM-dd :: HH:mm:ss:SSS z">2012-08-21 :: 19:28:07:972 EDT</CreationDate>
-      <LastModificationDate format="yyyy-MM-dd :: HH:mm:ss:SSS z">2012-08-21 :: 19:29:37:071 EDT</LastModificationDate>
+      <LastModificationDate format="yyyy-MM-dd :: HH:mm:ss:SSS z">2012-08-30 :: 23:10:59:674 EDT</LastModificationDate>
     </ReviewIssueMeta>
     <ReviewerId>Gulshan Singh</ReviewerId>
     <AssignedTo>Gulshan Singh</AssignedTo>
@@ -32,16 +32,16 @@
     <Annotation></Annotation>
     <Revision></Revision>
     <Resolution>item.resolution.label.validNeedsfixing</Resolution>
-    <Status>item.status.label.open</Status>
+    <Status>item.status.label.resolved</Status>
   </ReviewIssue>
   <ReviewIssue id="H65Q1HSF">
     <ReviewIssueMeta>
       <CreationDate format="yyyy-MM-dd :: HH:mm:ss:SSS z">2012-08-21 :: 21:05:54:255 EDT</CreationDate>
-      <LastModificationDate format="yyyy-MM-dd :: HH:mm:ss:SSS z">2012-08-21 :: 21:07:16:400 EDT</LastModificationDate>
+      <LastModificationDate format="yyyy-MM-dd :: HH:mm:ss:SSS z">2012-08-30 :: 23:06:23:279 EDT</LastModificationDate>
     </ReviewIssueMeta>
     <ReviewerId>Gulshan Singh</ReviewerId>
     <AssignedTo>Gulshan Singh</AssignedTo>
-    <File line="199">src/gsingh/learnkirtan/keys/Key.java</File>
+    <File line="196">src/gsingh/learnkirtan/keys/Key.java</File>
     <Type>item.type.label.codingStandards</Type>
     <Severity>item.severity.label.normal</Severity>
     <Summary>Should be a function call, not an implementation</Summary>
@@ -49,16 +49,16 @@
     <Annotation></Annotation>
     <Revision></Revision>
     <Resolution>item.resolution.label.validNeedsfixing</Resolution>
-    <Status>item.status.label.open</Status>
+    <Status>item.status.label.resolved</Status>
   </ReviewIssue>
   <ReviewIssue id="H65QQI29">
     <ReviewIssueMeta>
       <CreationDate format="yyyy-MM-dd :: HH:mm:ss:SSS z">2012-08-21 :: 21:25:21:009 EDT</CreationDate>
-      <LastModificationDate format="yyyy-MM-dd :: HH:mm:ss:SSS z">2012-08-21 :: 21:25:36:741 EDT</LastModificationDate>
+      <LastModificationDate format="yyyy-MM-dd :: HH:mm:ss:SSS z">2012-08-30 :: 22:48:33:923 EDT</LastModificationDate>
     </ReviewIssueMeta>
     <ReviewerId>Gulshan Singh</ReviewerId>
     <AssignedTo>Gulshan Singh</AssignedTo>
-    <File line="92">src/gsingh/learnkirtan/keys/NoteList.java</File>
+    <File line="98">src/gsingh/learnkirtan/keys/NoteList.java</File>
     <Type>item.type.label.programLogic</Type>
     <Severity>item.severity.label.normal</Severity>
     <Summary>Should this be greater than or equal to?</Summary>
@@ -66,16 +66,16 @@
     <Annotation></Annotation>
     <Revision></Revision>
     <Resolution>item.resolution.label.validNeedsfixing</Resolution>
-    <Status>item.status.label.open</Status>
+    <Status>item.status.label.resolved</Status>
   </ReviewIssue>
   <ReviewIssue id="H65QXWVC">
     <ReviewIssueMeta>
       <CreationDate format="yyyy-MM-dd :: HH:mm:ss:SSS z">2012-08-21 :: 21:31:06:792 EDT</CreationDate>
-      <LastModificationDate format="yyyy-MM-dd :: HH:mm:ss:SSS z">2012-08-21 :: 21:32:06:797 EDT</LastModificationDate>
+      <LastModificationDate format="yyyy-MM-dd :: HH:mm:ss:SSS z">2012-08-30 :: 22:44:28:128 EDT</LastModificationDate>
     </ReviewIssueMeta>
     <ReviewerId>Gulshan Singh</ReviewerId>
     <AssignedTo>Gulshan Singh</AssignedTo>
-    <File line="100">src/gsingh/learnkirtan/keys/NoteList.java</File>
+    <File line="112">src/gsingh/learnkirtan/keys/NoteList.java</File>
     <Type>item.type.label.codingStandards</Type>
     <Severity>item.severity.label.normal</Severity>
     <Summary>Abstract into another function</Summary>
@@ -83,6 +83,23 @@
     <Annotation></Annotation>
     <Revision></Revision>
     <Resolution>item.resolution.label.validNeedsfixing</Resolution>
-    <Status>item.status.label.open</Status>
+    <Status>item.status.label.resolved</Status>
+  </ReviewIssue>
+  <ReviewIssue id="H6IPQ5JW">
+    <ReviewIssueMeta>
+      <CreationDate format="yyyy-MM-dd :: HH:mm:ss:SSS z">2012-08-30 :: 23:18:05:468 EDT</CreationDate>
+      <LastModificationDate format="yyyy-MM-dd :: HH:mm:ss:SSS z">2012-09-01 :: 17:59:14:994 EDT</LastModificationDate>
+    </ReviewIssueMeta>
+    <ReviewerId>Gulshan Singh</ReviewerId>
+    <AssignedTo>Gulshan Singh</AssignedTo>
+    <File line="188">src/gsingh/learnkirtan/keys/Key.java</File>
+    <Type>item.type.label.codingStandards</Type>
+    <Severity>item.severity.label.normal</Severity>
+    <Summary>Should be moved to its own class</Summary>
+    <Description>The Key class can contain an internal MouseListener class instead of implementing MouseListener itself. </Description>
+    <Annotation></Annotation>
+    <Revision></Revision>
+    <Resolution>item.resolution.label.invalidWontfix</Resolution>
+    <Status>item.status.label.closed</Status>
   </ReviewIssue>
 </Review>

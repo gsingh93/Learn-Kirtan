@@ -34,6 +34,12 @@ public class NoteList {
 		shiftLabels(saKey);
 	}
 
+	/**
+	 * Shifts the sargam labels based on the new Sa key
+	 * 
+	 * @param saKey
+	 *            the new saKey to be used as a reference for the shift
+	 */
 	public void shiftLabels(int saKey) {
 		int difference = saKey - middleStart;
 
@@ -71,7 +77,7 @@ public class NoteList {
 	 *            the ID of they to get the note name of
 	 * @return the name of the note
 	 */
-	public String getNoteName(int keyId) {
+	public String getNoteNameFromId(int keyId) {
 		return notes.get(keyId);
 	}
 
@@ -82,42 +88,73 @@ public class NoteList {
 	 *            the key ID of the key from which to get a note
 	 * @return a {@link Note} corresponding to the key
 	 */
-	public Note getNoteFromId(int keyId) {
+	public Note getNoteFromKeyId(int keyId) {
 		Parser parser = new Parser();
 
-		String note = getNoteName(keyId);
+		String note = getNoteNameFromId(keyId);
 
 		if (keyId < middleStart) {
 			note = "." + note;
-		} else if (keyId > upperStart) {
+		} else if (keyId >= upperStart) {
 			note = note + ".";
 		}
 
 		return parser.parseNote(note);
 	}
-
+	
+	/**
+	 * Returns the index of the note in the lower note section of the note list,
+	 * which is the key ID of the note
+	 * 
+	 * @param note
+	 *            the note to get the index of
+	 * @return the index of the note
+	 */
 	public int getLowerNoteIndex(Note note) {
-		String name = getName(note);
-		int end = middleStart;
-		int index = notes.subList(lowerStart, end).indexOf(name);
-
-		return index + lowerStart;
+		return getNoteIndex(note, lowerStart, middleStart);
 	}
 
+	/**
+	 * Returns the index of the note in the middle note section of the note
+	 * list, which is the key ID of the note
+	 * 
+	 * @param note
+	 *            the note to get the index of
+	 * @return the index of the note
+	 */
 	public int getMiddleNoteIndex(Note note) {
-		String name = getName(note);
-		int end = upperStart;
-		int index = notes.subList(middleStart, end).indexOf(name);
-
-		return index + middleStart;
+		return getNoteIndex(note, middleStart, upperStart);
 	}
 
+	/**
+	 * Returns the index of the note in the upper note section of the note list,
+	 * which is the key ID of the note
+	 * 
+	 * @param note
+	 *            the note to get the index of
+	 * @return the index of the note
+	 */
 	public int getUpperNoteIndex(Note note) {
-		String name = getName(note);
-		int end = notes.size() - 1;
-		int index = notes.subList(upperStart, end).indexOf(name);
+		return getNoteIndex(note, upperStart, notes.size() - 1);
+	}
 
-		return index + upperStart;
+	/**
+	 * Gets the index of the provided note in the note list. The note index is
+	 * equivalent to the key ID corresponding to the note.
+	 * 
+	 * @param note
+	 *            the note to look for
+	 * @param start
+	 *            the starting index to look for the note
+	 * @param end
+	 *            the ending index to look for the note
+	 * @return the index of the note
+	 */
+	private int getNoteIndex(Note note, int start, int end) {
+		String name = getName(note);
+		int index = notes.subList(start, end).indexOf(name);
+
+		return index + start;
 	}
 
 	/**

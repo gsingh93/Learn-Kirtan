@@ -142,7 +142,7 @@ public class TextAreaShabadEditor extends JTextArea implements
 				KeyMapper keyMapper = KeyMapper.getInstance();
 				NoteList notes = keyMapper.getNotes();
 				if (keyId < Constants.MAX_KEYS && keyId >= 0) {
-					final Note note = notes.getNoteFromId(keyId);
+					final Note note = notes.getNoteFromKeyId(keyId);
 
 					insert(note.getNoteText() + " ", getCaretPosition());
 					new Thread(new Runnable() {

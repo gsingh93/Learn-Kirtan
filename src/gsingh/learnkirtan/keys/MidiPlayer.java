@@ -38,14 +38,14 @@ public class MidiPlayer {
 	}
 
 	/**
-	 * Starts playing the midi note for this key
+	 * Starts playing the MIDI note for this key
 	 */
 	public void play() {
 		channel[0].noteOn(note, 60);
 	}
 
 	/**
-	 * Stops playing the midi note of this key
+	 * Stops playing the MIDI note of this key
 	 */
 	public void stop() {
 		channel[0].noteOff(note);

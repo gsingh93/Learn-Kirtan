@@ -1,22 +1,17 @@
 IN PROGRESS:
 // First go through TODOs
-./gsingh/learnkirtan/keys/BlackKey.java
-./gsingh/learnkirtan/keys/WhiteKey.java
-./gsingh/learnkirtan/keys/Key.java
-./gsingh/learnkirtan/note/Note.java
-./gsingh/learnkirtan/keys/NoteList.java
-./gsingh/learnkirtan/keys/KeyMapper.java
-
-TODO:
+./gsingh/learnkirtan/parser/Parser.java
+./gsingh/learnkirtan/parser/Validator.java
 ./gsingh/learnkirtan/keys/KeyPlayer.java
 ./gsingh/learnkirtan/keys/MidiPlayer.java
 ./gsingh/learnkirtan/Main.java
+
+TODO:
 ./gsingh/learnkirtan/parser/exceptions/DashFirstNoteException.java
 ./gsingh/learnkirtan/parser/exceptions/InvalidNoteException.java
 ./gsingh/learnkirtan/parser/exceptions/NoStartLabelException.java
 ./gsingh/learnkirtan/parser/exceptions/NoteOutOfBoundsException.java
-./gsingh/learnkirtan/parser/Parser.java
-./gsingh/learnkirtan/parser/Validator.java
+
 
 DONE:
 ./gsingh/learnkirtan/FileManager.java
@@ -26,6 +21,12 @@ DONE:
 ./gsingh/learnkirtan/utility/DialogUtility.java
 ./gsingh/learnkirtan/utility/NetworkUtility.java
 ./gsingh/learnkirtan/utility/Utility.java
+./gsingh/learnkirtan/keys/BlackKey.java
+./gsingh/learnkirtan/keys/WhiteKey.java
+./gsingh/learnkirtan/keys/Key.java
+./gsingh/learnkirtan/note/Note.java
+./gsingh/learnkirtan/keys/NoteList.java
+./gsingh/learnkirtan/keys/KeyMapper.java
 
 UNSORTED:
 ./gsingh/learnkirtan/component/ControlPanel.java

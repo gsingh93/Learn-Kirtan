@@ -42,10 +42,10 @@ public class LabelManager {
 	}
 
 	/** The small font to use for the Dha note */
-	private static final Font SMALL_DHA_FONT = new Font("Dialog", Font.PLAIN, 7);
+	private static final Font SMALL_FONT = new Font("Dialog", Font.PLAIN, 7);
 
 	/** The regular sized font to use for the Dha note */
-	private static final Font REGULAR_DHA_FONT = new Font("Dialog", Font.PLAIN,
+	private static final Font REGULAR_FONT = new Font("Dialog", Font.PLAIN,
 			9);
 
 	/** The sargam notes */
@@ -158,18 +158,20 @@ public class LabelManager {
 		clearSargamNote(key);
 		if (key instanceof BlackKey) {
 			setDhaFont(key);
+		} else {
+			key.setFont(REGULAR_FONT);
 		}
 		key.replaceText(
 				EMPTY_SARGAM_SPAN_TAG,
 				String.format(SARGAM_SPAN_TAG,
-						notes.getNoteName(key.getMIDINoteId() - 40)));
+						notes.getNoteNameFromId(key.getMIDINoteId() - 40)));
 	}
 
 	private void setDhaFont(Key key) {
 		if (key.contains("Dha")) {
-			key.setFont(SMALL_DHA_FONT);
+			key.setFont(SMALL_FONT);
 		} else {
-			key.setFont(REGULAR_DHA_FONT);
+			key.setFont(REGULAR_FONT);
 		}
 	}
 

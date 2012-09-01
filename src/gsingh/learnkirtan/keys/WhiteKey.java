@@ -18,7 +18,6 @@ public class WhiteKey extends Key {
 	public WhiteKey(LabelManager labelManager) {
 		super(labelManager);
 		setMargin(new Insets(100, 0, 0, 0));
-		setFont(font);
 		setBackground(Color.WHITE);
 		setSize(WHITE_KEY_WIDTH, WHITE_KEY_HEIGHT);
 	}

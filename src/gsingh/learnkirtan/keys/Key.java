@@ -20,14 +20,10 @@ public class Key extends JButton implements MouseListener {
 			"<html><div style='text-align:center'>%s<br>%s</div></html>",
 			EMPTY_SARGAM_SPAN_TAG, EMPTY_KEY_SPAN_TAG);
 
-	/**
-	 * A counter used to assign MIDI note numbers to the keys
-	 */
+	/** A counter used to assign MIDI note numbers to the keys */
 	private static int noteCount = Constants.STARTING_MIDI_NOTE_ID;
 
-	/**
-	 * The MIDI note ID of the key
-	 */
+	/** The MIDI note ID of the key */
 	private final int midiNoteId;
 
 	/** The pressed state of this key */
@@ -96,8 +92,8 @@ public class Key extends JButton implements MouseListener {
 	}
 
 	/**
-	 * A wrapper for the {@code doClick} method, so that it is executed if the
-	 * key is pressed or clicked
+	 * A wrapper for the {@code doClick} method, so that it is executed
+	 * continuously if the key is pressed or clicked until it is released
 	 */
 	public void startDoClick() {
 		new Thread(new Runnable() {
@@ -127,6 +123,7 @@ public class Key extends JButton implements MouseListener {
 		midiPlayer.stop();
 	}
 
+	// TODO: Should this be moved into another class?
 	@Override
 	public void mouseClicked(MouseEvent e) {
 		System.out.println("Key clicked: " + midiNoteId);
@@ -195,13 +192,11 @@ public class Key extends JButton implements MouseListener {
 			final int keyId = Utility.letterToKeyId(
 					String.valueOf(e.getKeyChar()), labelManager.getOctave());
 
-			// If that key is playable and not already pressed, play it
-			if (keyId < Constants.MAX_KEYS && keyId >= 0) {
-				final Key key = KeyMapper.getInstance().getKeys()[keyId];
-				if (!key.isPressed()) {
-					key.mousePressed(null);
-					key.startDoClick();
-				}
+			// If that key is valid and not already pressed, play it
+			final Key key = KeyMapper.getInstance().getKey(keyId);
+			if (key != null && !key.isPressed()) {
+				key.mousePressed(null);
+				key.startDoClick();
 			}
 		}
 
@@ -222,10 +217,9 @@ public class Key extends JButton implements MouseListener {
 			} else {
 				int keyId = Utility.letterToKeyId(letter,
 						labelManager.getOctave());
-				if (keyId < Constants.MAX_KEYS && keyId >= 0) {
-					Key key = KeyMapper.getInstance().getKeys()[keyId];
+				Key key = KeyMapper.getInstance().getKey(keyId);
+				if (key != null)
 					key.mouseReleased(null);
-				}
 			}
 		}
 	}

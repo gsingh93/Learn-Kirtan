@@ -10,10 +10,22 @@ public class Note {
 		NONE, KOMAL, THEEVRA;
 	}
 
+	/**
+	 * The full string representation of the note, including octaves and
+	 * modifiers
+	 */
 	private String noteText;
+
+	/** The name of the note with no modifiers */
 	private String name;
+
+	/** The octave of the note */
 	private Octave octave;
+
+	/** The modifier (theevra or komal) of the note */
 	private Modifier modifier;
+
+	/** The length that the note should be played in milliseconds */
 	private int length;
 
 	public Note(String name, Octave octave, Modifier modifier, int length) {
@@ -36,23 +48,35 @@ public class Note {
 		this.noteText = noteText;
 	}
 
+	/** @return the length the note should be played in milliseconds */
 	public int getLength() {
 		return length;
 	}
 
+	/**
+	 * Sets the length that the note should be played
+	 * 
+	 * @param length
+	 *            the length in milliseconds
+	 */
 	public void setLength(int length) {
 		this.length = length;
 	}
 
+	/**
+	 * Plays the note
+	 */
 	public void play() {
 		Key key = KeyMapper.getInstance().getKeyFromNote(this);
 		key.playOnce(length);
 	}
 
+	/** @return the note name with all modifiers */
 	public String getNoteText() {
 		return noteText;
 	}
 
+	/** @return the note name with no modifiers in titlecase */
 	public String getName() {
 		// Convert to title case
 		name = name.toLowerCase();
@@ -60,6 +84,7 @@ public class Note {
 		return name;
 	}
 
+	/** @return true if the note is komal, false otherwise */
 	public boolean isKomal() {
 		if (modifier == Modifier.KOMAL) {
 			return true;
@@ -68,6 +93,7 @@ public class Note {
 		}
 	}
 
+	/** @return true if the note is theevra, false otherwise */
 	public boolean isTheevra() {
 		if (modifier == Modifier.THEEVRA) {
 			return true;
@@ -76,6 +102,7 @@ public class Note {
 		}
 	}
 
+	/** @return true if the note is in the upper octave, false otherwise */
 	public boolean isUpperOctave() {
 		if (octave == Octave.UPPER) {
 			return true;
@@ -84,6 +111,7 @@ public class Note {
 		}
 	}
 
+	/** @return true if the note is in the lower octave, false otherwise */
 	public boolean isLowerOctave() {
 		if (octave == Octave.LOWER) {
 			return true;
