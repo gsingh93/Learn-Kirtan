@@ -88,6 +88,6 @@ public class TableShabadEditor extends JTable implements SwingShabadEditor {
 	}
 
 	public void deleteRow(int row) {
-		// TODO
+		model.removeRow(row);
 	}
 }

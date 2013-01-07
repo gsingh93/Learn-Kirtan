@@ -117,7 +117,19 @@ public class ControlPanel extends JPanel implements ActionListener,
 					editor.addRowAbove(row);
 				}
 			});
+
+			JButton deleteRowButton = new JButton("-");
+			deleteRowButton.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					TableShabadEditor editor = (TableShabadEditor) shabadEditor;
+					int row = editor.getSelectedRow();
+					editor.deleteRow(row);
+				}
+			});
+
 			add(addRowButton);
+			add(deleteRowButton);
 		}
 	}
 
