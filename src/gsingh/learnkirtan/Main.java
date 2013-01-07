@@ -9,7 +9,7 @@ import gsingh.learnkirtan.component.PianoPanel;
 import gsingh.learnkirtan.component.View;
 import gsingh.learnkirtan.component.menu.MenuBar;
 import gsingh.learnkirtan.component.shabadeditor.SwingShabadEditor;
-import gsingh.learnkirtan.component.shabadeditor.TextAreaShabadEditor;
+import gsingh.learnkirtan.component.shabadeditor.TableShabadEditor;
 import gsingh.learnkirtan.controller.ControllerFactory;
 import gsingh.learnkirtan.installer.SoundBankInstaller;
 import gsingh.learnkirtan.installer.SoundBankInstallerFactory;
@@ -122,7 +122,8 @@ public class Main {
 		frame = new JFrame(BASETITLE + "Untitled Shabad");
 		titleManager = new WindowTitleManager(frame);
 
-		shabadEditor = new TextAreaShabadEditor(titleManager, labelManager);
+		// shabadEditor = new TextAreaShabadEditor(titleManager, labelManager);
+		shabadEditor = new TableShabadEditor();
 
 		frame.setJMenuBar(new MenuBar(new ControllerFactory(fileManager, model,
 				notes, shabadEditor, titleManager, labelManager), shabadEditor));
@@ -138,7 +139,8 @@ public class Main {
 
 		frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 		frame.addWindowListener(new MyWindowAdapter());
-		frame.setSize(WIDTH + 100, WHITE_KEY_HEIGHT * 3 + 30);
+		frame.pack();
+		// frame.setSize(WIDTH + 100, WHITE_KEY_HEIGHT * 3 + 30);
 		frame.setLocation(250, 60);
 		frame.setResizable(false);
 		frame.setVisible(true);
@@ -173,12 +175,15 @@ public class Main {
 				.setPreferredSize(new Dimension(WIDTH - 18, WHITE_KEY_HEIGHT));
 		mainPanel.add(pianoPanel, c);
 
+		c.fill = GridBagConstraints.HORIZONTAL;
 		c.gridx = 0;
 		c.gridy = 2;
 		c.weightx = 1.0;
 		c.weighty = 1.0;
 		c.anchor = GridBagConstraints.NORTHWEST;
-		mainPanel.add(new JScrollPane((Component) editor), c);
+		JScrollPane scrollPane = new JScrollPane((Component) editor);
+		scrollPane.setPreferredSize(new Dimension(scrollPane.getWidth(), 250));
+		mainPanel.add(scrollPane, c);
 
 		return mainPanel;
 	}
