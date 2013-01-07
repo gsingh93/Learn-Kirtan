@@ -1,7 +1,6 @@
-package gsingh.learnkirtan.keys;
+package gsingh.learnkirtan.note;
 
 import gsingh.learnkirtan.Constants;
-import gsingh.learnkirtan.note.Note;
 import gsingh.learnkirtan.parser.Parser;
 
 import java.util.Arrays;

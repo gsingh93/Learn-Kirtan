@@ -11,12 +11,12 @@ import gsingh.learnkirtan.component.menu.MenuBar;
 import gsingh.learnkirtan.component.shabadeditor.SwingShabadEditor;
 import gsingh.learnkirtan.component.shabadeditor.TextAreaShabadEditor;
 import gsingh.learnkirtan.controller.ControllerFactory;
-import gsingh.learnkirtan.controller.ShabadPlayer;
 import gsingh.learnkirtan.installer.SoundBankInstaller;
 import gsingh.learnkirtan.installer.SoundBankInstallerFactory;
 import gsingh.learnkirtan.keys.KeyMapper;
 import gsingh.learnkirtan.keys.LabelManager;
-import gsingh.learnkirtan.keys.NoteList;
+import gsingh.learnkirtan.note.NoteList;
+import gsingh.learnkirtan.player.ShabadPlayer;
 import gsingh.learnkirtan.settings.SettingsManager;
 import gsingh.learnkirtan.utility.NetworkUtility;
 
@@ -34,13 +34,20 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.SwingUtilities;
 
+/**
+ * The main entry point for the program. Responsible for initializing the GUI,
+ * installing the soundbank if necessary, and checking for updates
+ * 
+ * @author Gulshan
+ * 
+ */
 public class Main {
 
 	/** The base title of the software. Includes the name and version number */
 	public static final String BASETITLE = "Learn Kirtan v" + VERSION
 			+ " Beta - ";
 
-	/** Width of the screen */
+	/** The width of the screen */
 	private final int WIDTH = 3 * (WHITE_KEY_WIDTH * 7) + WHITE_KEY_WIDTH - 62;
 
 	/**
@@ -56,7 +63,7 @@ public class Main {
 	private WindowTitleManager titleManager;
 
 	/** Handles the opening and saving of files */
-	private FileManager fileManager;
+	private FileManager fileManager = new FileManager();
 
 	/** Manages the setting and getting of settings */
 	private SettingsManager settingsManager = SettingsManager.getInstance();
@@ -64,7 +71,7 @@ public class Main {
 	/** A list of all of the notes */
 	private NoteList notes;
 
-	/** Manages the labeling of the keys */
+	/** Manages the labelling of the keys */
 	private LabelManager labelManager;
 
 	// Only Main can instantiate itself
@@ -79,7 +86,6 @@ public class Main {
 	 * Constructs the GUI, installs the sound bank, and checks for updates
 	 */
 	public void init() {
-		fileManager = new FileManager();
 		settingsManager.setFileManager(fileManager);
 		notes = new NoteList(settingsManager.getSaKey());
 
@@ -132,7 +138,7 @@ public class Main {
 
 		frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 		frame.addWindowListener(new MyWindowAdapter());
-		frame.setSize(WIDTH, WHITE_KEY_HEIGHT * 3 + 30);
+		frame.setSize(WIDTH + 100, WHITE_KEY_HEIGHT * 3 + 30);
 		frame.setLocation(250, 60);
 		frame.setResizable(false);
 		frame.setVisible(true);

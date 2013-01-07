@@ -1,2 +1,54 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Review id="Parser, Validator, Main, and Key and Midi Player Review"></Review>
+<Review id="Parser, Validator, Main, and Key and Midi Player Review">
+  <ReviewIssue id="H6LDBDV9">
+    <ReviewIssueMeta>
+      <CreationDate format="yyyy-MM-dd :: HH:mm:ss:SSS z">2012-09-01 :: 19:53:59:541 EDT</CreationDate>
+      <LastModificationDate format="yyyy-MM-dd :: HH:mm:ss:SSS z">2012-09-05 :: 00:14:32:719 EDT</LastModificationDate>
+    </ReviewIssueMeta>
+    <ReviewerId>Gulshan Singh</ReviewerId>
+    <AssignedTo>Gulshan Singh</AssignedTo>
+    <File line="17">src/gsingh/learnkirtan/keys/MidiPlayer.java</File>
+    <Type>item.type.label.codingStandards</Type>
+    <Severity>item.severity.label.normal</Severity>
+    <Summary>Should this be static?</Summary>
+    <Description>It may be better to make this static and make this a static class, because there's no internal state that can vary with a MidiPlayer; it's simply a facade to the Java MIDI API, created specifically for playing harmonium notes.</Description>
+    <Annotation></Annotation>
+    <Revision></Revision>
+    <Resolution>item.resolution.label.validNeedsfixing</Resolution>
+    <Status>item.status.label.resolved</Status>
+  </ReviewIssue>
+  <ReviewIssue id="H6LH2ROQ">
+    <ReviewIssueMeta>
+      <CreationDate format="yyyy-MM-dd :: HH:mm:ss:SSS z">2012-09-01 :: 21:39:16:010 EDT</CreationDate>
+      <LastModificationDate format="yyyy-MM-dd :: HH:mm:ss:SSS z">2012-09-04 :: 23:59:32:514 EDT</LastModificationDate>
+    </ReviewIssueMeta>
+    <ReviewerId>Gulshan Singh</ReviewerId>
+    <AssignedTo>Gulshan Singh</AssignedTo>
+    <File line="47">src/gsingh/learnkirtan/parser/Validator.java</File>
+    <Type>item.type.label.optimization</Type>
+    <Severity>item.severity.label.normal</Severity>
+    <Summary>Should this throw an exception instead?</Summary>
+    <Description>Not throwing an exception causes all validations to be checked instead of returning at the first incorrect validation.</Description>
+    <Annotation></Annotation>
+    <Revision></Revision>
+    <Resolution>item.resolution.label.invalidWontfix</Resolution>
+    <Status>item.status.label.closed</Status>
+  </ReviewIssue>
+  <ReviewIssue id="H6NXQJ9G">
+    <ReviewIssueMeta>
+      <CreationDate format="yyyy-MM-dd :: HH:mm:ss:SSS z">2012-09-03 :: 15:01:11:044 EDT</CreationDate>
+      <LastModificationDate format="yyyy-MM-dd :: HH:mm:ss:SSS z">2012-09-04 :: 23:55:32:977 EDT</LastModificationDate>
+    </ReviewIssueMeta>
+    <ReviewerId>Gulshan Singh</ReviewerId>
+    <AssignedTo>Gulshan Singh</AssignedTo>
+    <File line="70">src/gsingh/learnkirtan/parser/Parser.java</File>
+    <Type>item.type.label.clarity</Type>
+    <Severity>item.severity.label.normal</Severity>
+    <Summary>Move to function</Summary>
+    <Description>This and the following 20 lines of code can be broken into functions to improve readability</Description>
+    <Annotation></Annotation>
+    <Revision></Revision>
+    <Resolution>item.resolution.label.invalidWontfix</Resolution>
+    <Status>item.status.label.closed</Status>
+  </ReviewIssue>
+</Review>

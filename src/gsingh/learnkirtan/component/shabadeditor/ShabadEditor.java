@@ -10,4 +10,6 @@ public interface ShabadEditor {
 
 	public void setText(String text);
 
+	public String getText();
+
 }

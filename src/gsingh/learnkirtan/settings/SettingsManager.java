@@ -78,7 +78,7 @@ public class SettingsManager {
 	/** The file manager for this class */
 	private FileManager fileManager;
 
-	private SettingsManager() throws XPathExpressionException {
+	private SettingsManager() {
 		// Retrieve DOM from XML file
 		DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
 		DocumentBuilder db;
@@ -96,18 +96,17 @@ public class SettingsManager {
 			e.printStackTrace();
 		}
 
-		initSettings();
+		try {
+			initSettings();
+		} catch (XPathExpressionException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	public static SettingsManager getInstance() {
 		if (instance == null)
-			try {
-				instance = new SettingsManager();
-			} catch (XPathExpressionException e) {
-				// TODO: Catch exception/make custom exception
-				throw new RuntimeException(
-						"An error occured while reading the config file");
-			}
+			instance = new SettingsManager();
 		return instance;
 	}
 
@@ -115,17 +114,16 @@ public class SettingsManager {
 	/**
 	 * Initializes the settings variables by reading the config file
 	 * 
-	 * @throws XPathExpressionException
 	 */
 	private void initSettings() throws XPathExpressionException {
 
 		// Get saKey
-		saKey = (Integer) xPath.evaluate(SA_KEY_XPATH, dom,
-				XPathConstants.NUMBER);
+		saKey = Integer.valueOf((String) xPath.evaluate(SA_KEY_XPATH, dom,
+				XPathConstants.STRING));
 
 		// Get checkForUpdate settings
-		checkForUpdateInterval = (Long) xPath.evaluate(
-				CHECK_FOR_UPDATE_INTERVAL_XPATH, dom, XPathConstants.NUMBER);
+		checkForUpdateInterval = Long.valueOf((String)xPath.evaluate(
+				CHECK_FOR_UPDATE_INTERVAL_XPATH, dom, XPathConstants.STRING));
 
 		checkForUpdate = (Boolean) xPath.evaluate(CHECK_FOR_UPDATE_XPATH, dom,
 				XPathConstants.BOOLEAN);
@@ -147,10 +145,8 @@ public class SettingsManager {
 	 * 
 	 * @param bool
 	 *            whether to enable or disable this setting
-	 * @throws XPathExpressionException
 	 */
-	public void setShowSargamLabels(boolean bool)
-			throws XPathExpressionException {
+	public void setShowSargamLabels(boolean bool) {
 		showSargamLabels = bool;
 		changeSetting(SHOW_SARGAM_LABELS_XPATH, Boolean.toString(bool));
 	}
@@ -160,10 +156,8 @@ public class SettingsManager {
 	 * 
 	 * @param bool
 	 *            whether to enable or disable this setting
-	 * @throws XPathExpressionException
 	 */
-	public void setShowKeyboardLabels(boolean bool)
-			throws XPathExpressionException {
+	public void setShowKeyboardLabels(boolean bool) {
 		showKeyboardLabels = bool;
 		changeSetting(SHOW_KEYBOARD_LABELS_XPATH, Boolean.toString(bool));
 	}
@@ -185,10 +179,8 @@ public class SettingsManager {
 	 *            whether to turn update checks
 	 * @param duration
 	 *            used to specify length of time not to remind.
-	 * @throws XPathExpressionException
 	 */
-	public void setCheckForUpdate(boolean bool, Duration duration)
-			throws XPathExpressionException {
+	public void setCheckForUpdate(boolean bool, Duration duration) {
 		if (!bool) {
 			String d = calculateDate(duration);
 			checkForUpdate = false;
@@ -232,10 +224,8 @@ public class SettingsManager {
 	 * Checks whether the duration for not checking reminding about updates is
 	 * completed
 	 * 
-	 * @throws XPathExpressionException
 	 */
-	public void checkReminderOffDurationReached()
-			throws XPathExpressionException {
+	public void checkReminderOffDurationReached() {
 		long time = System.currentTimeMillis();
 
 		if (checkForUpdateInterval < time) {
@@ -249,9 +239,8 @@ public class SettingsManager {
 	 * 
 	 * @param key
 	 *            the key number input by the user from 1 to 36
-	 * @throws XPathExpressionException
 	 */
-	public void setSaKey(int key) throws XPathExpressionException {
+	public void setSaKey(int key) {
 		saKey = key;
 		changeSetting(SA_KEY_XPATH, String.valueOf(saKey));
 	}
@@ -270,17 +259,20 @@ public class SettingsManager {
 	 *            full name of the setting, with '.'s to delimit nodes
 	 * @param value
 	 *            value to change the setting to
-	 * @throws XPathExpressionException
 	 */
-	private void changeSetting(String xPathQuery, String value)
-			throws XPathExpressionException {
-		Node node = (Node) xPath.evaluate(xPathQuery, dom, XPathConstants.NODE);
-		node.setTextContent(value);
+	private void changeSetting(String xPathQuery, String value) {
 		try {
+			Node node = (Node) xPath.evaluate(xPathQuery, dom,
+					XPathConstants.NODE);
+			node.setTextContent(value);
+			// TODO Handle error
 			fileManager.saveSettings(dom);
 		} catch (TransformerFactoryConfigurationError e) {
 			e.printStackTrace();
 		} catch (TransformerException e) {
+			e.printStackTrace();
+		} catch (XPathExpressionException e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}

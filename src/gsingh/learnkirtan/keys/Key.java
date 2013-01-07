@@ -3,6 +3,7 @@ package gsingh.learnkirtan.keys;
 import static gsingh.learnkirtan.keys.LabelManager.EMPTY_KEY_SPAN_TAG;
 import static gsingh.learnkirtan.keys.LabelManager.EMPTY_SARGAM_SPAN_TAG;
 import gsingh.learnkirtan.Constants;
+import gsingh.learnkirtan.player.MidiPlayer;
 import gsingh.learnkirtan.utility.Utility;
 
 import java.awt.event.KeyAdapter;
@@ -32,18 +33,12 @@ public class Key extends JButton implements MouseListener {
 	/** The clicked state of this key */
 	private boolean clicked;
 
-	/** The MidiPlayer responsible for playing note corresponding to this key */
-	private MidiPlayer midiPlayer;
-
 	public Key(LabelManager labelManager) {
 
 		this.midiNoteId = noteCount++;
 		setText(DEFAULT_TEXT);
 		addKeyListener(new KeyboardListener(labelManager));
 		addMouseListener(this);
-
-		// TODO: Move to shabadPlayer?
-		midiPlayer = new MidiPlayer(midiNoteId);
 	}
 
 	/**
@@ -82,7 +77,7 @@ public class Key extends JButton implements MouseListener {
 	}
 
 	/** @return the midiNoteId of this key */
-	public int getMIDINoteId() {
+	public int getMidiNoteId() {
 		return midiNoteId;
 	}
 
@@ -104,23 +99,6 @@ public class Key extends JButton implements MouseListener {
 				}
 			}
 		}).start();
-	}
-
-	/**
-	 * Plays this key one time for the specified amount of time
-	 * 
-	 * @param time
-	 *            the amount of time to hold this key down
-	 */
-	public void playOnce(final int time) {
-		midiPlayer.play();
-		doClick(time);
-		try {
-			Thread.sleep(10);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-		midiPlayer.stop();
 	}
 
 	// TODO: Should this be moved into another class?
@@ -146,7 +124,7 @@ public class Key extends JButton implements MouseListener {
 		} else {
 			clicked = true;
 		}
-		midiPlayer.play();
+		MidiPlayer.play(midiNoteId);
 	}
 
 	@Override
@@ -163,12 +141,12 @@ public class Key extends JButton implements MouseListener {
 		// If one of the two is true, then stop playing it and restart,
 		// so that only one note is played at a time
 		if (!pressed && !clicked)
-			midiPlayer.stop();
+			MidiPlayer.stop(midiNoteId);
 		else {
 			// TODO: Should MidiPlayer handle if the note is already being
 			// played?
-			midiPlayer.stop();
-			midiPlayer.play();
+			MidiPlayer.stop(midiNoteId);
+			MidiPlayer.play(midiNoteId);
 		}
 	}
 

@@ -1,5 +1,7 @@
 package gsingh.learnkirtan.keys;
 
+import gsingh.learnkirtan.note.NoteList;
+
 import java.awt.Font;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -164,7 +166,7 @@ public class LabelManager {
 		key.replaceText(
 				EMPTY_SARGAM_SPAN_TAG,
 				String.format(SARGAM_SPAN_TAG,
-						notes.getNoteNameFromId(key.getMIDINoteId() - 40)));
+						notes.getNoteNameFromId(key.getMidiNoteId() - 40)));
 	}
 
 	private void setDhaFont(Key key) {
@@ -201,11 +203,11 @@ public class LabelManager {
 	 *            the map from which to get the keyboard mapping
 	 */
 	private void labelKeyboardNote(Key key, Map<Integer, String> keyMap) {
-		if (keyMap.containsKey(key.getMIDINoteId()))
+		if (keyMap.containsKey(key.getMidiNoteId()))
 			key.replaceText(
 					EMPTY_KEY_SPAN_TAG,
 					String.format(KEYBOARD_SPAN_TAG,
-							keyMap.get(key.getMIDINoteId())));
+							keyMap.get(key.getMidiNoteId())));
 	}
 
 	/**

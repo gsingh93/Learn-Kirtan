@@ -6,6 +6,7 @@ import static org.junit.Assert.fail;
 import gsingh.learnkirtan.Constants;
 import gsingh.learnkirtan.keys.LabelManager.Octave;
 import gsingh.learnkirtan.note.Note;
+import gsingh.learnkirtan.note.NoteList;
 import gsingh.learnkirtan.note.Note.Modifier;
 
 import org.junit.BeforeClass;
@@ -31,21 +32,21 @@ public class KeyMapperTest {
 	public void getKeyFromName_ShudLowerOctaveNote_ReturnCorrectKey() {
 		Key key = km.getKeyFromNote(new Note("ma", Octave.LOWER,
 				Modifier.THEEVRA, 0));
-		assertEquals(44, key.getMIDINoteId());
+		assertEquals(44, key.getMidiNoteId());
 	}
 
 	@Test
 	public void getKeyFromName_ShudMiddleOctaveNote_ReturnCorrectKey() {
 		Key key = km.getKeyFromNote(new Note("sa", Octave.MIDDLE,
 				Modifier.NONE, 0));
-		assertEquals(50, key.getMIDINoteId());
+		assertEquals(50, key.getMidiNoteId());
 	}
 
 	@Test
 	public void getKeyFromName_ShudUpperOctaveNote_ReturnCorrectKey() {
 		Key key = km.getKeyFromNote(new Note("re", Octave.UPPER,
 				Modifier.KOMAL, 0));
-		assertEquals(63, key.getMIDINoteId());
+		assertEquals(63, key.getMidiNoteId());
 	}
 
 	@Test

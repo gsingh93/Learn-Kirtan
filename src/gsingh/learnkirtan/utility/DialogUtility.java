@@ -110,4 +110,8 @@ public class DialogUtility {
 		else
 			return false;
 	}
+
+	public static void showMessage(String message) {
+		JOptionPane.showMessageDialog(null, message);
+	}
 }

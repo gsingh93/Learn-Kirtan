@@ -9,7 +9,7 @@ import gsingh.learnkirtan.controller.menu.HelpMenuController;
 import gsingh.learnkirtan.controller.menu.KeyboardMenuController;
 import gsingh.learnkirtan.controller.menu.OptionsMenuController;
 import gsingh.learnkirtan.keys.LabelManager;
-import gsingh.learnkirtan.keys.NoteList;
+import gsingh.learnkirtan.note.NoteList;
 
 public class ControllerFactory {
 

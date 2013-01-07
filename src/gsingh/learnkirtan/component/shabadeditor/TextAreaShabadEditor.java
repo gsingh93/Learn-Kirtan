@@ -4,9 +4,10 @@ import gsingh.learnkirtan.Constants;
 import gsingh.learnkirtan.WindowTitleManager;
 import gsingh.learnkirtan.keys.KeyMapper;
 import gsingh.learnkirtan.keys.LabelManager;
-import gsingh.learnkirtan.keys.NoteList;
 import gsingh.learnkirtan.note.Note;
+import gsingh.learnkirtan.note.NoteList;
 import gsingh.learnkirtan.parser.Parser;
+import gsingh.learnkirtan.player.ShabadPlayer;
 import gsingh.learnkirtan.shabad.Shabad;
 import gsingh.learnkirtan.utility.Utility;
 
@@ -76,10 +77,15 @@ public class TextAreaShabadEditor extends JTextArea implements
 		return parser.parse(getText());
 	}
 
-	@Override
-	public void setText(String text) {
-		super.setText(text);
-	}
+	// @Override
+	// public String getText() {
+	// return super.getText();
+	// }
+	//
+	// @Override
+	// public void setText(String text) {
+	// super.setText(text);
+	// }
 
 	@Override
 	public void changedUpdate(DocumentEvent arg0) {
@@ -147,7 +153,8 @@ public class TextAreaShabadEditor extends JTextArea implements
 					insert(note.getNoteText() + " ", getCaretPosition());
 					new Thread(new Runnable() {
 						public void run() {
-							note.play();
+							ShabadPlayer shabadPlayer = new ShabadPlayer(null); // TODO
+							shabadPlayer.playNote(note);
 						}
 					}).start();
 				}

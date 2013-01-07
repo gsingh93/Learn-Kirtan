@@ -3,7 +3,11 @@ package gsingh.learnkirtan.component;
 import gsingh.learnkirtan.StateModel.FileState;
 import gsingh.learnkirtan.StateModel.PlayState;
 import gsingh.learnkirtan.component.shabadeditor.SwingShabadEditor;
-import gsingh.learnkirtan.controller.ShabadPlayer;
+import gsingh.learnkirtan.player.ShabadPlayer;
+import gsingh.learnkirtan.utility.DialogUtility;
+import gsingh.learnkirtan.validation.ValidationError;
+import gsingh.learnkirtan.validation.ValidationErrors;
+import gsingh.learnkirtan.validation.Validator;
 
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
@@ -116,7 +120,14 @@ public class ControlPanel extends JPanel implements ActionListener,
 
 				@Override
 				public void run() {
-					controller.play(shabadEditor.getShabad());
+					ValidationErrors errors = Validator.validate(shabadEditor
+							.getText());
+					if (errors.noErrors()) {
+						controller.play(shabadEditor.getShabad());
+					} else {
+						// Display the errors
+						displayErrors(errors);
+					}
 				}
 
 			}).start();
@@ -125,6 +136,18 @@ public class ControlPanel extends JPanel implements ActionListener,
 		} else if (command.equals("stop")) {
 			controller.stop();
 		}
+	}
+
+	private void displayErrors(ValidationErrors errors) {
+		StringBuilder sb = new StringBuilder();
+		for (ValidationError error : errors.getErrors()) {
+			sb.append(String
+					.format("An error occured on line %d at position %d with token %s. Error message: %s\n",
+							error.getLine(), error.getPos(), error.getToken(),
+							error.getMessage()));
+		}
+
+		DialogUtility.showMessage(sb.toString());
 	}
 
 	private class MyPropertyChangeListener implements PropertyChangeListener {

@@ -11,16 +11,16 @@ public class Shabad {
 	private Map<String, Integer> labelPos;
 	private String shabadText;
 
+	public Shabad(String shabadText) {
+		this.shabadText = shabadText;
+	}
+
 	public LinkedList<Note> getNotes() {
 		return notes;
 	}
 
 	public LinkedList<Note> getNotes(String start, String end) {
 		return notes;
-	}
-
-	public void setShabadText(String shabadText) {
-		this.shabadText = shabadText;
 	}
 
 	public String getShabadText() {

@@ -8,8 +8,16 @@ import java.io.OutputStream;
 
 import org.apache.commons.io.IOUtils;
 
+// TODO Look into apache library to getJavaHome
 public class SoundBankInstaller {
 
+	private boolean checkDirectoryExists() {
+		return false; // TODO
+	}
+
+	private void moveSoundBank() {
+		// TODO
+	}
 	/**
 	 * Installs the soundbank file in the JRE lib/audio folder
 	 * 

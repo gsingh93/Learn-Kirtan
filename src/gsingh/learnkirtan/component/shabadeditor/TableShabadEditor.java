@@ -18,7 +18,12 @@ public class TableShabadEditor extends JTable implements SwingShabadEditor {
 	@Override
 	public void setText(String text) {
 		// TODO Auto-generated method stub
+	}
 
+	@Override
+	public String getText() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 	@Override
@@ -50,5 +55,4 @@ public class TableShabadEditor extends JTable implements SwingShabadEditor {
 		// TODO Auto-generated method stub
 		return false;
 	}
-
 }

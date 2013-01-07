@@ -1,7 +1,5 @@
 package gsingh.learnkirtan.note;
 
-import gsingh.learnkirtan.keys.Key;
-import gsingh.learnkirtan.keys.KeyMapper;
 import gsingh.learnkirtan.keys.LabelManager.Octave;
 
 public class Note {
@@ -61,14 +59,6 @@ public class Note {
 	 */
 	public void setLength(int length) {
 		this.length = length;
-	}
-
-	/**
-	 * Plays the note
-	 */
-	public void play() {
-		Key key = KeyMapper.getInstance().getKeyFromNote(this);
-		key.playOnce(length);
 	}
 
 	/** @return the note name with all modifiers */

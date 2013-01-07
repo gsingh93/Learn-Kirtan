@@ -1,7 +1,9 @@
-package gsingh.learnkirtan.controller;
+package gsingh.learnkirtan.player;
 
 import gsingh.learnkirtan.StateModel;
 import gsingh.learnkirtan.StateModel.PlayState;
+import gsingh.learnkirtan.keys.Key;
+import gsingh.learnkirtan.keys.KeyMapper;
 import gsingh.learnkirtan.note.Note;
 import gsingh.learnkirtan.shabad.Shabad;
 
@@ -20,9 +22,14 @@ public class ShabadPlayer {
 			while (pause) {
 				sleep(500);
 			}
-			note.play();
+			playNote(note);
 		}
 		model.setPlayState(PlayState.STOP);
+	}
+
+	public void playNote(Note note) {
+		Key key = KeyMapper.getInstance().getKeyFromNote(note);
+		MidiPlayer.play(key, note.getLength());
 	}
 
 	public void pause() {

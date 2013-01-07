@@ -3,7 +3,7 @@ package gsingh.learnkirtan.controller.menu;
 import static gsingh.learnkirtan.Constants.MAX_KEYS;
 import gsingh.learnkirtan.StateModel;
 import gsingh.learnkirtan.keys.LabelManager;
-import gsingh.learnkirtan.keys.NoteList;
+import gsingh.learnkirtan.note.NoteList;
 import gsingh.learnkirtan.settings.SettingsManager;
 import gsingh.learnkirtan.utility.DialogUtility;
 

@@ -2,7 +2,6 @@ IN PROGRESS:
 // First go through TODOs
 ./gsingh/learnkirtan/parser/Parser.java
 ./gsingh/learnkirtan/parser/Validator.java
-./gsingh/learnkirtan/keys/KeyPlayer.java
 ./gsingh/learnkirtan/keys/MidiPlayer.java
 ./gsingh/learnkirtan/Main.java
 
@@ -27,6 +26,7 @@ DONE:
 ./gsingh/learnkirtan/note/Note.java
 ./gsingh/learnkirtan/keys/NoteList.java
 ./gsingh/learnkirtan/keys/KeyMapper.java
+./gsingh/learnkirtan/keys/KeyPlayer.java - Removed
 
 UNSORTED:
 ./gsingh/learnkirtan/component/ControlPanel.java
