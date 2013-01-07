@@ -3,6 +3,7 @@ package gsingh.learnkirtan.component;
 import gsingh.learnkirtan.StateModel.FileState;
 import gsingh.learnkirtan.StateModel.PlayState;
 import gsingh.learnkirtan.component.shabadeditor.SwingShabadEditor;
+import gsingh.learnkirtan.component.shabadeditor.TableShabadEditor;
 import gsingh.learnkirtan.player.ShabadPlayer;
 import gsingh.learnkirtan.utility.DialogUtility;
 import gsingh.learnkirtan.validation.ValidationError;
@@ -57,7 +58,8 @@ public class ControlPanel extends JPanel implements ActionListener,
 	private ShabadPlayer controller;
 	private SwingShabadEditor shabadEditor;
 
-	public ControlPanel(ShabadPlayer controller, SwingShabadEditor shabadEditor) {
+	public ControlPanel(ShabadPlayer controller,
+			final SwingShabadEditor shabadEditor) {
 		this.controller = controller;
 		this.shabadEditor = shabadEditor;
 
@@ -104,6 +106,19 @@ public class ControlPanel extends JPanel implements ActionListener,
 		add(startField);
 		add(endLabel);
 		add(endField);
+
+		if (shabadEditor instanceof TableShabadEditor) {
+			JButton addRowButton = new JButton("+");
+			addRowButton.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					TableShabadEditor editor = (TableShabadEditor) shabadEditor;
+					int row = editor.getSelectedRow();
+					editor.addRowAbove(row);
+				}
+			});
+			add(addRowButton);
+		}
 	}
 
 	@Override
