@@ -1,6 +1,6 @@
 package gsingh.learnkirtan;
 
-import gsingh.learnkirtan.component.shabadeditor.SwingShabadEditor;
+import gsingh.learnkirtan.component.shabadeditor.ShabadEditor;
 import gsingh.learnkirtan.shabad.Shabad;
 import gsingh.learnkirtan.utility.DialogUtility;
 
@@ -202,7 +202,7 @@ public class FileManager {
 	 * 
 	 * @throws IOException
 	 */
-	public boolean openFile(SwingShabadEditor shabadEditor) throws IOException {
+	public boolean openFile(ShabadEditor shabadEditor) throws IOException {
 		int returnVal = fc.showOpenDialog(null);
 		if (returnVal == JFileChooser.APPROVE_OPTION) {
 			File file = fc.getSelectedFile();

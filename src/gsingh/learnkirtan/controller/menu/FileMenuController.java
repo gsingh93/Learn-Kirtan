@@ -15,7 +15,7 @@ public class FileMenuController {
 	private WindowTitleManager titleManager;
 
 	private StateModel model;
-	private SwingShabadEditor shabadEditor;
+	private ShabadEditor shabadEditor;
 	private FileManager fileManager;
 
 	public FileMenuController(StateModel model, FileManager fileManager,
@@ -23,6 +23,7 @@ public class FileMenuController {
 		this.model = model;
 		this.fileManager = fileManager;
 		this.titleManager = titleManager;
+		this.shabadEditor = shabadEditor;
 	}
 
 	public void open() {
@@ -37,7 +38,10 @@ public class FileMenuController {
 			if (result != SaveResult.NOTSAVEDCANCELLED) {
 				if (fileManager.openFile(shabadEditor)) {
 					titleManager.setOpenedTitle(fileManager.getFileName());
-					shabadEditor.reset();
+					if (shabadEditor instanceof SwingShabadEditor) {
+						SwingShabadEditor editor = (SwingShabadEditor) shabadEditor;
+						editor.reset();
+					}
 					model.setFileState(FileState.OPEN);
 				}
 			}
@@ -71,7 +75,10 @@ public class FileMenuController {
 			if (result != SaveResult.NOTSAVEDCANCELLED) {
 				fileManager.newFile();
 				shabadEditor.setText("");
-				shabadEditor.reset();
+				if (shabadEditor instanceof SwingShabadEditor) {
+					SwingShabadEditor editor = (SwingShabadEditor) shabadEditor;
+					editor.reset();
+				}
 				titleManager.setDocumentCreatedTitle();
 
 				model.setFileState(FileState.CREATE);
