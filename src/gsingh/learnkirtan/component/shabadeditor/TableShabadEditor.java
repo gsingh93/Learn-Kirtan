@@ -28,6 +28,7 @@ public class TableShabadEditor extends SwingShabadEditor {
 
 		table.setRowHeight(20);
 		model.setColumnIdentifiers(headers);
+		table.getTableHeader().setReorderingAllowed(false);
 
 		setLayout(new GridLayout());
 		add(new JScrollPane(table));
