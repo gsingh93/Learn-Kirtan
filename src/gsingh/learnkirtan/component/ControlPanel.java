@@ -11,6 +11,7 @@ import gsingh.learnkirtan.validation.ValidationErrors;
 import gsingh.learnkirtan.validation.Validator;
 
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
@@ -21,6 +22,7 @@ import java.text.DecimalFormat;
 
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSpinner;
@@ -96,6 +98,7 @@ public class ControlPanel extends JPanel implements ActionListener,
 		startField = new JTextField(7);
 		endField = new JTextField(7);
 
+		setLayout(new WrapLayout(FlowLayout.LEFT));
 		add(playButton);
 		add(pauseButton);
 		add(stopButton);
@@ -106,6 +109,8 @@ public class ControlPanel extends JPanel implements ActionListener,
 		add(startField);
 		add(endLabel);
 		add(endField);
+
+		Dimension size = getPreferredSize();
 
 		if (shabadEditor instanceof TableShabadEditor) {
 			JButton addRowButton = new JButton("+");
@@ -128,9 +133,29 @@ public class ControlPanel extends JPanel implements ActionListener,
 				}
 			});
 
+			JLabel taalLabel = new JLabel("Taal (Beat):");
+			String[] taalNames = new String[] { "Dadra (6 Beats)",
+					"Roopak (7 Beats)", "Keherva (8 Beats)",
+					"Jap Taal (10 Beats)", "Ek Taal (12 Beats)",
+					"Deepchandi (14 Beats)", "Teen Taal (16 Beats)" };
+			final JComboBox taalComboBox = new JComboBox(taalNames);
+			taalComboBox.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					String taal = (String) taalComboBox.getSelectedItem();
+					if (taal.equals("Dadra (6 Beats)")) {
+						System.out.println("Taal set to Dadra");
+					}
+				}
+			});
+
 			add(addRowButton);
 			add(deleteRowButton);
+			add(taalLabel);
+			add(taalComboBox);
 		}
+
+		setSize(size);
 	}
 
 	@Override
