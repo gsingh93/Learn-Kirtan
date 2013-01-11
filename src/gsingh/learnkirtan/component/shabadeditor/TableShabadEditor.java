@@ -44,11 +44,14 @@ public class TableShabadEditor extends JTable implements SwingShabadEditor {
 
 	@Override
 	public Shabad getShabad() {
+		int numRows = model.getRowCount();
 		StringBuilder sb = new StringBuilder();
-		for (int i = 0; i < 16; i++) {
-			String value = (String) model.getValueAt(0, i);
-			if (value != null) {
-				sb.append(model.getValueAt(0, i)).append(" ");
+		for (int i = 1; i < numRows; i += 2) {
+			for (int j = 0; j < 16; j++) {
+				String value = (String) model.getValueAt(i, j);
+				if (value != null) {
+					sb.append(model.getValueAt(i, j)).append(" ");
+				}
 			}
 		}
 		Parser parser = new Parser();
