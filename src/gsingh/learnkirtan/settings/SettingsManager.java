@@ -117,7 +117,6 @@ public class SettingsManager {
 		try {
 			initSettings();
 		} catch (XPathExpressionException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -290,7 +289,6 @@ public class SettingsManager {
 		} catch (TransformerException e) {
 			e.printStackTrace();
 		} catch (XPathExpressionException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
