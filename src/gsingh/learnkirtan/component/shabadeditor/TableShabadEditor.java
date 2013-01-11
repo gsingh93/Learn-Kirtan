@@ -99,6 +99,7 @@ public class TableShabadEditor extends JTable implements SwingShabadEditor {
 
 	public void addRowAbove(int row) {
 		model.insertRow(row, new Object[] {});
+		model.insertRow(row, new Object[] {});
 	}
 
 	public void addRowBelow(int row) {
@@ -107,5 +108,10 @@ public class TableShabadEditor extends JTable implements SwingShabadEditor {
 
 	public void deleteRow(int row) {
 		model.removeRow(row);
+		if (row % 2 == 0) {
+			model.removeRow(row);
+		} else {
+			model.removeRow(row - 1);
+		}
 	}
 }
