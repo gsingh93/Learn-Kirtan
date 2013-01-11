@@ -5,8 +5,12 @@ import gsingh.learnkirtan.component.shabadeditor.TextAreaShabadEditor.UndoAction
 import gsingh.learnkirtan.parser.Parser;
 import gsingh.learnkirtan.shabad.Shabad;
 
+import java.awt.Color;
+import java.awt.Component;
+
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableCellRenderer;
 
 @SuppressWarnings("serial")
 public class TableShabadEditor extends JTable implements SwingShabadEditor {
@@ -22,6 +26,20 @@ public class TableShabadEditor extends JTable implements SwingShabadEditor {
 		}
 		setRowHeight(20);
 		model.setColumnIdentifiers(headers);
+	}
+
+	@Override
+	public Component prepareRenderer(TableCellRenderer renderer, int row,
+			int col) {
+		Component c = super.prepareRenderer(renderer, row, col);
+		if (!c.getBackground().equals(getSelectionBackground())) {
+			if (row % 2 == 1) {
+				c.setBackground(Color.LIGHT_GRAY);
+			} else {
+				c.setBackground(Color.WHITE);
+			}
+		}
+		return c;
 	}
 
 	@Override
