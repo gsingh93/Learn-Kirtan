@@ -1,46 +1,52 @@
 package gsingh.learnkirtan.component.shabadeditor;
 
-import gsingh.learnkirtan.component.shabadeditor.TextAreaShabadEditor.RedoAction;
-import gsingh.learnkirtan.component.shabadeditor.TextAreaShabadEditor.UndoAction;
+import gsingh.learnkirtan.WindowTitleManager;
 import gsingh.learnkirtan.parser.Parser;
 import gsingh.learnkirtan.shabad.Shabad;
 
-import java.awt.Color;
-import java.awt.Component;
+import java.awt.GridLayout;
 
+import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableCellRenderer;
 
 @SuppressWarnings("serial")
-public class TableShabadEditor extends JTable implements SwingShabadEditor {
+public class TableShabadEditor extends SwingShabadEditor {
 
-	DefaultTableModel model = (DefaultTableModel) getModel();
+	private JTable table = new JTable(16, 16);
 
-	public TableShabadEditor() {
-		super(16, 16);
+	private DefaultTableModel model = (DefaultTableModel) table.getModel();
+
+
+	public TableShabadEditor(WindowTitleManager titleManager) {
+		super(titleManager);
 
 		Integer[] headers = new Integer[16];
 		for (int i = 0; i < 16; i++) {
 			headers[i] = i + 1;
 		}
-		setRowHeight(20);
+
+		table.setRowHeight(20);
 		model.setColumnIdentifiers(headers);
+
+		setLayout(new GridLayout());
+		add(new JScrollPane(table));
 	}
 
-	@Override
-	public Component prepareRenderer(TableCellRenderer renderer, int row,
-			int col) {
-		Component c = super.prepareRenderer(renderer, row, col);
-		if (!c.getBackground().equals(getSelectionBackground())) {
-			if (row % 2 == 1) {
-				c.setBackground(Color.LIGHT_GRAY);
-			} else {
-				c.setBackground(Color.WHITE);
-			}
-		}
-		return c;
-	}
+	// TODO Set renderer
+	// @Override
+	// public Component prepareRenderer(TableCellRenderer renderer, int row,
+	// int col) {
+	// Component c = table.prepareRenderer(renderer, row, col);
+	// if (!c.getBackground().equals(getSelectionBackground())) {
+	// if (row % 2 == 1) {
+	// c.setBackground(Color.LIGHT_GRAY);
+	// } else {
+	// c.setBackground(Color.WHITE);
+	// }
+	// }
+	// return c;
+	// }
 
 	@Override
 	public Shabad getShabad() {
@@ -81,21 +87,8 @@ public class TableShabadEditor extends JTable implements SwingShabadEditor {
 	}
 
 	@Override
-	public UndoAction getUndoAction() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public RedoAction getRedoAction() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
 	public boolean isModified() {
-		// TODO Auto-generated method stub
-		return false;
+		return modified;
 	}
 
 	/**
@@ -127,5 +120,14 @@ public class TableShabadEditor extends JTable implements SwingShabadEditor {
 		} else {
 			model.removeRow(row - 1);
 		}
+	}
+
+	@Override
+	public void setEnabled(boolean bool) {
+		// TODO Auto-generated method stub
+	}
+
+	public int getSelectedRow() {
+		return table.getSelectedRow();
 	}
 }

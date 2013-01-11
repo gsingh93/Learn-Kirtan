@@ -1,7 +1,7 @@
 package gsingh.learnkirtan.component.menu;
 
-import gsingh.learnkirtan.component.shabadeditor.TextAreaShabadEditor.RedoAction;
-import gsingh.learnkirtan.component.shabadeditor.TextAreaShabadEditor.UndoAction;
+import gsingh.learnkirtan.component.shabadeditor.SwingShabadEditor.RedoAction;
+import gsingh.learnkirtan.component.shabadeditor.SwingShabadEditor.UndoAction;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;

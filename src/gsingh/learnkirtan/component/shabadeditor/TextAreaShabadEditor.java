@@ -12,24 +12,20 @@ import gsingh.learnkirtan.shabad.Shabad;
 import gsingh.learnkirtan.utility.Utility;
 
 import java.awt.Font;
-import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
-import javax.swing.AbstractAction;
 import javax.swing.JTextArea;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.event.UndoableEditEvent;
 import javax.swing.event.UndoableEditListener;
 import javax.swing.text.Document;
-import javax.swing.undo.CannotRedoException;
-import javax.swing.undo.CannotUndoException;
 import javax.swing.undo.UndoManager;
 
 @SuppressWarnings("serial")
-public class TextAreaShabadEditor extends JTextArea implements
-		SwingShabadEditor, DocumentListener, UndoableEditListener, KeyListener {
+public class TextAreaShabadEditor extends SwingShabadEditor implements
+		DocumentListener, UndoableEditListener, KeyListener {
 
 	public enum Mode {
 		COMPOSE, PLAY
@@ -38,6 +34,8 @@ public class TextAreaShabadEditor extends JTextArea implements
 	private Mode mode;
 
 	private WindowTitleManager titleManager;
+
+	private JTextArea textArea = new JTextArea(16, 57);
 
 	private UndoManager undoManager = new UndoManager();
 	private UndoAction undoAction = new UndoAction();
@@ -61,12 +59,13 @@ public class TextAreaShabadEditor extends JTextArea implements
 
 	public TextAreaShabadEditor(WindowTitleManager titleManager,
 			LabelManager labelManager) {
-		super(16, 57);
+		super(titleManager);
+
 		this.titleManager = titleManager;
 		this.labelManager = labelManager;
 
-		setFont(new Font("Dialog", Font.BOLD, 16));
-		Document document = getDocument();
+		textArea.setFont(new Font("Dialog", Font.BOLD, 16));
+		Document document = textArea.getDocument();
 		document.addDocumentListener(this);
 		document.addUndoableEditListener(this);
 	}
@@ -123,8 +122,8 @@ public class TextAreaShabadEditor extends JTextArea implements
 	}
 
 	public void reset() {
-		requestFocusInWindow();
-		setCaretPosition(0);
+		textArea.requestFocusInWindow();
+		textArea.setCaretPosition(0);
 		resetUndoManager();
 	}
 
@@ -150,7 +149,8 @@ public class TextAreaShabadEditor extends JTextArea implements
 				if (keyId < Constants.MAX_KEYS && keyId >= 0) {
 					final Note note = notes.getNoteFromKeyId(keyId);
 
-					insert(note.getNoteText() + " ", getCaretPosition());
+					textArea.insert(note.getNoteText() + " ",
+							textArea.getCaretPosition());
 					new Thread(new Runnable() {
 						public void run() {
 							ShabadPlayer shabadPlayer = new ShabadPlayer(null); // TODO
@@ -170,55 +170,27 @@ public class TextAreaShabadEditor extends JTextArea implements
 	public void keyReleased(KeyEvent e) {
 	}
 
-	public class UndoAction extends AbstractAction {
+	@Override
+	public void setText(String text) {
+		// TODO Auto-generated method stub
 
-		public UndoAction() {
-			super("Undo");
-			setEnabled(false);
-		}
-
-		public void actionPerformed(ActionEvent e) {
-			try {
-				undoManager.undo();
-			} catch (CannotUndoException ex) {
-				ex.printStackTrace();
-			}
-			updateUndoState();
-			redoAction.updateRedoState();
-		}
-
-		public void updateUndoState() {
-			if (undoManager.canUndo()) {
-				setEnabled(true);
-			} else {
-				setEnabled(false);
-			}
-		}
 	}
 
-	public class RedoAction extends AbstractAction {
+	@Override
+	public String getText() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
-		public RedoAction() {
-			super("Redo");
-			setEnabled(false);
-		}
+	@Override
+	public void setEnabled(boolean bool) {
+		// TODO Auto-generated method stub
 
-		public void actionPerformed(ActionEvent e) {
-			try {
-				undoManager.redo();
-			} catch (CannotRedoException ex) {
-				ex.printStackTrace();
-			}
-			updateRedoState();
-			undoAction.updateUndoState();
-		}
+	}
 
-		public void updateRedoState() {
-			if (undoManager.canRedo()) {
-				setEnabled(true);
-			} else {
-				setEnabled(false);
-			}
-		}
+	@Override
+	public void setEditable(boolean bool) {
+		// TODO Auto-generated method stub
+
 	}
 }

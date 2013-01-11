@@ -20,7 +20,6 @@ import gsingh.learnkirtan.player.ShabadPlayer;
 import gsingh.learnkirtan.settings.SettingsManager;
 import gsingh.learnkirtan.utility.NetworkUtility;
 
-import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -31,7 +30,6 @@ import java.io.IOException;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
 import javax.swing.SwingUtilities;
 
 /**
@@ -123,7 +121,7 @@ public class Main {
 		titleManager = new WindowTitleManager(frame);
 
 		// shabadEditor = new TextAreaShabadEditor(titleManager, labelManager);
-		shabadEditor = new TableShabadEditor();
+		shabadEditor = new TableShabadEditor(titleManager);
 
 		frame.setJMenuBar(new MenuBar(new ControllerFactory(fileManager, model,
 				notes, shabadEditor, titleManager, labelManager), shabadEditor));
@@ -148,6 +146,7 @@ public class Main {
 		shabadEditor.reset();
 	}
 
+	// TODO: A box layout would be fine here
 	/**
 	 * Constructs the mainPanel by taking the {@code controlPanel},
 	 * {@code pianoPanel}, and {@code editor} and arranging them using a
@@ -181,9 +180,8 @@ public class Main {
 		c.weightx = 1.0;
 		c.weighty = 1.0;
 		c.anchor = GridBagConstraints.NORTHWEST;
-		JScrollPane scrollPane = new JScrollPane((Component) editor);
-		scrollPane.setPreferredSize(new Dimension(scrollPane.getWidth(), 250));
-		mainPanel.add(scrollPane, c);
+		editor.setPreferredSize(new Dimension(editor.getWidth(), 250));
+		mainPanel.add(editor, c);
 
 		return mainPanel;
 	}
