@@ -44,18 +44,8 @@ public class TableShabadEditor extends JTable implements SwingShabadEditor {
 
 	@Override
 	public Shabad getShabad() {
-		int numRows = model.getRowCount();
-		StringBuilder sb = new StringBuilder();
-		for (int i = 1; i < numRows; i += 2) {
-			for (int j = 0; j < 16; j++) {
-				String value = (String) model.getValueAt(i, j);
-				if (value != null) {
-					sb.append(model.getValueAt(i, j)).append(" ");
-				}
-			}
-		}
 		Parser parser = new Parser();
-		Shabad shabad = parser.parse(sb.toString());
+		Shabad shabad = parser.parse(getText());
 		return shabad;
 	}
 
@@ -66,14 +56,22 @@ public class TableShabadEditor extends JTable implements SwingShabadEditor {
 
 	@Override
 	public String getText() {
-		// TODO Auto-generated method stub
-		return null;
+		int numRows = model.getRowCount();
+		StringBuilder sb = new StringBuilder();
+		for (int i = 1; i < numRows; i += 2) {
+			for (int j = 0; j < 16; j++) {
+				String value = (String) model.getValueAt(i, j);
+				if (value != null) {
+					sb.append(model.getValueAt(i, j)).append(" ");
+				}
+			}
+		}
+		return sb.toString();
 	}
 
 	@Override
 	public void setEditable(boolean bool) {
-		// TODO Auto-generated method stub
-
+		setEditable(bool);
 	}
 
 	@Override
@@ -100,6 +98,12 @@ public class TableShabadEditor extends JTable implements SwingShabadEditor {
 		return false;
 	}
 
+	/**
+	 * Inserts a pair of rows into the table
+	 * 
+	 * @param row
+	 *            the row to insert the pair above
+	 */
 	public void addRowAbove(int row) {
 		model.insertRow(row, new Object[] {});
 		model.insertRow(row, new Object[] {});
@@ -109,6 +113,13 @@ public class TableShabadEditor extends JTable implements SwingShabadEditor {
 		// TODO
 	}
 
+	/**
+	 * Deletes the specified row from the table. Also deletes the other row in
+	 * the pair
+	 * 
+	 * @param row
+	 *            the row number of the row to delete
+	 */
 	public void deleteRow(int row) {
 		model.removeRow(row);
 		if (row % 2 == 0) {
