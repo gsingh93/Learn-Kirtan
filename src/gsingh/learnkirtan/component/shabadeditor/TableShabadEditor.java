@@ -13,7 +13,7 @@ import javax.swing.table.DefaultTableModel;
 @SuppressWarnings("serial")
 public class TableShabadEditor extends SwingShabadEditor {
 
-	private JTable table = new JTable(16, 16);
+	private JTable table = new AlternatingRowColorTable(16, 16);
 
 	private DefaultTableModel model = (DefaultTableModel) table.getModel();
 
@@ -32,21 +32,6 @@ public class TableShabadEditor extends SwingShabadEditor {
 		setLayout(new GridLayout());
 		add(new JScrollPane(table));
 	}
-
-	// TODO Set renderer
-	// @Override
-	// public Component prepareRenderer(TableCellRenderer renderer, int row,
-	// int col) {
-	// Component c = table.prepareRenderer(renderer, row, col);
-	// if (!c.getBackground().equals(getSelectionBackground())) {
-	// if (row % 2 == 1) {
-	// c.setBackground(Color.LIGHT_GRAY);
-	// } else {
-	// c.setBackground(Color.WHITE);
-	// }
-	// }
-	// return c;
-	// }
 
 	@Override
 	public Shabad getShabad() {
