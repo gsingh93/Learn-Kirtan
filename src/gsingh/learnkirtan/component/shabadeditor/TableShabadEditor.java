@@ -26,6 +26,7 @@ public class TableShabadEditor extends SwingShabadEditor {
 			headers[i] = i + 1;
 		}
 
+		table.setCellSelectionEnabled(true);
 		table.setRowHeight(20);
 		model.setColumnIdentifiers(headers);
 		table.getTableHeader().setReorderingAllowed(false);
