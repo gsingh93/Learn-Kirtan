@@ -6,6 +6,8 @@ import static gsingh.learnkirtan.Constants.Duration.WEEK;
 import gsingh.learnkirtan.Constants.Duration;
 import gsingh.learnkirtan.FileManager;
 
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -83,9 +85,25 @@ public class SettingsManager {
 		DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
 		DocumentBuilder db;
 
-		// TODO: Should check if the config file exists first and try creating
-		// if it doesn't
 		try {
+			File configFile = new File(CONFIG_FILE);
+
+			if (!configFile.exists()) {
+				configFile.createNewFile();
+				FileWriter writer = new FileWriter(configFile);
+				writer.write("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?><settings>"
+						+ "  <sakey>10</sakey>"
+						+ "  <updatereminder>"
+						+ "	   <remind>yes</remind>"
+						+ "    <until>1</until>"
+						+ "	 </updatereminder>"
+						+ "	 <labels>"
+						+ "	   <showsargam>yes</showsargam>"
+						+ "	   <showkeys>yes</showkeys>"
+						+ "	 </labels>"
+						+ "</settings>");
+				writer.close();
+			}
 			db = dbf.newDocumentBuilder();
 			dom = db.parse(CONFIG_FILE);
 		} catch (ParserConfigurationException e) {
