@@ -45,18 +45,6 @@ public class TextAreaShabadEditor extends SwingShabadEditor implements
 
 	private LabelManager labelManager;
 
-	public UndoAction getUndoAction() {
-		return undoAction;
-	}
-
-	public RedoAction getRedoAction() {
-		return redoAction;
-	}
-
-	public boolean isModified() {
-		return modified;
-	}
-
 	public TextAreaShabadEditor(WindowTitleManager titleManager,
 			LabelManager labelManager) {
 		super(titleManager);

@@ -62,6 +62,10 @@ public abstract class SwingShabadEditor extends JComponent implements
 		return redoAction;
 	}
 
+	public boolean isModified() {
+		return modified;
+	}
+
 	public class UndoAction extends AbstractAction {
 
 		public UndoAction() {

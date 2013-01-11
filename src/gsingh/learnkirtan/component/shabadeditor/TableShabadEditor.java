@@ -72,11 +72,6 @@ public class TableShabadEditor extends SwingShabadEditor {
 
 	}
 
-	@Override
-	public boolean isModified() {
-		return modified;
-	}
-
 	/**
 	 * Inserts a pair of rows into the table
 	 * 
