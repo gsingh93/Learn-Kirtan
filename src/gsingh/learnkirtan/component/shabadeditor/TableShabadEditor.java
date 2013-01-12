@@ -62,10 +62,11 @@ public class TableShabadEditor extends SwingShabadEditor {
 				if (index >= words.length)
 					return;
 				String word = words[index];
-				System.out.println(word);
 				if (!word.equals("NULL")) {
 					// TODO: Titlecase word
 					table.setValueAt(word, i, j);
+				} else {
+					table.setValueAt(null, i, j);
 				}
 			}
 		}
