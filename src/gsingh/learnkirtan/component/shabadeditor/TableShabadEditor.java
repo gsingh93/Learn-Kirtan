@@ -62,7 +62,7 @@ public class TableShabadEditor extends SwingShabadEditor {
 				if (index >= words.length)
 					return;
 				String word = words[index];
-				if (!word.equals("NULL")) {
+				if (!word.equalsIgnoreCase("null")) {
 					// TODO: Titlecase word
 					table.setValueAt(word, i, j);
 				} else {
@@ -99,6 +99,26 @@ public class TableShabadEditor extends SwingShabadEditor {
 			}
 		}
 		return sb.toString();
+	}
+
+	public void setWords(String text) {
+		String[] words = text.split("\\s+");
+		int numRows = model.getRowCount();
+		for (int i = 0; i < numRows; i += 2) {
+			for (int j = 0; j < 16; j++) {
+				int index = i / 2 * 16 + j;
+				if (index >= words.length)
+					return;
+				String word = words[index];
+				System.out.println(word);
+				if (!word.equalsIgnoreCase("null")) {
+					// TODO: Titlecase word
+					table.setValueAt(word, i, j);
+				} else {
+					table.setValueAt(null, i, j);
+				}
+			}
+		}
 	}
 
 	@Override

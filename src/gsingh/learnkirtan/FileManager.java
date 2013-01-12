@@ -220,6 +220,7 @@ public class FileManager {
 					e.printStackTrace();
 				}
 
+				shabadEditor.setWords(shabad.getWords());
 				shabadEditor.setText(shabad.getShabadText());
 
 				curFile = file;

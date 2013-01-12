@@ -12,4 +12,5 @@ public interface ShabadEditor {
 
 	public String getText();
 
+	public void setWords(String text);
 }

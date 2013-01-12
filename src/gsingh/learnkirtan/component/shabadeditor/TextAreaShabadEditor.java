@@ -164,6 +164,10 @@ public class TextAreaShabadEditor extends SwingShabadEditor implements
 
 	}
 
+	public void setWords(String text) {
+		// Does nothing
+	}
+
 	@Override
 	public String getText() {
 		// TODO Auto-generated method stub
