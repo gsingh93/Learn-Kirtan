@@ -50,11 +50,13 @@ public class Parser {
 	 */
 	public Shabad parse(String shabadText) {
 		
+		shabadText = shabadText.trim();
+		Shabad shabad = new Shabad(shabadText);
+
 		// Convert the shabad text to upper case and remove any trailing and
 		// preceding whitespace
-		shabadText = shabadText.toUpperCase().trim();
+		shabadText = shabadText.toUpperCase();
 
-		Shabad shabad = new Shabad(shabadText);
 		List<String> tokenList = Arrays.asList(shabadText.split("\\s+"));
 
 		for (int i = 0; i < tokenList.size(); i++) {
