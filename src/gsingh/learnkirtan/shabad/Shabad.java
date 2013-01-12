@@ -11,9 +11,18 @@ public class Shabad implements Serializable {
 	private LinkedList<Note> notes = new LinkedList<Note>();
 	private Map<String, Integer> labelPos;
 	private String shabadText;
+	private String words;
 
 	public Shabad(String shabadText) {
 		this.shabadText = shabadText;
+	}
+
+	public String getWords() {
+		return words;
+	}
+
+	public void setWords(String words) {
+		this.words = words;
 	}
 
 	public LinkedList<Note> getNotes() {

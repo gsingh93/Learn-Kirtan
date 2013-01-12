@@ -19,7 +19,6 @@ public class TableShabadEditor extends SwingShabadEditor {
 
 	private DefaultTableModel model = (DefaultTableModel) table.getModel();
 
-
 	public TableShabadEditor(WindowTitleManager titleManager) {
 		super(titleManager);
 
@@ -48,6 +47,7 @@ public class TableShabadEditor extends SwingShabadEditor {
 	public Shabad getShabad() {
 		Parser parser = new Parser();
 		Shabad shabad = parser.parse(getText());
+		shabad.setWords(getWords());
 		return shabad;
 	}
 
@@ -76,6 +76,20 @@ public class TableShabadEditor extends SwingShabadEditor {
 		int numRows = model.getRowCount();
 		StringBuilder sb = new StringBuilder();
 		for (int i = 1; i < numRows; i += 2) {
+			for (int j = 0; j < 16; j++) {
+				String value = (String) model.getValueAt(i, j);
+				// if (value != null) {
+				sb.append(model.getValueAt(i, j)).append(" ");
+				// }
+			}
+		}
+		return sb.toString();
+	}
+
+	private String getWords() {
+		int numRows = model.getRowCount();
+		StringBuilder sb = new StringBuilder();
+		for (int i = 0; i < numRows; i += 2) {
 			for (int j = 0; j < 16; j++) {
 				String value = (String) model.getValueAt(i, j);
 				// if (value != null) {
