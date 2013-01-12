@@ -63,9 +63,9 @@ public class TableShabadEditor extends SwingShabadEditor {
 		for (int i = 1; i < numRows; i += 2) {
 			for (int j = 0; j < 16; j++) {
 				String value = (String) model.getValueAt(i, j);
-				if (value != null) {
-					sb.append(model.getValueAt(i, j)).append(" ");
-				}
+				// if (value != null) {
+				sb.append(model.getValueAt(i, j)).append(" ");
+				// }
 			}
 		}
 		return sb.toString();

@@ -19,10 +19,12 @@ public class ShabadPlayer {
 	public void play(Shabad shabad) {
 		model.setPlayState(PlayState.PLAY);
 		for (Note note : shabad.getNotes()) {
-			while (pause) {
-				sleep(500);
+			if (note != null) {
+				while (pause) {
+					sleep(500);
+				}
+				playNote(note);
 			}
-			playNote(note);
 		}
 		model.setPlayState(PlayState.STOP);
 	}

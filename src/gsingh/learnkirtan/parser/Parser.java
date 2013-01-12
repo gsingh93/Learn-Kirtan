@@ -61,7 +61,9 @@ public class Parser {
 			String word = tokenList.get(i);
 			Matcher matcher = shabadPattern.matcher(word);
 			
-			if (isLabel(word)) {
+			if (word.equals("null")) {
+				shabad.addNote(null);
+			} else if (isLabel(word)) {
 				shabad.addLabel(word, i);
 			} else if (matcher.matches()) {
 				// Get the captured groups of the first note

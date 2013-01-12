@@ -120,7 +120,6 @@ public class Main {
 		frame = new JFrame(BASETITLE + "Untitled Shabad");
 		titleManager = new WindowTitleManager(frame);
 
-		// shabadEditor = new TextAreaShabadEditor(titleManager, labelManager);
 		shabadEditor = new TableShabadEditor(titleManager);
 
 		frame.setJMenuBar(new MenuBar(new ControllerFactory(fileManager, model,
@@ -138,7 +137,6 @@ public class Main {
 		frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 		frame.addWindowListener(new MyWindowAdapter());
 		frame.pack();
-		// frame.setSize(WIDTH + 100, WHITE_KEY_HEIGHT * 3 + 30);
 		frame.setLocation(250, 60);
 		frame.setResizable(false);
 		frame.setVisible(true);
