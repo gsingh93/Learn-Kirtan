@@ -53,7 +53,22 @@ public class TableShabadEditor extends SwingShabadEditor {
 
 	@Override
 	public void setText(String text) {
-		// TODO Auto-generated method stub
+		System.out.println(text);
+		String[] words = text.split("\\s+");
+		int numRows = model.getRowCount();
+		for (int i = 1; i < numRows; i += 2) {
+			for (int j = 0; j < 16; j++) {
+				int index = i / 2 * 16 + j;
+				if (index >= words.length)
+					return;
+				String word = words[index];
+				System.out.println(word);
+				if (!word.equals("NULL")) {
+					// TODO: Titlecase word
+					table.setValueAt(word, i, j);
+				}
+			}
+		}
 	}
 
 	@Override
