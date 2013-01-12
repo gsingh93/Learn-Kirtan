@@ -2,7 +2,9 @@ package gsingh.learnkirtan.note;
 
 import gsingh.learnkirtan.keys.LabelManager.Octave;
 
-public class Note {
+import java.io.Serializable;
+
+public class Note implements Serializable {
 
 	public enum Modifier {
 		NONE, KOMAL, THEEVRA;

@@ -2,10 +2,11 @@ package gsingh.learnkirtan.shabad;
 
 import gsingh.learnkirtan.note.Note;
 
+import java.io.Serializable;
 import java.util.LinkedList;
 import java.util.Map;
 
-public class Shabad {
+public class Shabad implements Serializable {
 
 	private LinkedList<Note> notes = new LinkedList<Note>();
 	private Map<String, Integer> labelPos;

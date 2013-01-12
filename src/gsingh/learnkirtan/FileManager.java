@@ -4,10 +4,12 @@ import gsingh.learnkirtan.component.shabadeditor.ShabadEditor;
 import gsingh.learnkirtan.shabad.Shabad;
 import gsingh.learnkirtan.utility.DialogUtility;
 
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileWriter;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileFilter;
@@ -21,7 +23,6 @@ import javax.xml.transform.TransformerFactoryConfigurationError;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
-import org.apache.commons.io.FileUtils;
 import org.w3c.dom.Document;
 
 /**
@@ -190,9 +191,11 @@ public class FileManager {
 	 * @throws IOException
 	 */
 	private void write(Shabad shabad) throws IOException {
-		BufferedWriter bw = new BufferedWriter(new FileWriter(curFile));
-		bw.write(shabad.getShabadText());
-		bw.close();
+		FileOutputStream fileOut = new FileOutputStream(curFile);
+		ObjectOutputStream out = new ObjectOutputStream(fileOut);
+		out.writeObject(shabad);
+		out.close();
+		fileOut.close();
 	}
 
 	/**
@@ -208,7 +211,16 @@ public class FileManager {
 			File file = fc.getSelectedFile();
 
 			if (file.exists()) {
-				shabadEditor.setText(FileUtils.readFileToString(file));
+				FileInputStream fileIn = new FileInputStream(file);
+				ObjectInputStream in = new ObjectInputStream(fileIn);
+				Shabad shabad = null;
+				try {
+					shabad = (Shabad) in.readObject();
+				} catch (ClassNotFoundException e) {
+					e.printStackTrace();
+				}
+
+				shabadEditor.setText(shabad.getShabadText());
 
 				curFile = file;
 				return true;
