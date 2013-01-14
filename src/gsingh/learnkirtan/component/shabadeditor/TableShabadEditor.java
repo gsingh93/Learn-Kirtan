@@ -6,18 +6,18 @@ import gsingh.learnkirtan.shabad.Shabad;
 
 import java.awt.GridLayout;
 
+import javax.swing.Action;
 import javax.swing.JScrollPane;
-import javax.swing.JTable;
 import javax.swing.SwingConstants;
 import javax.swing.table.DefaultTableCellRenderer;
-import javax.swing.table.DefaultTableModel;
 
 @SuppressWarnings("serial")
 public class TableShabadEditor extends SwingShabadEditor {
 
-	private JTable table = new AlternatingRowColorTable(16, 16);
+	private AlternatingRowColorTable table = new AlternatingRowColorTable(16,
+			16);
 
-	private DefaultTableModel model = (DefaultTableModel) table.getModel();
+	private UndoTableModel model = (UndoTableModel) table.getModel();
 
 	public TableShabadEditor(WindowTitleManager titleManager) {
 		super(titleManager);
@@ -41,6 +41,16 @@ public class TableShabadEditor extends SwingShabadEditor {
 
 		setLayout(new GridLayout());
 		add(new JScrollPane(table));
+	}
+
+	@Override
+	public Action getUndoAction() {
+		return table.getUndoAction();
+	}
+
+	@Override
+	public Action getRedoAction() {
+		return table.getRedoAction();
 	}
 
 	@Override

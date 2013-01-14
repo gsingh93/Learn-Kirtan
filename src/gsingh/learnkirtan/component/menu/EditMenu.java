@@ -1,11 +1,9 @@
 package gsingh.learnkirtan.component.menu;
 
-import gsingh.learnkirtan.component.shabadeditor.SwingShabadEditor.RedoAction;
-import gsingh.learnkirtan.component.shabadeditor.SwingShabadEditor.UndoAction;
-
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 
+import javax.swing.Action;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.KeyStroke;
@@ -14,7 +12,7 @@ import javax.swing.text.DefaultEditorKit;
 @SuppressWarnings("serial")
 public class EditMenu extends JMenu {
 
-	public EditMenu(UndoAction undoAction, RedoAction redoAction) {
+	public EditMenu(Action undoAction, Action redoAction) {
 		super("Edit");
 
 		JMenuItem undoItem = new JMenuItem(undoAction);

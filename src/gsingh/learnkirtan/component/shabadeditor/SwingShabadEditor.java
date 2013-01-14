@@ -5,6 +5,7 @@ import gsingh.learnkirtan.WindowTitleManager;
 import java.awt.event.ActionEvent;
 
 import javax.swing.AbstractAction;
+import javax.swing.Action;
 import javax.swing.JComponent;
 import javax.swing.event.UndoableEditEvent;
 import javax.swing.event.UndoableEditListener;
@@ -54,11 +55,11 @@ public abstract class SwingShabadEditor extends JComponent implements
 		}
 	}
 
-	public UndoAction getUndoAction() {
+	public Action getUndoAction() {
 		return undoAction;
 	}
 
-	public RedoAction getRedoAction() {
+	public Action getRedoAction() {
 		return redoAction;
 	}
 
