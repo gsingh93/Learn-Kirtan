@@ -8,7 +8,6 @@ import gsingh.learnkirtan.player.ShabadPlayer;
 import gsingh.learnkirtan.utility.DialogUtility;
 import gsingh.learnkirtan.validation.ValidationError;
 import gsingh.learnkirtan.validation.ValidationErrors;
-import gsingh.learnkirtan.validation.Validator;
 
 import java.awt.Dimension;
 import java.awt.FlowLayout;
@@ -172,13 +171,10 @@ public class ControlPanel extends JPanel implements ActionListener,
 
 				@Override
 				public void run() {
-					ValidationErrors errors = Validator.validate(shabadEditor
-							.getText());
-					if (errors.noErrors()) {
+					if (shabadEditor.isValidShabad()) {
 						controller.play(shabadEditor.getShabad());
 					} else {
-						// Display the errors
-						displayErrors(errors);
+						// TODO
 					}
 				}
 

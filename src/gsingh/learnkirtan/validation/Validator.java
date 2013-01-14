@@ -26,9 +26,9 @@ public class Validator {
 	private static final Pattern shabadPattern = Pattern.compile(shabadRegex,
 			Pattern.CASE_INSENSITIVE);
 
-	private String doublePeriodRegex = "'?\\.'?sa'?\\.'?";
-	private String doubleApostropheRegex = "\\.?'\\.?sa\\.?'\\.?";
-	private String theevraMaRegex;
+	private static String doublePeriodRegex = "'?\\.'?sa'?\\.'?";
+	private static String doubleApostropheRegex = "\\.?'\\.?sa\\.?'\\.?";
+	private static String theevraMaRegex;
 
 	/**
 	 * Checks if the shabad is well-formed
@@ -37,9 +37,17 @@ public class Validator {
 	 *            the text to validate
 	 * @return a {@link ValidationErrors} object
 	 */
-	public static ValidationErrors validate(String shabadText) {
-		ValidationErrors errors = new ValidationErrors();
-		return errors; // TODO
+	public static boolean validate(String note) {
+		// ValidationErrors errors = new ValidationErrors();
+		// return errors; // TODO
+		if (!Pattern.matches(noteRegex, note)) {
+			return false;
+		} else if (Pattern.matches(doublePeriodRegex, note)) {
+			return false;
+		} else if (Pattern.matches(doubleApostropheRegex, note)) {
+			return false;
+		}
+		return true;
 	}
 
 	/**

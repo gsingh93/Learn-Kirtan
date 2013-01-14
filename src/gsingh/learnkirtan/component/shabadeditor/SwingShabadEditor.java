@@ -35,6 +35,10 @@ public abstract class SwingShabadEditor extends JComponent implements
 		this.titleManager = titleManager;
 	}
 
+	public boolean isValidShabad() {
+		return true;
+	}
+
 	@Override
 	public void undoableEditHappened(UndoableEditEvent e) {
 		// Save the edit and update the menus

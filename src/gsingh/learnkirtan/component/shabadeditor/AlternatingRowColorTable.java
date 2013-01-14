@@ -1,5 +1,7 @@
 package gsingh.learnkirtan.component.shabadeditor;
 
+import gsingh.learnkirtan.validation.Validator;
+
 import java.awt.Color;
 import java.awt.Component;
 
@@ -29,6 +31,18 @@ public class AlternatingRowColorTable extends JTable {
 				c.setBackground(Color.WHITE);
 			}
 		}
+
+		String value = (String) getValueAt(row, col);
+		if (value != null && value != "") {
+			if (!Validator.validate(value)) {
+				if (!c.getBackground().equals(getSelectionBackground())) {
+					c.setBackground(new Color(0xFF, 0x30, 0x30));
+				} else {
+					c.setBackground(new Color(0xFF, 0x70, 0x70)); // Light Red
+				}
+			}
+		}
+
 		return c;
 	}
 	
