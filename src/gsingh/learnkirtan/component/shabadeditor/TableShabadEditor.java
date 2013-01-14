@@ -3,6 +3,7 @@ package gsingh.learnkirtan.component.shabadeditor;
 import gsingh.learnkirtan.WindowTitleManager;
 import gsingh.learnkirtan.shabad.Shabad;
 
+import java.awt.Font;
 import java.awt.GridLayout;
 
 import javax.swing.Action;
@@ -31,6 +32,7 @@ public class TableShabadEditor extends SwingShabadEditor {
 
 		table.setCellSelectionEnabled(true);
 		table.setRowHeight(20);
+		table.setFont(new Font("Arial", Font.PLAIN, 20));
 		model.setColumnIdentifiers(headers);
 		table.getTableHeader().setReorderingAllowed(false);
 
