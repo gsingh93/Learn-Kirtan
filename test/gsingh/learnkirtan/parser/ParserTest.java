@@ -78,7 +78,7 @@ public class ParserTest {
 	// TODO: This only checks that the parser interpreted the right number of
 	// notes, not if the notes are actually correct
 	private void validate(String text, int size) {
-		Shabad shabad = parser.parse(text);
+		Shabad shabad = new Shabad(text);
 		assertEquals(shabad.getShabadText(), text.toUpperCase());
 		assertEquals(shabad.getNotes().size(), size);
 	}

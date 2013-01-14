@@ -4,6 +4,7 @@ import gsingh.learnkirtan.keys.LabelManager.Octave;
 import gsingh.learnkirtan.note.Note;
 import gsingh.learnkirtan.note.Note.Modifier;
 import gsingh.learnkirtan.shabad.Shabad;
+import gsingh.learnkirtan.shabad.ShabadNotes;
 
 import java.util.Arrays;
 import java.util.List;
@@ -48,10 +49,11 @@ public class Parser {
 	 *            the text to parse
 	 * @return a {@link Shabad} object representing the text
 	 */
-	public Shabad parse(String shabadText) {
+	public ShabadNotes parse(String shabadText) {
 		
 		shabadText = shabadText.trim();
-		Shabad shabad = new Shabad(shabadText);
+		// Shabad shabad = new Shabad(shabadText);
+		ShabadNotes shabad = new ShabadNotes();
 
 		// Convert the shabad text to upper case and remove any trailing and
 		// preceding whitespace

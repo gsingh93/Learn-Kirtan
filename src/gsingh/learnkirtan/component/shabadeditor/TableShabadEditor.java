@@ -1,7 +1,6 @@
 package gsingh.learnkirtan.component.shabadeditor;
 
 import gsingh.learnkirtan.WindowTitleManager;
-import gsingh.learnkirtan.parser.Parser;
 import gsingh.learnkirtan.shabad.Shabad;
 
 import java.awt.GridLayout;
@@ -55,9 +54,7 @@ public class TableShabadEditor extends SwingShabadEditor {
 
 	@Override
 	public Shabad getShabad() {
-		Parser parser = new Parser();
-		Shabad shabad = parser.parse(getText());
-		shabad.setWords(getWords());
+		Shabad shabad = new Shabad(getText(), getWords());
 		return shabad;
 	}
 

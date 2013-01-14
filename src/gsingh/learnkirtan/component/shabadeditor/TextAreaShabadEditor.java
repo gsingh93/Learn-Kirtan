@@ -61,7 +61,7 @@ public class TextAreaShabadEditor extends SwingShabadEditor implements
 	@Override
 	public Shabad getShabad() {
 		Parser parser = new Parser();
-		return parser.parse(getText());
+		return new Shabad(getText());
 	}
 
 	// @Override
