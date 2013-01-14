@@ -174,7 +174,7 @@ public class ControlPanel extends JPanel implements ActionListener,
 					if (shabadEditor.isValidShabad()) {
 						controller.play(shabadEditor.getShabad());
 					} else {
-						// TODO
+						DialogUtility.showInvalidShabadDialog();
 					}
 				}
 

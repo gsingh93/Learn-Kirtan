@@ -35,9 +35,7 @@ public abstract class SwingShabadEditor extends JComponent implements
 		this.titleManager = titleManager;
 	}
 
-	public boolean isValidShabad() {
-		return true;
-	}
+	public abstract boolean isValidShabad();
 
 	@Override
 	public void undoableEditHappened(UndoableEditEvent e) {

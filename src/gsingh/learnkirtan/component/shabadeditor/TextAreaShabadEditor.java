@@ -89,6 +89,10 @@ public class TextAreaShabadEditor extends SwingShabadEditor implements
 		updateTitleOnChange();
 	}
 
+	public boolean isValidShabad() {
+		return true; // TODO
+	}
+
 	@Override
 	public void undoableEditHappened(UndoableEditEvent e) {
 		// Save the edit and update the menus

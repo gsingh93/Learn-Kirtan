@@ -110,6 +110,10 @@ public class TableShabadEditor extends SwingShabadEditor {
 		return sb.toString();
 	}
 
+	public boolean isValidShabad() {
+		return table.isValidShabad();
+	}
+
 	public void setWords(String text) {
 		String[] words = text.split("\\s+");
 		int numRows = model.getRowCount();

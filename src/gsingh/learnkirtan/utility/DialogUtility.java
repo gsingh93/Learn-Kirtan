@@ -53,6 +53,14 @@ public class DialogUtility {
 				"Error", JOptionPane.ERROR_MESSAGE);
 	}
 
+	public static void showInvalidShabadDialog() {
+		JOptionPane
+				.showMessageDialog(
+						null,
+						"The shabad contains errors. Please fix all red colored cells.",
+						"Error", JOptionPane.ERROR_MESSAGE);
+	}
+
 	public static int showChangeSaDialog(JPanel panel) {
 		return JOptionPane.showConfirmDialog(null, panel, "Change Sa Key",
 				JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
