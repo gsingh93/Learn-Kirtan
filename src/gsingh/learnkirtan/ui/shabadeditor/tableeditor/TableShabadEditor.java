@@ -1,7 +1,8 @@
-package gsingh.learnkirtan.ui.shabadeditor;
+package gsingh.learnkirtan.ui.shabadeditor.tableeditor;
 
 import gsingh.learnkirtan.WindowTitleManager;
 import gsingh.learnkirtan.shabad.Shabad;
+import gsingh.learnkirtan.ui.shabadeditor.SwingShabadEditor;
 
 import java.awt.Font;
 import java.awt.GridLayout;

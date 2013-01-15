@@ -4,7 +4,7 @@ import gsingh.learnkirtan.StateModel.FileState;
 import gsingh.learnkirtan.StateModel.PlayState;
 import gsingh.learnkirtan.player.ShabadPlayer;
 import gsingh.learnkirtan.ui.shabadeditor.SwingShabadEditor;
-import gsingh.learnkirtan.ui.shabadeditor.TableShabadEditor;
+import gsingh.learnkirtan.ui.shabadeditor.tableeditor.TableShabadEditor;
 import gsingh.learnkirtan.utility.DialogUtility;
 
 import java.awt.Dimension;
@@ -54,12 +54,12 @@ public class ControlPanel extends JPanel implements ActionListener,
 	 */
 	private JTextField endField;
 
-	private ShabadPlayer controller;
+	private ShabadPlayer shabadPlayer;
 	private SwingShabadEditor shabadEditor;
 
-	public ControlPanel(ShabadPlayer controller,
+	public ControlPanel(ShabadPlayer shabadPlayer,
 			final SwingShabadEditor shabadEditor) {
-		this.controller = controller;
+		this.shabadPlayer = shabadPlayer;
 		this.shabadEditor = shabadEditor;
 
 		JButton playButton = new JButton("Play");
@@ -165,14 +165,14 @@ public class ControlPanel extends JPanel implements ActionListener,
 		String command = e.getActionCommand();
 
 		if (command.equals("play")) {
-			if (controller.isPaused()) {
-				controller.unpause();
+			if (shabadPlayer.isPaused()) {
+				shabadPlayer.unpause();
 			} else {
 				new Thread(new Runnable() {
 					@Override
 					public void run() {
 						if (shabadEditor.isValidShabad()) {
-							controller.play(shabadEditor.getShabad(),
+							shabadPlayer.play(shabadEditor.getShabad(),
 									(Double) tempoControl.getValue());
 						} else {
 							DialogUtility.showInvalidShabadDialog();
@@ -181,9 +181,9 @@ public class ControlPanel extends JPanel implements ActionListener,
 				}).start();
 			}
 		} else if (command.equals("pause")) {
-			controller.pause();
+			shabadPlayer.pause();
 		} else if (command.equals("stop")) {
-			controller.stop();
+			shabadPlayer.stop();
 		}
 	}
 

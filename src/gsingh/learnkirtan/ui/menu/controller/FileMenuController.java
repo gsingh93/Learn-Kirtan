@@ -1,4 +1,4 @@
-package gsingh.learnkirtan.controller.menu;
+package gsingh.learnkirtan.ui.menu.controller;
 
 import gsingh.learnkirtan.FileManager;
 import gsingh.learnkirtan.FileManager.SaveResult;

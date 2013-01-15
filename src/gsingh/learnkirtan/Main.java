@@ -4,7 +4,6 @@ import static gsingh.learnkirtan.Constants.VERSION;
 import static gsingh.learnkirtan.Constants.WHITE_KEY_HEIGHT;
 import static gsingh.learnkirtan.Constants.WHITE_KEY_WIDTH;
 import gsingh.learnkirtan.FileManager.SaveResult;
-import gsingh.learnkirtan.controller.ControllerFactory;
 import gsingh.learnkirtan.installer.SoundBankInstaller;
 import gsingh.learnkirtan.keys.KeyMapper;
 import gsingh.learnkirtan.keys.LabelManager;
@@ -14,9 +13,17 @@ import gsingh.learnkirtan.settings.SettingsManager;
 import gsingh.learnkirtan.ui.ControlPanel;
 import gsingh.learnkirtan.ui.PianoPanel;
 import gsingh.learnkirtan.ui.View;
-import gsingh.learnkirtan.ui.menu.MenuBar;
+import gsingh.learnkirtan.ui.menu.EditMenu;
+import gsingh.learnkirtan.ui.menu.FileMenu;
+import gsingh.learnkirtan.ui.menu.HelpMenu;
+import gsingh.learnkirtan.ui.menu.KeyboardMenu;
+import gsingh.learnkirtan.ui.menu.OptionsMenu;
+import gsingh.learnkirtan.ui.menu.controller.FileMenuController;
+import gsingh.learnkirtan.ui.menu.controller.HelpMenuController;
+import gsingh.learnkirtan.ui.menu.controller.KeyboardMenuController;
+import gsingh.learnkirtan.ui.menu.controller.OptionsMenuController;
 import gsingh.learnkirtan.ui.shabadeditor.SwingShabadEditor;
-import gsingh.learnkirtan.ui.shabadeditor.TableShabadEditor;
+import gsingh.learnkirtan.ui.shabadeditor.tableeditor.TableShabadEditor;
 import gsingh.learnkirtan.utility.NetworkUtility;
 
 import java.awt.Dimension;
@@ -28,6 +35,7 @@ import java.io.IOException;
 import javax.swing.BoxLayout;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
+import javax.swing.JMenuBar;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
@@ -124,8 +132,7 @@ public class Main {
 
 		shabadEditor = new TableShabadEditor(titleManager);
 
-		frame.setJMenuBar(new MenuBar(new ControllerFactory(fileManager, model,
-				notes, shabadEditor, titleManager, labelManager), shabadEditor));
+		frame.setJMenuBar(createMenuBar(model));
 
 		JPanel controlPanel = new ControlPanel(new ShabadPlayer(model),
 				shabadEditor);
@@ -166,6 +173,19 @@ public class Main {
 		mainPanel.add(editor);
 
 		return mainPanel;
+	}
+
+	private JMenuBar createMenuBar(StateModel model) {
+		JMenuBar menuBar = new JMenuBar();
+		menuBar.add(new FileMenu(new FileMenuController(model, fileManager,
+				titleManager, shabadEditor)));
+		menuBar.add(new EditMenu(shabadEditor.getUndoAction(),
+				shabadEditor.getRedoAction()));
+		menuBar.add(new KeyboardMenu(new KeyboardMenuController(model, shabadEditor)));
+		menuBar.add(new OptionsMenu(new OptionsMenuController(model, notes, labelManager)));
+		menuBar.add(new HelpMenu(new HelpMenuController(model)));
+		
+		return menuBar;
 	}
 
 	private class MyWindowAdapter extends WindowAdapter {

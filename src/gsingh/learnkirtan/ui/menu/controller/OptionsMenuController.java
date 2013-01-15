@@ -1,4 +1,4 @@
-package gsingh.learnkirtan.controller.menu;
+package gsingh.learnkirtan.ui.menu.controller;
 
 import static gsingh.learnkirtan.Constants.MAX_KEYS;
 import gsingh.learnkirtan.StateModel;

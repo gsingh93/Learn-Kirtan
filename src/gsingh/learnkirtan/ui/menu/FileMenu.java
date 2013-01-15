@@ -1,6 +1,6 @@
 package gsingh.learnkirtan.ui.menu;
 
-import gsingh.learnkirtan.controller.menu.FileMenuController;
+import gsingh.learnkirtan.ui.menu.controller.FileMenuController;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
