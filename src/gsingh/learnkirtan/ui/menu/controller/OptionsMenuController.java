@@ -1,6 +1,5 @@
 package gsingh.learnkirtan.ui.menu.controller;
 
-import static gsingh.learnkirtan.Constants.MAX_KEYS;
 import gsingh.learnkirtan.StateModel;
 import gsingh.learnkirtan.keys.LabelManager;
 import gsingh.learnkirtan.note.NoteList;
@@ -31,7 +30,7 @@ public class OptionsMenuController {
 
 	public void changeSa() {
 		SpinnerModel saModel = new SpinnerNumberModel(
-				settingsManager.getSaKey() + 1, 1, MAX_KEYS, 1);
+				settingsManager.getSaKey() + 1, 1, 22, 1);
 		JSpinner saSpinner = new JSpinner(saModel);
 
 		JPanel panel = new JPanel();
