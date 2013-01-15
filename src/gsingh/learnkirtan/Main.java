@@ -21,12 +21,12 @@ import gsingh.learnkirtan.settings.SettingsManager;
 import gsingh.learnkirtan.utility.NetworkUtility;
 
 import java.awt.Dimension;
-import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.IOException;
 
+import javax.swing.BoxLayout;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -46,7 +46,7 @@ public class Main {
 			+ " Beta - ";
 
 	/** The width of the screen */
-	private final int WIDTH = 3 * (WHITE_KEY_WIDTH * 7) + WHITE_KEY_WIDTH - 62;
+	private final int WIDTH = 20 * WHITE_KEY_WIDTH;
 
 	/**
 	 * The main shabad editor. When play is pressed, the text in here will be
@@ -84,7 +84,11 @@ public class Main {
 	 * Constructs the GUI, installs the sound bank, and checks for updates
 	 */
 	public void init() {
+		// SettingsManager persists settings so it needs access to a FileManager
+		// However it is a singleton, so this must be set through a method
 		settingsManager.setFileManager(fileManager);
+
+		// The NoteList is initialized with the key representing middle Sa
 		notes = new NoteList(settingsManager.getSaKey());
 
 		labelManager = new LabelManager(notes);
@@ -144,7 +148,6 @@ public class Main {
 		shabadEditor.reset();
 	}
 
-	// TODO: A box layout would be fine here
 	/**
 	 * Constructs the mainPanel by taking the {@code controlPanel},
 	 * {@code pianoPanel}, and {@code editor} and arranging them using a
@@ -154,32 +157,15 @@ public class Main {
 	private JPanel initMainPanel(JPanel controlPanel, JComponent pianoPanel,
 			SwingShabadEditor editor) {
 		JPanel mainPanel = new JPanel();
-		mainPanel.setLayout(new GridBagLayout());
-		GridBagConstraints c = new GridBagConstraints();
+		mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.PAGE_AXIS));
 
-		// Add the piano panel and shabad editor to the window
-		c.gridx = 0;
-		c.gridy = 0;
-		c.weightx = 1.0;
-		c.anchor = GridBagConstraints.NORTHWEST;
-		mainPanel.add(controlPanel, c);
+		mainPanel.add(controlPanel);
 
-		c.gridx = 0;
-		c.gridy = 1;
-		c.weightx = 1.0;
-		c.anchor = GridBagConstraints.NORTHWEST;
-		pianoPanel
-				.setPreferredSize(new Dimension(WIDTH - 18, WHITE_KEY_HEIGHT));
-		mainPanel.add(pianoPanel, c);
+		pianoPanel.setPreferredSize(new Dimension(WIDTH, WHITE_KEY_HEIGHT));
+		mainPanel.add(pianoPanel);
 
-		c.fill = GridBagConstraints.HORIZONTAL;
-		c.gridx = 0;
-		c.gridy = 2;
-		c.weightx = 1.0;
-		c.weighty = 1.0;
-		c.anchor = GridBagConstraints.NORTHWEST;
 		editor.setPreferredSize(new Dimension(editor.getWidth(), 250));
-		mainPanel.add(editor, c);
+		mainPanel.add(editor);
 
 		return mainPanel;
 	}
