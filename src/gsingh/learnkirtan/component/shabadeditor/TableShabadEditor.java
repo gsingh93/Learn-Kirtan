@@ -10,6 +10,7 @@ import javax.swing.Action;
 import javax.swing.JScrollPane;
 import javax.swing.SwingConstants;
 import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.TableColumn;
 
 @SuppressWarnings("serial")
 public class TableShabadEditor extends SwingShabadEditor {
@@ -27,17 +28,18 @@ public class TableShabadEditor extends SwingShabadEditor {
 			headers[i] = i + 1;
 		}
 
-		DefaultTableCellRenderer renderer = new DefaultTableCellRenderer();
-		renderer.setHorizontalAlignment(SwingConstants.CENTER);
-
 		table.setCellSelectionEnabled(true);
 		table.setRowHeight(20);
 		table.setFont(new Font("Arial", Font.PLAIN, 20));
 		model.setColumnIdentifiers(headers);
 		table.getTableHeader().setReorderingAllowed(false);
 
+		DefaultTableCellRenderer renderer = new DefaultTableCellRenderer();
+		renderer.setHorizontalAlignment(SwingConstants.CENTER);
+
 		for (int i = 0; i < 16; i++) {
-			table.getColumnModel().getColumn(i).setCellRenderer(renderer);
+			TableColumn column = table.getColumnModel().getColumn(i);
+			column.setCellRenderer(renderer);
 		}
 
 		setLayout(new GridLayout());
