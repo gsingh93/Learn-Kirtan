@@ -16,22 +16,22 @@ public class ShabadPlayer {
 		this.model = model;
 	}
 
-	public void play(Shabad shabad) {
+	public void play(Shabad shabad, double tempo) {
 		model.setPlayState(PlayState.PLAY);
 		for (Note note : shabad.getNotes()) {
 			if (note != null) {
 				while (pause) {
 					sleep(500);
 				}
-				playNote(note);
+				playNote(note, tempo);
 			}
 		}
 		model.setPlayState(PlayState.STOP);
 	}
 
-	public void playNote(Note note) {
+	public void playNote(Note note, double tempo) {
 		Key key = KeyMapper.getInstance().getKeyFromNote(note);
-		MidiPlayer.play(key, note.getLength());
+		MidiPlayer.play(key, (int) (note.getLength() / tempo));
 	}
 
 	public void pause() {

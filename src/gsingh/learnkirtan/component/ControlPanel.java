@@ -172,7 +172,8 @@ public class ControlPanel extends JPanel implements ActionListener,
 				@Override
 				public void run() {
 					if (shabadEditor.isValidShabad()) {
-						controller.play(shabadEditor.getShabad());
+						controller.play(shabadEditor.getShabad(),
+								(Double) tempoControl.getValue());
 					} else {
 						DialogUtility.showInvalidShabadDialog();
 					}

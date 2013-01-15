@@ -146,7 +146,7 @@ public class TextAreaShabadEditor extends SwingShabadEditor implements
 					new Thread(new Runnable() {
 						public void run() {
 							ShabadPlayer shabadPlayer = new ShabadPlayer(null); // TODO
-							shabadPlayer.playNote(note);
+							shabadPlayer.playNote(note, 1);
 						}
 					}).start();
 				}
