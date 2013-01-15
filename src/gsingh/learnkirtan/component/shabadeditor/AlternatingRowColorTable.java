@@ -40,7 +40,7 @@ public class AlternatingRowColorTable extends JTable {
 		}
 
 		String value = (String) getValueAt(row, col);
-		if (value != null && value != "") {
+		if (value != null && !value.equals("")) {
 			Point point = new Point(row, col);
 			if (!Validator.validate(value)) {
 				if (!c.getBackground().equals(getSelectionBackground())) {
