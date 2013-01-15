@@ -5,8 +5,8 @@ import gsingh.learnkirtan.FileManager.SaveResult;
 import gsingh.learnkirtan.StateModel;
 import gsingh.learnkirtan.StateModel.FileState;
 import gsingh.learnkirtan.WindowTitleManager;
-import gsingh.learnkirtan.component.shabadeditor.ShabadEditor;
-import gsingh.learnkirtan.component.shabadeditor.SwingShabadEditor;
+import gsingh.learnkirtan.ui.shabadeditor.ShabadEditor;
+import gsingh.learnkirtan.ui.shabadeditor.SwingShabadEditor;
 
 import java.io.IOException;
 

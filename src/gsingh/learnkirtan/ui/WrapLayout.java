@@ -1,4 +1,4 @@
-package gsingh.learnkirtan.component;
+package gsingh.learnkirtan.ui;
 
 import java.awt.Component;
 import java.awt.Container;

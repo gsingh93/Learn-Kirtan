@@ -4,20 +4,19 @@ import static gsingh.learnkirtan.Constants.VERSION;
 import static gsingh.learnkirtan.Constants.WHITE_KEY_HEIGHT;
 import static gsingh.learnkirtan.Constants.WHITE_KEY_WIDTH;
 import gsingh.learnkirtan.FileManager.SaveResult;
-import gsingh.learnkirtan.component.ControlPanel;
-import gsingh.learnkirtan.component.PianoPanel;
-import gsingh.learnkirtan.component.View;
-import gsingh.learnkirtan.component.menu.MenuBar;
-import gsingh.learnkirtan.component.shabadeditor.SwingShabadEditor;
-import gsingh.learnkirtan.component.shabadeditor.TableShabadEditor;
 import gsingh.learnkirtan.controller.ControllerFactory;
 import gsingh.learnkirtan.installer.SoundBankInstaller;
-import gsingh.learnkirtan.installer.SoundBankInstallerFactory;
 import gsingh.learnkirtan.keys.KeyMapper;
 import gsingh.learnkirtan.keys.LabelManager;
 import gsingh.learnkirtan.note.NoteList;
 import gsingh.learnkirtan.player.ShabadPlayer;
 import gsingh.learnkirtan.settings.SettingsManager;
+import gsingh.learnkirtan.ui.ControlPanel;
+import gsingh.learnkirtan.ui.PianoPanel;
+import gsingh.learnkirtan.ui.View;
+import gsingh.learnkirtan.ui.menu.MenuBar;
+import gsingh.learnkirtan.ui.shabadeditor.SwingShabadEditor;
+import gsingh.learnkirtan.ui.shabadeditor.TableShabadEditor;
 import gsingh.learnkirtan.utility.NetworkUtility;
 
 import java.awt.Dimension;
@@ -100,8 +99,7 @@ public class Main {
 				createAndShowGui();
 
 				// Install soundbank if necessary
-				SoundBankInstaller installer = SoundBankInstallerFactory
-						.getInstaller();
+				SoundBankInstaller installer = new SoundBankInstaller();
 				installer.installSoundBank();
 
 				// Check for update

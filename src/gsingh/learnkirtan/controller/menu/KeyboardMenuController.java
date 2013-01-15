@@ -1,7 +1,7 @@
 package gsingh.learnkirtan.controller.menu;
 
 import gsingh.learnkirtan.StateModel;
-import gsingh.learnkirtan.component.shabadeditor.SwingShabadEditor;
+import gsingh.learnkirtan.ui.shabadeditor.SwingShabadEditor;
 
 public class KeyboardMenuController {
 

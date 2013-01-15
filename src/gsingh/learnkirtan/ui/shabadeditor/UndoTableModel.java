@@ -1,4 +1,4 @@
-package gsingh.learnkirtan.component.shabadeditor;
+package gsingh.learnkirtan.ui.shabadeditor;
 
 import javax.swing.event.UndoableEditEvent;
 import javax.swing.event.UndoableEditListener;

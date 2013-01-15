@@ -1,13 +1,11 @@
-package gsingh.learnkirtan.component;
+package gsingh.learnkirtan.ui;
 
 import gsingh.learnkirtan.StateModel.FileState;
 import gsingh.learnkirtan.StateModel.PlayState;
-import gsingh.learnkirtan.component.shabadeditor.SwingShabadEditor;
-import gsingh.learnkirtan.component.shabadeditor.TableShabadEditor;
 import gsingh.learnkirtan.player.ShabadPlayer;
+import gsingh.learnkirtan.ui.shabadeditor.SwingShabadEditor;
+import gsingh.learnkirtan.ui.shabadeditor.TableShabadEditor;
 import gsingh.learnkirtan.utility.DialogUtility;
-import gsingh.learnkirtan.validation.ValidationError;
-import gsingh.learnkirtan.validation.ValidationErrors;
 
 import java.awt.Dimension;
 import java.awt.FlowLayout;
@@ -187,18 +185,6 @@ public class ControlPanel extends JPanel implements ActionListener,
 		} else if (command.equals("stop")) {
 			controller.stop();
 		}
-	}
-
-	private void displayErrors(ValidationErrors errors) {
-		StringBuilder sb = new StringBuilder();
-		for (ValidationError error : errors.getErrors()) {
-			sb.append(String
-					.format("An error occured on line %d at position %d with token %s. Error message: %s\n",
-							error.getLine(), error.getPos(), error.getToken(),
-							error.getMessage()));
-		}
-
-		DialogUtility.showMessage(sb.toString());
 	}
 
 	private class MyPropertyChangeListener implements PropertyChangeListener {

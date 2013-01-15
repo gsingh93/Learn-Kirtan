@@ -1,4 +1,4 @@
-package gsingh.learnkirtan.component.menu;
+package gsingh.learnkirtan.ui.menu;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;

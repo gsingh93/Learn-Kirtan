@@ -1,4 +1,4 @@
-package gsingh.learnkirtan.component.shabadeditor;
+package gsingh.learnkirtan.ui.shabadeditor;
 
 import java.awt.event.ActionEvent;
 

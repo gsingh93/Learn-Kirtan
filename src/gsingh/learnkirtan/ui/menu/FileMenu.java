@@ -1,4 +1,4 @@
-package gsingh.learnkirtan.component.menu;
+package gsingh.learnkirtan.ui.menu;
 
 import gsingh.learnkirtan.controller.menu.FileMenuController;
 

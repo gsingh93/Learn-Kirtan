@@ -3,13 +3,13 @@ package gsingh.learnkirtan.controller;
 import gsingh.learnkirtan.FileManager;
 import gsingh.learnkirtan.StateModel;
 import gsingh.learnkirtan.WindowTitleManager;
-import gsingh.learnkirtan.component.shabadeditor.SwingShabadEditor;
 import gsingh.learnkirtan.controller.menu.FileMenuController;
 import gsingh.learnkirtan.controller.menu.HelpMenuController;
 import gsingh.learnkirtan.controller.menu.KeyboardMenuController;
 import gsingh.learnkirtan.controller.menu.OptionsMenuController;
 import gsingh.learnkirtan.keys.LabelManager;
 import gsingh.learnkirtan.note.NoteList;
+import gsingh.learnkirtan.ui.shabadeditor.SwingShabadEditor;
 
 public class ControllerFactory {
 

@@ -1,7 +1,7 @@
 package gsingh.learnkirtan;
 
-import gsingh.learnkirtan.component.shabadeditor.ShabadEditor;
 import gsingh.learnkirtan.shabad.Shabad;
+import gsingh.learnkirtan.ui.shabadeditor.ShabadEditor;
 import gsingh.learnkirtan.utility.DialogUtility;
 
 import java.io.File;

@@ -1,7 +1,7 @@
-package gsingh.learnkirtan.component.menu;
+package gsingh.learnkirtan.ui.menu;
 
-import gsingh.learnkirtan.component.shabadeditor.SwingShabadEditor;
 import gsingh.learnkirtan.controller.ControllerFactory;
+import gsingh.learnkirtan.ui.shabadeditor.SwingShabadEditor;
 
 import javax.swing.JMenuBar;
 

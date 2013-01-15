@@ -1,4 +1,4 @@
-package gsingh.learnkirtan.component;
+package gsingh.learnkirtan.ui;
 
 import static gsingh.learnkirtan.Constants.BLACK_KEY_WIDTH;
 import static gsingh.learnkirtan.Constants.MAX_KEYS;

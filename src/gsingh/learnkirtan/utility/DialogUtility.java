@@ -74,11 +74,6 @@ public class DialogUtility {
 						"Error", JOptionPane.ERROR_MESSAGE);
 	}
 
-	public static void showInvalidNoteDialog(String invalidNote) {
-		JOptionPane.showMessageDialog(null, "Error: Invalid note '"
-				+ invalidNote + "'", "Error", JOptionPane.ERROR_MESSAGE);
-	}
-
 	public static void showNoStartLabelDialog() {
 		JOptionPane
 				.showMessageDialog(

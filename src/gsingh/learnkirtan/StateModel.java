@@ -1,6 +1,6 @@
 package gsingh.learnkirtan;
 
-import gsingh.learnkirtan.component.View;
+import gsingh.learnkirtan.ui.View;
 
 import java.beans.PropertyChangeListener;
 
