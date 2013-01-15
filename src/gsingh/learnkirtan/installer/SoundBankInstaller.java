@@ -8,16 +8,8 @@ import java.io.OutputStream;
 
 import org.apache.commons.io.IOUtils;
 
-// TODO Look into apache library to getJavaHome
 public class SoundBankInstaller {
 
-	private boolean checkDirectoryExists() {
-		return false; // TODO
-	}
-
-	private void moveSoundBank() {
-		// TODO
-	}
 	/**
 	 * Installs the soundbank file in the JRE lib/audio folder
 	 * 
@@ -25,39 +17,29 @@ public class SoundBankInstaller {
 	 *         there was an error.
 	 */
 	public boolean installSoundBank() {
-		// Determine where the JRE is installed
-		File file = new File("C:\\Program Files (x86)\\Java\\jre6");
-		if (!file.exists()) {
-			// LOGGER.warning("C:\\Program Files (x86)\\Java\\jre6 does not exist.");
-			file = new File("C:\\Program Files\\Java\\jre6");
-			if (!file.exists()) {
-				// LOGGER.severe("C:\\Program Files\\Java\\jre6 does not exist.");
-				return false;
-			}
-		}
+		// Get the JRE directory
+		String jreDir = System.getProperty("java.home");
 
-		// If the JRE is properly installed, check if the SoundBank is already
-		// installed
-		file = new File(file.getAbsolutePath()
-				+ "\\lib\\audio\\soundbank-min.gm");
-		if (!file.exists()) {
-			// LOGGER.warning("soundbank-min.gm does not exist.");
+		// Check if the SoundBank is already installed
+		File soundBank = new File(String.format(jreDir
+				+ "%1$slib%1$saudio%1$ssoundbank.gm", File.separator));
+		File soundBankMin = new File(String.format(jreDir
+				+ "%1$slib%1$saudio%1$ssoundbank-min.gm", File.separator));
+
+		// If neither version of soundbank exists, install the min version
+		if (!soundBank.exists() && !soundBankMin.exists()) {
 			InputStream is = this.getClass().getClassLoader()
 					.getResourceAsStream("soundbank-min.gm");
 			OutputStream os = null;
 			try {
-				os = new FileOutputStream(file.getAbsolutePath());
+				os = new FileOutputStream(soundBank.getAbsolutePath());
 				IOUtils.copy(is, os);
 			} catch (IOException e) {
-				// LOGGER.severe("An IOException was thrown when installing the soundbank.");
 				e.printStackTrace();
 				return false;
 			}
-		} else {
-			// LOGGER.info("Soundbank found.");
 		}
 
-		// LOGGER.info("Soundbank installation successful.");
 		return true;
 	}
 }
