@@ -10,6 +10,7 @@ import gsingh.learnkirtan.shabad.Shabad;
 public class ShabadPlayer {
 
 	private boolean pause;
+	private boolean stop = false;
 	private StateModel model;
 
 	public ShabadPlayer(StateModel model) {
@@ -21,7 +22,15 @@ public class ShabadPlayer {
 		for (Note note : shabad.getNotes()) {
 			if (note != null) {
 				while (pause) {
+					if (stop) {
+						break;
+					}
 					sleep(500);
+				}
+				if (stop) {
+					stop = false;
+					pause = false;
+					break;
 				}
 				playNote(note, tempo);
 			}
@@ -50,6 +59,7 @@ public class ShabadPlayer {
 
 	public void stop() {
 		model.setPlayState(PlayState.STOP);
+		stop = true;
 	}
 
 	private void sleep(int time) {

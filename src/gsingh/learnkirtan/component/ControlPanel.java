@@ -167,19 +167,21 @@ public class ControlPanel extends JPanel implements ActionListener,
 		String command = e.getActionCommand();
 
 		if (command.equals("play")) {
-			new Thread(new Runnable() {
-
-				@Override
-				public void run() {
-					if (shabadEditor.isValidShabad()) {
-						controller.play(shabadEditor.getShabad(),
-								(Double) tempoControl.getValue());
-					} else {
-						DialogUtility.showInvalidShabadDialog();
+			if (controller.isPaused()) {
+				controller.unpause();
+			} else {
+				new Thread(new Runnable() {
+					@Override
+					public void run() {
+						if (shabadEditor.isValidShabad()) {
+							controller.play(shabadEditor.getShabad(),
+									(Double) tempoControl.getValue());
+						} else {
+							DialogUtility.showInvalidShabadDialog();
+						}
 					}
-				}
-
-			}).start();
+				}).start();
+			}
 		} else if (command.equals("pause")) {
 			controller.pause();
 		} else if (command.equals("stop")) {
