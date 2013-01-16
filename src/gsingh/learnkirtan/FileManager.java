@@ -193,9 +193,12 @@ public class FileManager {
 	private void write(Shabad shabad) throws IOException {
 		FileOutputStream fileOut = new FileOutputStream(curFile);
 		ObjectOutputStream out = new ObjectOutputStream(fileOut);
-		out.writeObject(shabad);
-		out.close();
-		fileOut.close();
+		try {
+			out.writeObject(shabad);
+		} finally {
+			out.close();
+			fileOut.close();
+		}
 	}
 
 	/**
@@ -217,11 +220,14 @@ public class FileManager {
 				try {
 					shabad = (Shabad) in.readObject();
 				} catch (ClassNotFoundException e) {
+					// Programmer error: should never happen
 					e.printStackTrace();
+				} finally {
+					fileIn.close();
+					in.close();
 				}
 
-				shabadEditor.setWords(shabad.getWords());
-				shabadEditor.setText(shabad.getShabadText());
+				shabadEditor.setShabad(shabad);
 
 				curFile = file;
 				return true;

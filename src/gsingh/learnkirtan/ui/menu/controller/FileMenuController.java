@@ -5,6 +5,7 @@ import gsingh.learnkirtan.FileManager.SaveResult;
 import gsingh.learnkirtan.StateModel;
 import gsingh.learnkirtan.StateModel.FileState;
 import gsingh.learnkirtan.WindowTitleManager;
+import gsingh.learnkirtan.shabad.Shabad;
 import gsingh.learnkirtan.ui.shabadeditor.ShabadEditor;
 import gsingh.learnkirtan.ui.shabadeditor.SwingShabadEditor;
 
@@ -74,7 +75,7 @@ public class FileMenuController {
 			// Create new file if not cancelled
 			if (result != SaveResult.NOTSAVEDCANCELLED) {
 				fileManager.newFile();
-				shabadEditor.setText("");
+				shabadEditor.setShabad(new Shabad(""));
 				if (shabadEditor instanceof SwingShabadEditor) {
 					SwingShabadEditor editor = (SwingShabadEditor) shabadEditor;
 					editor.reset();

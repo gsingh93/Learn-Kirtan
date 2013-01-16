@@ -9,18 +9,24 @@ import gsingh.learnkirtan.note.NoteList;
 import gsingh.learnkirtan.parser.Parser;
 import gsingh.learnkirtan.player.ShabadPlayer;
 import gsingh.learnkirtan.shabad.Shabad;
+import gsingh.learnkirtan.shabad.ShabadNotes;
 import gsingh.learnkirtan.utility.Utility;
 
 import java.awt.Font;
+import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
+import javax.swing.AbstractAction;
+import javax.swing.Action;
 import javax.swing.JTextArea;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.event.UndoableEditEvent;
 import javax.swing.event.UndoableEditListener;
 import javax.swing.text.Document;
+import javax.swing.undo.CannotRedoException;
+import javax.swing.undo.CannotUndoException;
 import javax.swing.undo.UndoManager;
 
 @SuppressWarnings("serial")
@@ -47,8 +53,6 @@ public class TextAreaShabadEditor extends SwingShabadEditor implements
 
 	public TextAreaShabadEditor(WindowTitleManager titleManager,
 			LabelManager labelManager) {
-		super(titleManager);
-
 		this.titleManager = titleManager;
 		this.labelManager = labelManager;
 
@@ -162,18 +166,11 @@ public class TextAreaShabadEditor extends SwingShabadEditor implements
 	public void keyReleased(KeyEvent e) {
 	}
 
-	@Override
-	public void setText(String text) {
-		// TODO Auto-generated method stub
-
-	}
-
 	public void setWords(String text) {
 		// Does nothing
 	}
 
-	@Override
-	public String getText() {
+	private String getText() {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -188,5 +185,83 @@ public class TextAreaShabadEditor extends SwingShabadEditor implements
 	public void setEditable(boolean bool) {
 		// TODO Auto-generated method stub
 
+	}
+
+	@Override
+	public void setShabad(Shabad shabad) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public ShabadNotes getNotes() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String getWords() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public Action getUndoAction() {
+		return undoAction;
+	}
+
+	public Action getRedoAction() {
+		return redoAction;
+	}
+
+	public class UndoAction extends AbstractAction {
+
+		public UndoAction() {
+			super("Undo");
+			setEnabled(false);
+		}
+
+		public void actionPerformed(ActionEvent e) {
+			try {
+				undoManager.undo();
+			} catch (CannotUndoException ex) {
+				ex.printStackTrace();
+			}
+			updateUndoState();
+			redoAction.updateRedoState();
+		}
+
+		public void updateUndoState() {
+			if (undoManager.canUndo()) {
+				setEnabled(true);
+			} else {
+				setEnabled(false);
+			}
+		}
+	}
+
+	public class RedoAction extends AbstractAction {
+
+		public RedoAction() {
+			super("Redo");
+			setEnabled(false);
+		}
+
+		public void actionPerformed(ActionEvent e) {
+			try {
+				undoManager.redo();
+			} catch (CannotRedoException ex) {
+				ex.printStackTrace();
+			}
+			updateRedoState();
+			undoAction.updateUndoState();
+		}
+
+		public void updateRedoState() {
+			if (undoManager.canRedo()) {
+				setEnabled(true);
+			} else {
+				setEnabled(false);
+			}
+		}
 	}
 }

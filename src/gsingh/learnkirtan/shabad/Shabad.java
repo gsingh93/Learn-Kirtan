@@ -30,8 +30,8 @@ public class Shabad implements Serializable {
 		this.words = words;
 	}
 
-	public LinkedList<Note> getNotes() {
-		return notes.getNotes();
+	public ShabadNotes getNotes() {
+		return notes;
 	}
 
 	public LinkedList<Note> getNotes(String start, String end) {

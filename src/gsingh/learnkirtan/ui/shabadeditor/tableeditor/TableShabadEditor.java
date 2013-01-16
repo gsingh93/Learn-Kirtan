@@ -1,7 +1,9 @@
 package gsingh.learnkirtan.ui.shabadeditor.tableeditor;
 
 import gsingh.learnkirtan.WindowTitleManager;
+import gsingh.learnkirtan.parser.Parser;
 import gsingh.learnkirtan.shabad.Shabad;
+import gsingh.learnkirtan.shabad.ShabadNotes;
 import gsingh.learnkirtan.ui.shabadeditor.SwingShabadEditor;
 
 import java.awt.Font;
@@ -22,8 +24,6 @@ public class TableShabadEditor extends SwingShabadEditor {
 	private UndoTableModel model = (UndoTableModel) table.getModel();
 
 	public TableShabadEditor(WindowTitleManager titleManager) {
-		super(titleManager);
-
 		Integer[] headers = new Integer[16];
 		for (int i = 0; i < 16; i++) {
 			headers[i] = i + 1;
@@ -59,21 +59,24 @@ public class TableShabadEditor extends SwingShabadEditor {
 
 	@Override
 	public Shabad getShabad() {
-		Shabad shabad = new Shabad(getText(), getWords());
+		Shabad shabad = new Shabad(getNotesString(), getWords());
 		return shabad;
 	}
 
 	@Override
-	public void setText(String text) {
-		System.out.println(text);
-		String[] words = text.split("\\s+");
+	public void setShabad(Shabad shabad) {
+		setNotes(shabad.getNotes());
+		setWords(shabad.getWords());
+	}
+
+	private void setNotes(ShabadNotes notes) {
 		int numRows = model.getRowCount();
 		for (int i = 1; i < numRows; i += 2) {
 			for (int j = 0; j < 16; j++) {
 				int index = i / 2 * 16 + j;
-				if (index >= words.length)
+				if (index >= notes.size())
 					return;
-				String word = words[index];
+				String word = notes.get(index).getNoteText();
 				if (!word.equalsIgnoreCase("null")) {
 					// TODO: Titlecase word
 					table.setValueAt(word, i, j);
@@ -85,29 +88,28 @@ public class TableShabadEditor extends SwingShabadEditor {
 	}
 
 	@Override
-	public String getText() {
+	public ShabadNotes getNotes() {
+		Parser parser = new Parser();
+		return parser.parse(getNotesString());
+	}
+
+	private String getNotesString() {
 		int numRows = model.getRowCount();
 		StringBuilder sb = new StringBuilder();
 		for (int i = 1; i < numRows; i += 2) {
 			for (int j = 0; j < 16; j++) {
-				String value = (String) model.getValueAt(i, j);
-				// if (value != null) {
 				sb.append(model.getValueAt(i, j)).append(" ");
-				// }
 			}
 		}
 		return sb.toString();
 	}
 
-	private String getWords() {
+	public String getWords() {
 		int numRows = model.getRowCount();
 		StringBuilder sb = new StringBuilder();
 		for (int i = 0; i < numRows; i += 2) {
 			for (int j = 0; j < 16; j++) {
-				String value = (String) model.getValueAt(i, j);
-				// if (value != null) {
 				sb.append(model.getValueAt(i, j)).append(" ");
-				// }
 			}
 		}
 		return sb.toString();
