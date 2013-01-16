@@ -29,6 +29,7 @@ public class TableShabadEditor extends SwingShabadEditor {
 			headers[i] = i + 1;
 		}
 
+		table.setSelectAllForEdit(true);
 		table.setCellSelectionEnabled(true);
 		table.setRowHeight(20);
 		table.setFont(new Font("Arial", Font.PLAIN, 20));

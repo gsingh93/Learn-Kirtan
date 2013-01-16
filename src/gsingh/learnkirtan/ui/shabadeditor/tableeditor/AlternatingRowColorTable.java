@@ -6,13 +6,19 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Font;
 import java.awt.Point;
+import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
+import java.awt.event.MouseEvent;
+import java.util.EventObject;
 import java.util.HashSet;
 import java.util.Set;
 
 import javax.swing.Action;
 import javax.swing.JTable;
+import javax.swing.SwingUtilities;
 import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableCellRenderer;
+import javax.swing.text.JTextComponent;
 
 public class AlternatingRowColorTable extends JTable {
 	
@@ -22,6 +28,10 @@ public class AlternatingRowColorTable extends JTable {
 	
 	private static final Font font = new Font("Arial", Font.PLAIN, 20);
 	
+	private boolean isSelectAllForMouseEvent = false;
+	private boolean isSelectAllForActionEvent = false;
+	private boolean isSelectAllForKeyEvent = false;
+
 	public AlternatingRowColorTable(int rows, int cols) {
 		super(new UndoTableModel());
 		undoManager = new EditUndoManager();
@@ -29,6 +39,97 @@ public class AlternatingRowColorTable extends JTable {
 		model.addUndoableEditListener(undoManager);
 		model.setRowCount(rows);
 		model.setColumnCount(cols);
+	}
+
+	/*
+	 * Override to provide Select All editing functionality
+	 */
+	@Override
+	public boolean editCellAt(int row, int column, EventObject e) {
+		boolean result = super.editCellAt(row, column, e);
+
+		if (isSelectAllForMouseEvent || isSelectAllForActionEvent
+				|| isSelectAllForKeyEvent) {
+			selectAll(e);
+		}
+
+		return result;
+	}
+
+	/*
+	 * Select the text when editing on a text related cell is started
+	 */
+	private void selectAll(EventObject e) {
+		final Component editor = getEditorComponent();
+
+		if (editor == null || !(editor instanceof JTextComponent))
+			return;
+
+		if (e == null) {
+			((JTextComponent) editor).selectAll();
+			return;
+		}
+
+		// Typing in the cell was used to activate the editor
+
+		if (e instanceof KeyEvent && isSelectAllForKeyEvent) {
+			((JTextComponent) editor).selectAll();
+			return;
+		}
+
+		// F2 was used to activate the editor
+
+		if (e instanceof ActionEvent && isSelectAllForActionEvent) {
+			((JTextComponent) editor).selectAll();
+			return;
+		}
+
+		// A mouse click was used to activate the editor.
+		// Generally this is a double click and the second mouse click is
+		// passed to the editor which would remove the text selection unless
+		// we use the invokeLater()
+
+		if (e instanceof MouseEvent && isSelectAllForMouseEvent) {
+			SwingUtilities.invokeLater(new Runnable() {
+				public void run() {
+					((JTextComponent) editor).selectAll();
+				}
+			});
+		}
+	}
+
+	//
+	// Newly added methods
+	//
+	/*
+	 * Sets the Select All property for for all event types
+	 */
+	public void setSelectAllForEdit(boolean isSelectAllForEdit) {
+		setSelectAllForMouseEvent(isSelectAllForEdit);
+		setSelectAllForActionEvent(isSelectAllForEdit);
+		setSelectAllForKeyEvent(isSelectAllForEdit);
+	}
+
+	/*
+	 * Set the Select All property when editing is invoked by the mouse
+	 */
+	public void setSelectAllForMouseEvent(boolean isSelectAllForMouseEvent) {
+		this.isSelectAllForMouseEvent = isSelectAllForMouseEvent;
+	}
+
+	/*
+	 * Set the Select All property when editing is invoked by the "F2" key
+	 */
+	public void setSelectAllForActionEvent(boolean isSelectAllForActionEvent) {
+		this.isSelectAllForActionEvent = isSelectAllForActionEvent;
+	}
+
+	/*
+	 * Set the Select All property when editing is invoked by typing directly
+	 * into the cell
+	 */
+	public void setSelectAllForKeyEvent(boolean isSelectAllForKeyEvent) {
+		this.isSelectAllForKeyEvent = isSelectAllForKeyEvent;
 	}
 
 	@Override
