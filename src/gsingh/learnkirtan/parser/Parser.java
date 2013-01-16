@@ -52,7 +52,6 @@ public class Parser {
 	public ShabadNotes parse(String shabadText) {
 		
 		shabadText = shabadText.trim();
-		// Shabad shabad = new Shabad(shabadText);
 		ShabadNotes shabad = new ShabadNotes();
 
 		// Convert the shabad text to upper case and remove any trailing and
@@ -63,6 +62,12 @@ public class Parser {
 
 		for (int i = 0; i < tokenList.size(); i++) {
 			String word = tokenList.get(i);
+
+			// Ideally there shouldn't be empty strings but it happens
+			if (word.equals("")) {
+				continue;
+			}
+
 			Matcher matcher = shabadPattern.matcher(word);
 			
 			if (word.equals("null")) {

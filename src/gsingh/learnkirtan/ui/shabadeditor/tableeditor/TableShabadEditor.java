@@ -75,9 +75,11 @@ public class TableShabadEditor extends SwingShabadEditor {
 		for (int i = 1; i < numRows; i += 2) {
 			for (int j = 0; j < 16; j++) {
 				int index = i / 2 * 16 + j;
+				String word;
 				if (index >= notes.size())
-					return;
-				String word = notes.get(index).getNoteText();
+					word = "null";
+				else
+					word = notes.get(index).getNoteText();
 				if (!word.equalsIgnoreCase("null")) {
 					// TODO: Titlecase word
 					table.setValueAt(word, i, j);
@@ -126,10 +128,11 @@ public class TableShabadEditor extends SwingShabadEditor {
 		for (int i = 0; i < numRows; i += 2) {
 			for (int j = 0; j < 16; j++) {
 				int index = i / 2 * 16 + j;
+				String word;
 				if (index >= words.length)
-					return;
-				String word = words[index];
-				System.out.println(word);
+					word = "null";
+				else
+					word = words[index];
 				if (!word.equalsIgnoreCase("null")) {
 					// TODO: Titlecase word
 					table.setValueAt(word, i, j);
