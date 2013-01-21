@@ -125,9 +125,9 @@ public class Main {
 	 */
 	public void createAndShowGui() {
 		frame = new JFrame(BASETITLE + "Untitled Shabad");
-		titleManager = new WindowTitleManager(frame);
+		titleManager = new WindowTitleManager(frame, fileManager);
 
-		shabadEditor = new TableShabadEditor(titleManager);
+		shabadEditor = new TableShabadEditor();
 
 		frame.setJMenuBar(createMenuBar());
 
@@ -138,6 +138,7 @@ public class Main {
 		// TODO Is casting the right thing to do here?
 		settingsManager.addSettingsChangedListener((PianoPanel) pianoPanel);
 		fileManager.addFileEventListener((ControlPanel) controlPanel);
+		fileManager.addFileEventListener(titleManager);
 
 		JPanel mainPanel = initMainPanel(controlPanel, pianoPanel, shabadEditor);
 		frame.add(mainPanel);
@@ -177,7 +178,7 @@ public class Main {
 	private JMenuBar createMenuBar() {
 		JMenuBar menuBar = new JMenuBar();
 		menuBar.add(new FileMenu(new FileMenuController(fileManager,
-				titleManager, shabadEditor)));
+				shabadEditor)));
 		menuBar.add(new EditMenu(shabadEditor.getUndoAction(),
 				shabadEditor.getRedoAction()));
 		menuBar.add(new KeyboardMenu(new KeyboardMenuController(shabadEditor)));

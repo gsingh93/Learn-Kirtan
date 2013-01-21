@@ -1,6 +1,5 @@
 package gsingh.learnkirtan.ui.shabadeditor.tableeditor;
 
-import gsingh.learnkirtan.WindowTitleManager;
 import gsingh.learnkirtan.parser.Parser;
 import gsingh.learnkirtan.shabad.Shabad;
 import gsingh.learnkirtan.shabad.ShabadNotes;
@@ -23,7 +22,7 @@ public class TableShabadEditor extends SwingShabadEditor {
 
 	private UndoTableModel model = (UndoTableModel) table.getModel();
 
-	public TableShabadEditor(WindowTitleManager titleManager) {
+	public TableShabadEditor() {
 		Integer[] headers = new Integer[16];
 		for (int i = 0; i < 16; i++) {
 			headers[i] = i + 1;

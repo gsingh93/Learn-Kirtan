@@ -16,10 +16,8 @@ public class FileMenuController {
 	private ShabadEditor shabadEditor;
 	private FileManager fileManager;
 
-	public FileMenuController(FileManager fileManager,
-			WindowTitleManager titleManager, ShabadEditor shabadEditor) {
+	public FileMenuController(FileManager fileManager, ShabadEditor shabadEditor) {
 		this.fileManager = fileManager;
-		this.titleManager = titleManager;
 		this.shabadEditor = shabadEditor;
 	}
 

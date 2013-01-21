@@ -1,6 +1,7 @@
 package gsingh.learnkirtan;
 
 import static gsingh.learnkirtan.Main.BASETITLE;
+import gsingh.learnkirtan.listener.FileEventListener;
 
 import javax.swing.JFrame;
 
@@ -10,12 +11,14 @@ import javax.swing.JFrame;
  * @author Gulshan
  * 
  */
-public class WindowTitleManager {
+public class WindowTitleManager implements FileEventListener {
 
 	private JFrame frame;
+	private FileManager fileManager;
 
-	public WindowTitleManager(JFrame frame) {
+	public WindowTitleManager(JFrame frame, FileManager fileManager) {
 		this.frame = frame;
+		this.fileManager = fileManager;
 	}
 
 	/** Sets the title for when an untitled document is open */
@@ -58,5 +61,16 @@ public class WindowTitleManager {
 		String title = frame.getTitle();
 		if (!title.contains("*"))
 			frame.setTitle(title + "*");
+	}
+
+	@Override
+	public void onFileEvent(FileEvent e) {
+		if (e == FileEvent.SAVE) {
+			setDocumentSavedTitle(fileManager.getFileName());
+		} else if (e == FileEvent.CREATE) {
+			setDocumentCreatedTitle();
+		} else {
+			setOpenedTitle(fileManager.getFileName());
+		}
 	}
 }
