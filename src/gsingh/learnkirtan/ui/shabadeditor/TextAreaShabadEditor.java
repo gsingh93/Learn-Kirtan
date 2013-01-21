@@ -149,7 +149,7 @@ public class TextAreaShabadEditor extends SwingShabadEditor implements
 							textArea.getCaretPosition());
 					new Thread(new Runnable() {
 						public void run() {
-							ShabadPlayer shabadPlayer = new ShabadPlayer(null); // TODO
+							ShabadPlayer shabadPlayer = new ShabadPlayer(); // TODO
 							shabadPlayer.playNote(note, 1);
 						}
 					}).start();

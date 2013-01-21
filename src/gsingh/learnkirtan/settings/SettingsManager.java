@@ -5,10 +5,13 @@ import static gsingh.learnkirtan.Constants.Duration.MONTH;
 import static gsingh.learnkirtan.Constants.Duration.WEEK;
 import gsingh.learnkirtan.Constants.Duration;
 import gsingh.learnkirtan.FileManager;
+import gsingh.learnkirtan.listener.SettingsChangedListener;
 
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.LinkedList;
+import java.util.List;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -34,9 +37,11 @@ public class SettingsManager {
 
 	private static final XPath xPath = XPathFactory.newInstance().newXPath();
 
+	private List<SettingsChangedListener> listeners = new LinkedList<SettingsChangedListener>();
+
 	// TODO: Update the settings names here and in the config file
 	/** XPath statement to access the Sa key setting */
-	private static final String SA_KEY_XPATH = "/settings/sakey[1]";
+	public static final String SA_KEY_XPATH = "/settings/sakey[1]";
 
 	/** XPath statement to access the check for update interval setting */
 	private static final String CHECK_FOR_UPDATE_INTERVAL_XPATH = "/settings/updatereminder/until[1]";
@@ -45,10 +50,10 @@ public class SettingsManager {
 	private static final String CHECK_FOR_UPDATE_XPATH = "/settings/updatereminder/remind[1]";
 
 	/** XPath statement to access the show keyboard labels setting */
-	private static final String SHOW_KEYBOARD_LABELS_XPATH = "/settings/labels/showkeys[1]";
+	public static final String SHOW_KEYBOARD_LABELS_XPATH = "/settings/labels/showkeys[1]";
 
 	/** XPath statement to access the show sargam labels setting */
-	private static final String SHOW_SARGAM_LABELS_XPATH = "/settings/labels/showsargam[1]";
+	public static final String SHOW_SARGAM_LABELS_XPATH = "/settings/labels/showsargam[1]";
 
 	/** The number of milliseconds in a day */
 	private static final int DAY_MILLISECONDS = 24 * 60 * 60 * 1000;
@@ -125,6 +130,10 @@ public class SettingsManager {
 		if (instance == null)
 			instance = new SettingsManager();
 		return instance;
+	}
+
+	public void addSettingsChangedListener(SettingsChangedListener l) {
+		listeners.add(l);
 	}
 
 	// TODO: Look into retrieving each setting as a Node and then casting
@@ -274,16 +283,21 @@ public class SettingsManager {
 	 * 
 	 * @param name
 	 *            full name of the setting, with '.'s to delimit nodes
-	 * @param value
+	 * @param newValue
 	 *            value to change the setting to
 	 */
-	private void changeSetting(String xPathQuery, String value) {
+	private void changeSetting(String xPathQuery, String newValue) {
 		try {
 			Node node = (Node) xPath.evaluate(xPathQuery, dom,
 					XPathConstants.NODE);
-			node.setTextContent(value);
+			String oldValue = node.getTextContent();
+			node.setTextContent(newValue);
 			// TODO Handle error
 			fileManager.saveSettings(dom);
+
+			for (SettingsChangedListener l : listeners) {
+				l.onSettingsChanged(xPathQuery, oldValue, newValue);
+			}
 		} catch (TransformerFactoryConfigurationError e) {
 			e.printStackTrace();
 		} catch (TransformerException e) {

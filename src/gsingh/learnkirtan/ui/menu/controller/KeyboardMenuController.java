@@ -1,6 +1,5 @@
 package gsingh.learnkirtan.ui.menu.controller;
 
-import gsingh.learnkirtan.StateModel;
 import gsingh.learnkirtan.ui.shabadeditor.SwingShabadEditor;
 
 public class KeyboardMenuController {
@@ -13,8 +12,7 @@ public class KeyboardMenuController {
 	// private Mode mode;
 	private SwingShabadEditor shabadEditor;
 
-	public KeyboardMenuController(StateModel model,
-			SwingShabadEditor shabadEditor) {
+	public KeyboardMenuController(SwingShabadEditor shabadEditor) {
 		this.shabadEditor = shabadEditor;
 	}
 

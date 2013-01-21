@@ -12,7 +12,6 @@ import gsingh.learnkirtan.player.ShabadPlayer;
 import gsingh.learnkirtan.settings.SettingsManager;
 import gsingh.learnkirtan.ui.ControlPanel;
 import gsingh.learnkirtan.ui.PianoPanel;
-import gsingh.learnkirtan.ui.View;
 import gsingh.learnkirtan.ui.menu.EditMenu;
 import gsingh.learnkirtan.ui.menu.FileMenu;
 import gsingh.learnkirtan.ui.menu.HelpMenu;
@@ -125,20 +124,20 @@ public class Main {
 	 * Constructs the menu, control panel, piano panel, and shabad editor
 	 */
 	public void createAndShowGui() {
-		StateModel model = new StateModel();
-
 		frame = new JFrame(BASETITLE + "Untitled Shabad");
 		titleManager = new WindowTitleManager(frame);
 
 		shabadEditor = new TableShabadEditor(titleManager);
 
-		frame.setJMenuBar(createMenuBar(model));
+		frame.setJMenuBar(createMenuBar());
 
-		JPanel controlPanel = new ControlPanel(new ShabadPlayer(model),
+		JPanel controlPanel = new ControlPanel(new ShabadPlayer(),
 				shabadEditor);
 		JComponent pianoPanel = new PianoPanel(labelManager);
-		model.registerView((View) controlPanel);
-		model.registerView((View) pianoPanel);
+
+		// TODO Is casting the right thing to do here?
+		settingsManager.addSettingsChangedListener((PianoPanel) pianoPanel);
+		fileManager.addFileEventListener((ControlPanel) controlPanel);
 
 		JPanel mainPanel = initMainPanel(controlPanel, pianoPanel, shabadEditor);
 		frame.add(mainPanel);
@@ -175,15 +174,16 @@ public class Main {
 		return mainPanel;
 	}
 
-	private JMenuBar createMenuBar(StateModel model) {
+	private JMenuBar createMenuBar() {
 		JMenuBar menuBar = new JMenuBar();
-		menuBar.add(new FileMenu(new FileMenuController(model, fileManager,
+		menuBar.add(new FileMenu(new FileMenuController(fileManager,
 				titleManager, shabadEditor)));
 		menuBar.add(new EditMenu(shabadEditor.getUndoAction(),
 				shabadEditor.getRedoAction()));
-		menuBar.add(new KeyboardMenu(new KeyboardMenuController(model, shabadEditor)));
-		menuBar.add(new OptionsMenu(new OptionsMenuController(model, notes, labelManager)));
-		menuBar.add(new HelpMenu(new HelpMenuController(model)));
+		menuBar.add(new KeyboardMenu(new KeyboardMenuController(shabadEditor)));
+		menuBar.add(new OptionsMenu(new OptionsMenuController(notes,
+				labelManager)));
+		menuBar.add(new HelpMenu(new HelpMenuController()));
 		
 		return menuBar;
 	}

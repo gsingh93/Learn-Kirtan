@@ -1,6 +1,5 @@
 package gsingh.learnkirtan.ui.menu.controller;
 
-import gsingh.learnkirtan.StateModel;
 import gsingh.learnkirtan.keys.LabelManager;
 import gsingh.learnkirtan.note.NoteList;
 import gsingh.learnkirtan.settings.SettingsManager;
@@ -17,13 +16,10 @@ public class OptionsMenuController {
 	private SettingsManager settingsManager = SettingsManager.getInstance();
 	private LabelManager labelManager;
 
-	// TODO: model is not used?
-	// private StateModel model;
 	private NoteList notes;
 
-	public OptionsMenuController(StateModel model, NoteList notes,
+	public OptionsMenuController(NoteList notes,
 			LabelManager labelManager) {
-		// this.model = model;
 		this.notes = notes;
 		this.labelManager = labelManager;
 	}

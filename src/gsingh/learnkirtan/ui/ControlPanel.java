@@ -1,7 +1,7 @@
 package gsingh.learnkirtan.ui;
 
-import gsingh.learnkirtan.StateModel.FileState;
-import gsingh.learnkirtan.StateModel.PlayState;
+import gsingh.learnkirtan.listener.FileEventListener;
+import gsingh.learnkirtan.listener.PlayEventListener;
 import gsingh.learnkirtan.player.ShabadPlayer;
 import gsingh.learnkirtan.ui.shabadeditor.SwingShabadEditor;
 import gsingh.learnkirtan.ui.shabadeditor.tableeditor.TableShabadEditor;
@@ -13,8 +13,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.text.DecimalFormat;
 
 import javax.swing.JButton;
@@ -28,7 +26,7 @@ import javax.swing.SpinnerNumberModel;
 
 @SuppressWarnings("serial")
 public class ControlPanel extends JPanel implements ActionListener,
-		ItemListener, View {
+		ItemListener, FileEventListener, PlayEventListener {
 
 	/**
 	 * A spinner controlling tempo. It is set to 1.0 by default, has an
@@ -61,6 +59,8 @@ public class ControlPanel extends JPanel implements ActionListener,
 			final SwingShabadEditor shabadEditor) {
 		this.shabadPlayer = shabadPlayer;
 		this.shabadEditor = shabadEditor;
+
+		this.shabadPlayer.addPlayEventListener(this);
 
 		JButton playButton = new JButton("Play");
 		JButton pauseButton = new JButton("Pause");
@@ -187,35 +187,30 @@ public class ControlPanel extends JPanel implements ActionListener,
 		}
 	}
 
-	private class MyPropertyChangeListener implements PropertyChangeListener {
-
-		@Override
-		public void propertyChange(PropertyChangeEvent e) {
-			if (e.getNewValue() == FileState.OPEN) {
-				startField.setText("");
-				endField.setText("");
-				startField.setEnabled(false);
-			} else if (e.getNewValue() == PlayState.PLAY) {
-				boolean bool = false;
-				shabadEditor.setEnabled(bool);
-				tempoControl.setEnabled(bool);
-				repeat.setEnabled(bool);
-				startField.setEnabled(bool);
-				endField.setEnabled(bool);
-			} else if (e.getNewValue() == PlayState.STOP) {
-				boolean bool = true;
-				shabadEditor.setEnabled(bool);
-				tempoControl.setEnabled(bool);
-				repeat.setEnabled(bool);
-				startField.setEnabled(bool);
-				endField.setEnabled(bool);
-			}
+	@Override
+	public void onPlayEvent(PlayEvent e) {
+		boolean bool;
+		if (e == PlayEvent.PLAY) {
+			bool = false;
+		} else if (e == PlayEvent.STOP) {
+			bool = true;
+		} else {
+			return;
 		}
+		shabadEditor.setEnabled(bool);
+		tempoControl.setEnabled(bool);
+		repeat.setEnabled(bool);
+		startField.setEnabled(bool);
+		endField.setEnabled(bool);
 	}
 
 	@Override
-	public PropertyChangeListener getPropertyChangeListener() {
-		return new MyPropertyChangeListener();
+	public void onFileEvent(FileEvent e) {
+		if (e == FileEvent.OPEN) {
+			startField.setText("");
+			endField.setText("");
+			startField.setEnabled(false);
+		}
 	}
 
 }

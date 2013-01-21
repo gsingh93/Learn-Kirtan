@@ -1,24 +1,26 @@
 package gsingh.learnkirtan.player;
 
-import gsingh.learnkirtan.StateModel;
-import gsingh.learnkirtan.StateModel.PlayState;
 import gsingh.learnkirtan.keys.Key;
 import gsingh.learnkirtan.keys.KeyMapper;
+import gsingh.learnkirtan.listener.PlayEventListener;
+import gsingh.learnkirtan.listener.PlayEventListener.PlayEvent;
 import gsingh.learnkirtan.note.Note;
 import gsingh.learnkirtan.shabad.Shabad;
+
+import java.util.LinkedList;
+import java.util.List;
 
 public class ShabadPlayer {
 
 	private boolean pause;
 	private boolean stop = false;
-	private StateModel model;
-
-	public ShabadPlayer(StateModel model) {
-		this.model = model;
-	}
+	
+	private List<PlayEventListener> listeners = new LinkedList<PlayEventListener>();
 
 	public void play(Shabad shabad, double tempo) {
-		model.setPlayState(PlayState.PLAY);
+		for (PlayEventListener l : listeners) {
+			l.onPlayEvent(PlayEvent.PLAY);
+		}
 		for (Note note : shabad.getNotes()) {
 			if (note != null) {
 				while (pause) {
@@ -35,7 +37,10 @@ public class ShabadPlayer {
 				playNote(note, tempo);
 			}
 		}
-		model.setPlayState(PlayState.STOP);
+
+		for (PlayEventListener l : listeners) {
+			l.onPlayEvent(PlayEvent.STOP);
+		}
 	}
 
 	public void playNote(Note note, double tempo) {
@@ -43,14 +48,24 @@ public class ShabadPlayer {
 		MidiPlayer.play(key, (int) (note.getLength() / tempo));
 	}
 
+	public void addPlayEventListener(PlayEventListener l) {
+		listeners.add(l);
+	}
+
 	public void pause() {
-		model.setPlayState(PlayState.PAUSE);
 		pause = true;
+
+		for (PlayEventListener l : listeners) {
+			l.onPlayEvent(PlayEvent.PAUSE);
+		}
 	}
 
 	public void unpause() {
-		model.setPlayState(PlayState.PLAY);
 		pause = false;
+
+		for (PlayEventListener l : listeners) {
+			l.onPlayEvent(PlayEvent.PLAY);
+		}
 	}
 
 	public boolean isPaused() {
@@ -58,8 +73,10 @@ public class ShabadPlayer {
 	}
 
 	public void stop() {
-		model.setPlayState(PlayState.STOP);
 		stop = true;
+		for (PlayEventListener l : listeners) {
+			l.onPlayEvent(PlayEvent.STOP);
+		}
 	}
 
 	private void sleep(int time) {

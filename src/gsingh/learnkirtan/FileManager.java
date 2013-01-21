@@ -1,5 +1,7 @@
 package gsingh.learnkirtan;
 
+import gsingh.learnkirtan.listener.FileEventListener;
+import gsingh.learnkirtan.listener.FileEventListener.FileEvent;
 import gsingh.learnkirtan.shabad.Shabad;
 import gsingh.learnkirtan.ui.shabadeditor.ShabadEditor;
 import gsingh.learnkirtan.utility.DialogUtility;
@@ -10,6 +12,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.util.LinkedList;
+import java.util.List;
 
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileFilter;
@@ -37,6 +41,8 @@ public class FileManager {
 		NOTSAVEDCANCELLED, NOTSAVED, SAVEDEXISTING, SAVEDNEW, OVERWRITE
 	}
 
+	private List<FileEventListener> listeners = new LinkedList<FileEventListener>();
+
 	/** The file extension of Shabad files */
 	private static final String EXTENSION = ".sbd";
 
@@ -57,6 +63,10 @@ public class FileManager {
 	 * program is first started, it has the value of {@code null}.
 	 */
 	private File curFile;
+
+	public void addFileEventListener(FileEventListener l) {
+		listeners.add(l);
+	}
 
 	/**
 	 * Writes a DOM to the settings file
@@ -104,6 +114,10 @@ public class FileManager {
 	 */
 	public void newFile() {
 		curFile = null;
+
+		for (FileEventListener l : listeners) {
+			l.onFileEvent(FileEvent.CREATE);
+		}
 	}
 
 	/**
@@ -199,6 +213,10 @@ public class FileManager {
 			out.close();
 			fileOut.close();
 		}
+
+		for (FileEventListener l : listeners) {
+			l.onFileEvent(FileEvent.SAVE);
+		}
 	}
 
 	/**
@@ -230,6 +248,11 @@ public class FileManager {
 				shabadEditor.setShabad(shabad);
 
 				curFile = file;
+
+				for (FileEventListener l : listeners) {
+					l.onFileEvent(FileEvent.OPEN);
+				}
+
 				return true;
 			} else {
 				DialogUtility.showFileDoesntExistDialog();

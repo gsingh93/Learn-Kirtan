@@ -2,8 +2,6 @@ package gsingh.learnkirtan.ui.menu.controller;
 
 import gsingh.learnkirtan.FileManager;
 import gsingh.learnkirtan.FileManager.SaveResult;
-import gsingh.learnkirtan.StateModel;
-import gsingh.learnkirtan.StateModel.FileState;
 import gsingh.learnkirtan.WindowTitleManager;
 import gsingh.learnkirtan.shabad.Shabad;
 import gsingh.learnkirtan.ui.shabadeditor.ShabadEditor;
@@ -15,13 +13,11 @@ public class FileMenuController {
 
 	private WindowTitleManager titleManager;
 
-	private StateModel model;
 	private ShabadEditor shabadEditor;
 	private FileManager fileManager;
 
-	public FileMenuController(StateModel model, FileManager fileManager,
+	public FileMenuController(FileManager fileManager,
 			WindowTitleManager titleManager, ShabadEditor shabadEditor) {
-		this.model = model;
 		this.fileManager = fileManager;
 		this.titleManager = titleManager;
 		this.shabadEditor = shabadEditor;
@@ -43,7 +39,6 @@ public class FileMenuController {
 						SwingShabadEditor editor = (SwingShabadEditor) shabadEditor;
 						editor.reset();
 					}
-					model.setFileState(FileState.OPEN);
 				}
 			}
 		} catch (IOException e) {
@@ -58,7 +53,6 @@ public class FileMenuController {
 				fileManager.saveShabad(shabadEditor.getShabad());
 			}
 			titleManager.setDocumentSavedTitle(fileManager.getFileName());
-			model.setFileState(FileState.SAVE);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -81,8 +75,6 @@ public class FileMenuController {
 					editor.reset();
 				}
 				titleManager.setDocumentCreatedTitle();
-
-				model.setFileState(FileState.CREATE);
 			}
 		} catch (IOException e) {
 			e.printStackTrace();

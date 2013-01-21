@@ -1,11 +1,10 @@
 package gsingh.learnkirtan.ui.menu.controller;
 
-import gsingh.learnkirtan.StateModel;
 import gsingh.learnkirtan.utility.DialogUtility;
 import gsingh.learnkirtan.utility.NetworkUtility;
 
 public class HelpMenuController {
-	public HelpMenuController(StateModel model) {
+	public HelpMenuController() {
 	}
 
 	public void displayAbout() {
