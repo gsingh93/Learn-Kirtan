@@ -12,7 +12,7 @@ import javax.swing.undo.UndoableEdit;
 public class EditUndoManager extends UndoManager {
 	protected Action undoAction;
 	protected Action redoAction;
-
+	
 	public EditUndoManager() {
 		this.undoAction = new UndoAction(this);
 		this.redoAction = new RedoAction(this);
@@ -27,7 +27,7 @@ public class EditUndoManager extends UndoManager {
 	public Action getRedoAction() {
 		return redoAction;
 	}
-	
+
 	@Override
 	public boolean addEdit(UndoableEdit anEdit) {
 		try {
@@ -36,7 +36,7 @@ public class EditUndoManager extends UndoManager {
 			synchronizeActions();
 		}
 	}
-	
+
 	@Override
 	protected void undoTo(UndoableEdit edit) throws CannotUndoException {
 		try {
@@ -45,7 +45,7 @@ public class EditUndoManager extends UndoManager {
 			synchronizeActions();
 		}
 	}
-	
+
 	@Override
 	protected void redoTo(UndoableEdit edit) throws CannotRedoException {
 		try {
@@ -54,7 +54,7 @@ public class EditUndoManager extends UndoManager {
 			synchronizeActions();
 		}
 	}
-	
+
 	protected void synchronizeActions() {
 		undoAction.setEnabled(canUndo());
 		undoAction.putValue(Action.NAME, getUndoPresentationName());
@@ -62,36 +62,36 @@ public class EditUndoManager extends UndoManager {
 		redoAction.setEnabled(canRedo());
 		redoAction.putValue(Action.NAME, getRedoPresentationName());
 	}
-}
 
-class UndoAction extends AbstractAction {
-	protected final UndoManager manager;
+	public class UndoAction extends AbstractAction {
+		protected final UndoManager manager;
 
-	public UndoAction(UndoManager manager) {
-		this.manager = manager;
+		public UndoAction(UndoManager manager) {
+			this.manager = manager;
 		}
 
-	public void actionPerformed(ActionEvent e) {
-		try {
-			manager.undo();
-		} catch (CannotUndoException ex) {
-			ex.printStackTrace();
+		public void actionPerformed(ActionEvent e) {
+			try {
+				manager.undo();
+			} catch (CannotUndoException ex) {
+				ex.printStackTrace();
+			}
 		}
 	}
-}
 
-class RedoAction extends AbstractAction {
-	protected final UndoManager manager;
+	public class RedoAction extends AbstractAction {
+		protected final UndoManager manager;
 
-	public RedoAction(UndoManager manager) {
-		this.manager = manager;
+		public RedoAction(UndoManager manager) {
+			this.manager = manager;
 		}
 
-	public void actionPerformed(ActionEvent e) {
-		try {
-			manager.redo();
-		} catch (CannotRedoException ex) {
-			ex.printStackTrace();
+		public void actionPerformed(ActionEvent e) {
+			try {
+				manager.redo();
+			} catch (CannotRedoException ex) {
+				ex.printStackTrace();
+			}
 		}
 	}
 }

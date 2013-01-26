@@ -15,6 +15,7 @@ import java.util.Set;
 
 import javax.swing.Action;
 import javax.swing.JTable;
+import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableCellRenderer;
@@ -34,11 +35,22 @@ public class AlternatingRowColorTable extends JTable {
 
 	public AlternatingRowColorTable(int rows, int cols) {
 		super(new UndoTableModel());
+		
 		undoManager = new EditUndoManager();
 		UndoTableModel model = (UndoTableModel) getModel();
 		model.addUndoableEditListener(undoManager);
 		model.setRowCount(rows);
 		model.setColumnCount(cols);
+
+		getInputMap().put(
+				KeyStroke.getKeyStroke(KeyEvent.VK_Z, KeyEvent.CTRL_DOWN_MASK),
+				"undo");
+		getActionMap().put("undo", getUndoAction());
+
+		getInputMap().put(
+				KeyStroke.getKeyStroke(KeyEvent.VK_Y, KeyEvent.CTRL_DOWN_MASK),
+				"redo");
+		getActionMap().put("redo", getRedoAction());
 	}
 
 	/*
