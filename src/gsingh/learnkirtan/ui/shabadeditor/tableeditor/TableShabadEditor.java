@@ -186,7 +186,7 @@ public class TableShabadEditor extends SwingShabadEditor {
 
 	@Override
 	public void setEnabled(boolean bool) {
-		// TODO Auto-generated method stub
+		table.setEnabled(bool);
 	}
 
 	public int getSelectedRow() {

@@ -52,6 +52,10 @@ public class ControlPanel extends JPanel implements ActionListener,
 	 */
 	private JTextField endField;
 
+	JButton playButton = new JButton("Play");
+	JButton pauseButton = new JButton("Pause");
+	JButton stopButton = new JButton("Stop");
+
 	private ShabadPlayer shabadPlayer;
 	private SwingShabadEditor shabadEditor;
 
@@ -62,18 +66,16 @@ public class ControlPanel extends JPanel implements ActionListener,
 
 		this.shabadPlayer.addPlayEventListener(this);
 
-		JButton playButton = new JButton("Play");
-		JButton pauseButton = new JButton("Pause");
-		JButton stopButton = new JButton("Stop");
-
 		playButton.addActionListener(this);
 		playButton.setActionCommand("play");
 
 		pauseButton.addActionListener(this);
 		pauseButton.setActionCommand("pause");
+		pauseButton.setEnabled(false);
 
 		stopButton.addActionListener(this);
 		stopButton.setActionCommand("stop");
+		stopButton.setEnabled(false);
 
 		JLabel tempoLabel = new JLabel("Tempo:");
 
@@ -189,19 +191,34 @@ public class ControlPanel extends JPanel implements ActionListener,
 
 	@Override
 	public void onPlayEvent(PlayEvent e) {
-		boolean bool;
 		if (e == PlayEvent.PLAY) {
-			bool = false;
+			playButton.setEnabled(false);
+			pauseButton.setEnabled(true);
+			stopButton.setEnabled(true);
+			tempoControl.setEnabled(false);
+			repeat.setEnabled(false);
+			startField.setEnabled(false);
+			endField.setEnabled(false);
+			shabadEditor.setEnabled(false);
+		} else if (e == PlayEvent.PAUSE) {
+			playButton.setEnabled(true);
+			pauseButton.setEnabled(false);
+			stopButton.setEnabled(true);
+			tempoControl.setEnabled(false);
+			repeat.setEnabled(false);
+			startField.setEnabled(false);
+			endField.setEnabled(false);
+			shabadEditor.setEnabled(false);
 		} else if (e == PlayEvent.STOP) {
-			bool = true;
-		} else {
-			return;
+			playButton.setEnabled(true);
+			pauseButton.setEnabled(false);
+			stopButton.setEnabled(false);
+			tempoControl.setEnabled(true);
+			repeat.setEnabled(true);
+			startField.setEnabled(true);
+			endField.setEnabled(true);
+			shabadEditor.setEnabled(true);
 		}
-		shabadEditor.setEnabled(bool);
-		tempoControl.setEnabled(bool);
-		repeat.setEnabled(bool);
-		startField.setEnabled(bool);
-		endField.setEnabled(bool);
 	}
 
 	@Override
