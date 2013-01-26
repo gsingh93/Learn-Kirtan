@@ -150,9 +150,17 @@ public class AlternatingRowColorTable extends JTable {
 		Component c = super.prepareRenderer(renderer, row, col);
 		if (!c.getBackground().equals(getSelectionBackground())) {
 			if (row % 2 == 1) {
-				c.setBackground(Color.LIGHT_GRAY);
+				if (isEnabled()) {
+					c.setBackground(Color.LIGHT_GRAY);
+				} else {
+					c.setBackground(Color.LIGHT_GRAY);
+				}
 			} else {
-				c.setBackground(Color.WHITE);
+				if (isEnabled()) {
+					c.setBackground(Color.WHITE);
+				} else {
+					c.setBackground(new Color(0xE5, 0xE5, 0xE5));
+				}
 			}
 		}
 
