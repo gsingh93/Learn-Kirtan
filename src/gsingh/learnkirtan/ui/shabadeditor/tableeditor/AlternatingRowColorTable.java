@@ -1,5 +1,6 @@
 package gsingh.learnkirtan.ui.shabadeditor.tableeditor;
 
+import gsingh.learnkirtan.ui.WindowTitleManager;
 import gsingh.learnkirtan.validation.Validator;
 
 import java.awt.Color;
@@ -33,10 +34,11 @@ public class AlternatingRowColorTable extends JTable {
 	private boolean isSelectAllForActionEvent = false;
 	private boolean isSelectAllForKeyEvent = false;
 
-	public AlternatingRowColorTable(int rows, int cols) {
+	public AlternatingRowColorTable(int rows, int cols, WindowTitleManager titleManager) {
 		super(new UndoTableModel());
 		
-		undoManager = new EditUndoManager();
+		undoManager = new EditUndoManager(titleManager);
+		
 		UndoTableModel model = (UndoTableModel) getModel();
 		model.addUndoableEditListener(undoManager);
 		model.setRowCount(rows);

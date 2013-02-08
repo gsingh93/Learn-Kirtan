@@ -1,5 +1,7 @@
 package gsingh.learnkirtan.ui.shabadeditor.tableeditor;
 
+import gsingh.learnkirtan.ui.WindowTitleManager;
+
 import java.awt.event.ActionEvent;
 
 import javax.swing.AbstractAction;
@@ -13,7 +15,10 @@ public class EditUndoManager extends UndoManager {
 	protected Action undoAction;
 	protected Action redoAction;
 	
-	public EditUndoManager() {
+	private WindowTitleManager titleManager;
+
+	public EditUndoManager(WindowTitleManager titleManager) {
+		this.titleManager = titleManager;
 		this.undoAction = new UndoAction(this);
 		this.redoAction = new RedoAction(this);
 
@@ -56,6 +61,11 @@ public class EditUndoManager extends UndoManager {
 	}
 
 	protected void synchronizeActions() {
+		if (!canUndo()) {
+			titleManager.setDocumentUnmodifiedTitle();
+		} else {
+			titleManager.setDocumentModifiedTitle();
+		}
 		undoAction.setEnabled(canUndo());
 		undoAction.putValue(Action.NAME, getUndoPresentationName());
 

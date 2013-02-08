@@ -20,12 +20,13 @@ import javax.swing.table.TableColumn;
 @SuppressWarnings("serial")
 public class TableShabadEditor extends SwingShabadEditor {
 
-	private AlternatingRowColorTable table = new AlternatingRowColorTable(16,
-			16);
+	private AlternatingRowColorTable table;
 
-	private UndoTableModel model = (UndoTableModel) table.getModel();
+	private UndoTableModel model;
 
 	public TableShabadEditor(final WindowTitleManager titleManager) {
+		table = new AlternatingRowColorTable(16, 16, titleManager);
+		model = (UndoTableModel) table.getModel();
 		Integer[] headers = new Integer[16];
 		for (int i = 0; i < 16; i++) {
 			headers[i] = i + 1;
