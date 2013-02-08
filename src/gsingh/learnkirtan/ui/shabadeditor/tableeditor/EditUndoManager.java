@@ -60,6 +60,12 @@ public class EditUndoManager extends UndoManager {
 		}
 	}
 
+	@Override
+	public void discardAllEdits() {
+		super.discardAllEdits();
+		synchronizeActions();
+	}
+
 	protected void synchronizeActions() {
 		if (!canUndo()) {
 			titleManager.setDocumentUnmodifiedTitle();

@@ -196,6 +196,10 @@ public class AlternatingRowColorTable extends JTable {
 		return c;
 	}
 
+	public void reset() {
+		undoManager.discardAllEdits();
+	}
+
 	public boolean isValidShabad() {
 		return invalidCells.isEmpty();
 	}

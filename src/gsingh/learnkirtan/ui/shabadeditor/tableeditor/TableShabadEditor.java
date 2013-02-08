@@ -162,6 +162,7 @@ public class TableShabadEditor extends SwingShabadEditor {
 	@Override
 	public void reset() {
 		modified = false;
+		table.reset();
 	}
 
 	/**
