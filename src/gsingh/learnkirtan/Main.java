@@ -126,7 +126,7 @@ public class Main {
 	 */
 	public void createAndShowGui() {
 		frame = new JFrame(BASETITLE + "Untitled Shabad");
-		titleManager = new WindowTitleManager(frame, fileManager);
+		titleManager = new WindowTitleManager(frame);
 
 		shabadEditor = new TableShabadEditor(titleManager);
 

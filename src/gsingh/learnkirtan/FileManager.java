@@ -116,7 +116,9 @@ public class FileManager {
 		curFile = null;
 
 		for (FileEventListener l : listeners) {
-			l.onFileEvent(FileEvent.CREATE);
+			FileEvent e = FileEvent.CREATE;
+			e.setFileName("");
+			l.onFileEvent(e);
 		}
 	}
 
@@ -215,7 +217,9 @@ public class FileManager {
 		}
 
 		for (FileEventListener l : listeners) {
-			l.onFileEvent(FileEvent.SAVE);
+			FileEvent e = FileEvent.SAVE;
+			e.setFileName(curFile.getName());
+			l.onFileEvent(e);
 		}
 	}
 
@@ -250,7 +254,9 @@ public class FileManager {
 				curFile = file;
 
 				for (FileEventListener l : listeners) {
-					l.onFileEvent(FileEvent.OPEN);
+					FileEvent e = FileEvent.OPEN;
+					e.setFileName(curFile.getName());
+					l.onFileEvent(e);
 				}
 
 				return true;
