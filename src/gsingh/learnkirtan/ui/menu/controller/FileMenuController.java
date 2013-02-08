@@ -2,7 +2,6 @@ package gsingh.learnkirtan.ui.menu.controller;
 
 import gsingh.learnkirtan.FileManager;
 import gsingh.learnkirtan.FileManager.SaveResult;
-import gsingh.learnkirtan.WindowTitleManager;
 import gsingh.learnkirtan.shabad.Shabad;
 import gsingh.learnkirtan.ui.shabadeditor.ShabadEditor;
 import gsingh.learnkirtan.ui.shabadeditor.SwingShabadEditor;
@@ -10,8 +9,6 @@ import gsingh.learnkirtan.ui.shabadeditor.SwingShabadEditor;
 import java.io.IOException;
 
 public class FileMenuController {
-
-	private WindowTitleManager titleManager;
 
 	private ShabadEditor shabadEditor;
 	private FileManager fileManager;
@@ -32,7 +29,6 @@ public class FileMenuController {
 			// Open file if not cancelled
 			if (result != SaveResult.NOTSAVEDCANCELLED) {
 				if (fileManager.openFile(shabadEditor)) {
-					titleManager.setOpenedTitle(fileManager.getFileName());
 					if (shabadEditor instanceof SwingShabadEditor) {
 						SwingShabadEditor editor = (SwingShabadEditor) shabadEditor;
 						editor.reset();
@@ -49,8 +45,11 @@ public class FileMenuController {
 		try {
 			if (shabadEditor.isModified()) {
 				fileManager.saveShabad(shabadEditor.getShabad());
+				if (shabadEditor instanceof SwingShabadEditor) {
+					SwingShabadEditor editor = (SwingShabadEditor) shabadEditor;
+					editor.reset();
+				}
 			}
-			titleManager.setDocumentSavedTitle(fileManager.getFileName());
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -66,13 +65,12 @@ public class FileMenuController {
 
 			// Create new file if not cancelled
 			if (result != SaveResult.NOTSAVEDCANCELLED) {
-				fileManager.newFile();
 				shabadEditor.setShabad(new Shabad(""));
+				fileManager.newFile();
 				if (shabadEditor instanceof SwingShabadEditor) {
 					SwingShabadEditor editor = (SwingShabadEditor) shabadEditor;
 					editor.reset();
 				}
-				titleManager.setDocumentCreatedTitle();
 			}
 		} catch (IOException e) {
 			e.printStackTrace();

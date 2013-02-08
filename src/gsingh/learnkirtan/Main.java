@@ -12,6 +12,7 @@ import gsingh.learnkirtan.player.ShabadPlayer;
 import gsingh.learnkirtan.settings.SettingsManager;
 import gsingh.learnkirtan.ui.ControlPanel;
 import gsingh.learnkirtan.ui.PianoPanel;
+import gsingh.learnkirtan.ui.WindowTitleManager;
 import gsingh.learnkirtan.ui.menu.EditMenu;
 import gsingh.learnkirtan.ui.menu.FileMenu;
 import gsingh.learnkirtan.ui.menu.HelpMenu;
@@ -127,7 +128,7 @@ public class Main {
 		frame = new JFrame(BASETITLE + "Untitled Shabad");
 		titleManager = new WindowTitleManager(frame, fileManager);
 
-		shabadEditor = new TableShabadEditor();
+		shabadEditor = new TableShabadEditor(titleManager);
 
 		frame.setJMenuBar(createMenuBar());
 

@@ -1,6 +1,7 @@
-package gsingh.learnkirtan;
+package gsingh.learnkirtan.ui;
 
 import static gsingh.learnkirtan.Main.BASETITLE;
+import gsingh.learnkirtan.FileManager;
 import gsingh.learnkirtan.listener.FileEventListener;
 
 import javax.swing.JFrame;
@@ -28,7 +29,8 @@ public class WindowTitleManager implements FileEventListener {
 
 	/** Sets the title for when a file is saved */
 	public void setDocumentSavedTitle(String filename) {
-		removeAsterisk();
+		setOpenedTitle(filename);
+		// removeAsterisk();
 	}
 
 	/** Sets the title for when a file is opened */

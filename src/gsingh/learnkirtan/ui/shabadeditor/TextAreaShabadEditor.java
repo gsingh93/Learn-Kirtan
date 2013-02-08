@@ -1,7 +1,6 @@
 package gsingh.learnkirtan.ui.shabadeditor;
 
 import gsingh.learnkirtan.Constants;
-import gsingh.learnkirtan.WindowTitleManager;
 import gsingh.learnkirtan.keys.KeyMapper;
 import gsingh.learnkirtan.keys.LabelManager;
 import gsingh.learnkirtan.note.Note;
@@ -10,6 +9,7 @@ import gsingh.learnkirtan.parser.Parser;
 import gsingh.learnkirtan.player.ShabadPlayer;
 import gsingh.learnkirtan.shabad.Shabad;
 import gsingh.learnkirtan.shabad.ShabadNotes;
+import gsingh.learnkirtan.ui.WindowTitleManager;
 import gsingh.learnkirtan.utility.Utility;
 
 import java.awt.Font;

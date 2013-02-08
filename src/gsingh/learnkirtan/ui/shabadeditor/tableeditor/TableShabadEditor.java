@@ -3,6 +3,7 @@ package gsingh.learnkirtan.ui.shabadeditor.tableeditor;
 import gsingh.learnkirtan.parser.Parser;
 import gsingh.learnkirtan.shabad.Shabad;
 import gsingh.learnkirtan.shabad.ShabadNotes;
+import gsingh.learnkirtan.ui.WindowTitleManager;
 import gsingh.learnkirtan.ui.shabadeditor.SwingShabadEditor;
 
 import java.awt.Font;
@@ -11,6 +12,8 @@ import java.awt.GridLayout;
 import javax.swing.Action;
 import javax.swing.JScrollPane;
 import javax.swing.SwingConstants;
+import javax.swing.event.TableModelEvent;
+import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableColumn;
 
@@ -22,7 +25,7 @@ public class TableShabadEditor extends SwingShabadEditor {
 
 	private UndoTableModel model = (UndoTableModel) table.getModel();
 
-	public TableShabadEditor() {
+	public TableShabadEditor(final WindowTitleManager titleManager) {
 		Integer[] headers = new Integer[16];
 		for (int i = 0; i < 16; i++) {
 			headers[i] = i + 1;
@@ -45,6 +48,14 @@ public class TableShabadEditor extends SwingShabadEditor {
 
 		setLayout(new GridLayout());
 		add(new JScrollPane(table));
+
+		model.addTableModelListener(new TableModelListener() {
+			@Override
+			public void tableChanged(TableModelEvent event) {
+				modified = true;
+				titleManager.setDocumentModifiedTitle();
+			}
+		});
 	}
 
 	@Override
@@ -149,8 +160,7 @@ public class TableShabadEditor extends SwingShabadEditor {
 
 	@Override
 	public void reset() {
-		// TODO Auto-generated method stub
-
+		modified = false;
 	}
 
 	/**
