@@ -18,18 +18,18 @@ public class Validator {
 			.format("(?:%s?(?:sa|re|ga|ma|pa|dha|ni)%s?)", modifierRegex,
 					modifierRegex);
 
-	/** The regex defining a shabad */
-	private static final String shabadRegex = String.format(
-			"(?:(?:(?:%s(?:-%s)?)|-) ?)+", noteRegex, noteRegex);
-
-	/** The pattern defining a shabad */
-	private static final Pattern shabadPattern = Pattern.compile(shabadRegex,
-			Pattern.CASE_INSENSITIVE);
-
 	private static String doublePeriodRegex = "'?\\.'?sa'?\\.'?";
 	private static String doubleApostropheRegex = "\\.?'\\.?sa\\.?'\\.?";
-	private static String theevraMaRegex;
-
+	private static String wrongTheevraRegex = ".*(sa|re|ga|pa|dha|ni).*'.*";
+	private static String wrongKomalRegex = ".*'.*(sa|ma|pa).*";
+	
+	private static Pattern doublePeriod = Pattern.compile(doublePeriodRegex);
+	private static Pattern doubleApostrophe = Pattern
+			.compile(doubleApostropheRegex);
+	private static Pattern wrongTheevra = Pattern.compile(wrongTheevraRegex);
+	private static Pattern wrongKomal = Pattern.compile(wrongKomalRegex);
+	private static Pattern notePattern = Pattern.compile(noteRegex);
+	
 	/**
 	 * Checks if the shabad is well-formed
 	 * 
@@ -38,51 +38,17 @@ public class Validator {
 	 * @return a {@link ValidationErrors} object
 	 */
 	public static boolean validate(String note) {
-		// ValidationErrors errors = new ValidationErrors();
-		// return errors; // TODO
-		if (!Pattern.matches(noteRegex, note)) {
+		if (!notePattern.matcher(note).matches()) {
 			return false;
-		} else if (Pattern.matches(doublePeriodRegex, note)) {
+		} else if (doublePeriod.matcher(note).matches()) {
 			return false;
-		} else if (Pattern.matches(doubleApostropheRegex, note)) {
+		} else if (doubleApostrophe.matcher(note).matches()) {
+			return false;
+		} else if (wrongTheevra.matcher(note).matches()) {
+			return false;
+		} else if (wrongKomal.matcher(note).matches()) {
 			return false;
 		}
 		return true;
-	}
-
-	/**
-	 * Ensures that no double periods are found within the text
-	 * 
-	 * @return true if the condition above is true, false otherwise
-	 */
-	private static boolean noDoublePeriod() {
-		return true; // TODO
-	}
-
-	/**
-	 * Ensures that
-	 * 
-	 * @return true if the condition above is true, false otherwise
-	 */
-	private static boolean noDoubleApostrophe() {
-		return true; // TODO
-	}
-
-	/**
-	 * Ensures that
-	 * 
-	 * @return true if the condition above is true, false otherwise
-	 */
-	private static boolean correctTheevras() {
-		return true; // TODO
-	}
-
-	/**
-	 * Ensures that
-	 * 
-	 * @return true if the condition above is true, false otherwise
-	 */
-	private static boolean correctKomals() {
-		return true; // TODO
 	}
 }
