@@ -7,8 +7,10 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Map;
 
-@SuppressWarnings("serial")
 public class ShabadNotes implements Iterable<Note>, Serializable {
+
+	private static final long serialVersionUID = 906123591409453595L;
+
 	private LinkedList<Note> notes = new LinkedList<Note>();
 	private Map<String, Integer> labelPos;
 

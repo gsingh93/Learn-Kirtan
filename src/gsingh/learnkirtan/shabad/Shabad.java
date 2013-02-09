@@ -8,9 +8,12 @@ import java.util.LinkedList;
 
 public class Shabad implements Serializable {
 
+	private static final long serialVersionUID = 6657996411815529195L;
+
 	private String shabadText;
 	private String words;
 	private ShabadNotes notes;
+	private ShabadMetaData metaData;
 
 	public Shabad(String shabadText, String words) {
 		this.shabadText = shabadText;
@@ -20,6 +23,14 @@ public class Shabad implements Serializable {
 
 	public Shabad(String shabadText) {
 		this(shabadText, "");
+	}
+
+	public void setMetaData() {
+
+	}
+
+	public ShabadMetaData getMetaData() {
+		return metaData;
 	}
 
 	public String getWords() {

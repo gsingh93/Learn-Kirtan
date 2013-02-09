@@ -2,6 +2,7 @@ package gsingh.learnkirtan.ui.shabadeditor.tableeditor;
 
 import gsingh.learnkirtan.parser.Parser;
 import gsingh.learnkirtan.shabad.Shabad;
+import gsingh.learnkirtan.shabad.ShabadMetaData;
 import gsingh.learnkirtan.shabad.ShabadNotes;
 import gsingh.learnkirtan.ui.WindowTitleManager;
 import gsingh.learnkirtan.ui.shabadeditor.SwingShabadEditor;
@@ -23,6 +24,8 @@ public class TableShabadEditor extends SwingShabadEditor {
 	private AlternatingRowColorTable table;
 
 	private UndoTableModel model;
+
+	private ShabadMetaData metaData;
 
 	public TableShabadEditor(final WindowTitleManager titleManager) {
 		table = new AlternatingRowColorTable(16, 16, titleManager);
@@ -77,6 +80,7 @@ public class TableShabadEditor extends SwingShabadEditor {
 
 	@Override
 	public void setShabad(Shabad shabad) {
+		metaData = shabad.getMetaData();
 		setNotes(shabad.getNotes());
 		setWords(shabad.getWords());
 	}
@@ -203,5 +207,10 @@ public class TableShabadEditor extends SwingShabadEditor {
 
 	public int getSelectedRow() {
 		return table.getSelectedRow();
+	}
+
+	@Override
+	public ShabadMetaData getMetaData() {
+		return metaData;
 	}
 }

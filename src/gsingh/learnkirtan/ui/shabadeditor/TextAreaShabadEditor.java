@@ -8,6 +8,7 @@ import gsingh.learnkirtan.note.NoteList;
 import gsingh.learnkirtan.parser.Parser;
 import gsingh.learnkirtan.player.ShabadPlayer;
 import gsingh.learnkirtan.shabad.Shabad;
+import gsingh.learnkirtan.shabad.ShabadMetaData;
 import gsingh.learnkirtan.shabad.ShabadNotes;
 import gsingh.learnkirtan.ui.WindowTitleManager;
 import gsingh.learnkirtan.utility.Utility;
@@ -263,5 +264,11 @@ public class TextAreaShabadEditor extends SwingShabadEditor implements
 				setEnabled(false);
 			}
 		}
+	}
+
+	@Override
+	public ShabadMetaData getMetaData() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

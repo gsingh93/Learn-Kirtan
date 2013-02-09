@@ -5,6 +5,7 @@ import gsingh.learnkirtan.FileManager.SaveResult;
 import gsingh.learnkirtan.shabad.Shabad;
 import gsingh.learnkirtan.ui.shabadeditor.ShabadEditor;
 import gsingh.learnkirtan.ui.shabadeditor.SwingShabadEditor;
+import gsingh.learnkirtan.utility.DialogUtility;
 
 import java.io.IOException;
 
@@ -75,5 +76,9 @@ public class FileMenuController {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+	}
+
+	public void properties() {
+		DialogUtility.showMetaDataDialog(shabadEditor.getMetaData());
 	}
 }
