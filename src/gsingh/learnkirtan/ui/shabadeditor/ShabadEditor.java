@@ -20,4 +20,5 @@ public interface ShabadEditor {
 
 	public boolean isValidShabad();
 
+	void setMetaData(ShabadMetaData metaData);
 }

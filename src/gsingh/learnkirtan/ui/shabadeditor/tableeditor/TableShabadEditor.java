@@ -60,6 +60,8 @@ public class TableShabadEditor extends SwingShabadEditor {
 				titleManager.setDocumentModifiedTitle();
 			}
 		});
+
+		metaData = new ShabadMetaData();
 	}
 
 	@Override
@@ -75,6 +77,7 @@ public class TableShabadEditor extends SwingShabadEditor {
 	@Override
 	public Shabad getShabad() {
 		Shabad shabad = new Shabad(getNotesString(), getWords());
+		shabad.setMetaData(metaData);
 		return shabad;
 	}
 
@@ -212,5 +215,10 @@ public class TableShabadEditor extends SwingShabadEditor {
 	@Override
 	public ShabadMetaData getMetaData() {
 		return metaData;
+	}
+
+	@Override
+	public void setMetaData(ShabadMetaData metaData) {
+		this.metaData = metaData;
 	}
 }

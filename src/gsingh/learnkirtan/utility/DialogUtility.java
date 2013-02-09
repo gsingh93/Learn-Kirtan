@@ -2,8 +2,12 @@ package gsingh.learnkirtan.utility;
 
 import static gsingh.learnkirtan.Constants.VERSION;
 import gsingh.learnkirtan.shabad.ShabadMetaData;
+import gsingh.learnkirtan.ui.menu.controller.FileMenuController.MetaDataDialogCallback;
 
+import java.awt.Button;
 import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
@@ -128,12 +132,19 @@ public class DialogUtility {
 		JOptionPane.showMessageDialog(null, message);
 	}
 
-	public static void showMetaDataDialog(ShabadMetaData metaData) {
-		JTextField name = new JTextField(15);
-		JTextField taal = new JTextField(15);
-		JTextField raag = new JTextField(15); // TODO Dropdown
-		JTextField ang = new JTextField(15); // TODO Spinner
-		JTextArea notes = new JTextArea(3, 15);
+	public static void showMetaDataDialog(ShabadMetaData data,
+			final MetaDataDialogCallback callback) {
+		final JTextField name = new JTextField(15);
+		final JTextField taal = new JTextField(15);
+		final JTextField raag = new JTextField(15); // TODO Dropdown
+		final JTextField ang = new JTextField(15); // TODO Spinner
+		final JTextArea notes = new JTextArea(3, 15);
+		
+		name.setText(data.getName());
+		taal.setText(data.getTaal());
+		raag.setText(data.getRaag());
+		ang.setText(data.getAng());
+		notes.setText(data.getNotes());
 		notes.setBorder(BorderFactory.createBevelBorder(1));
 
 		JPanel panel = new JPanel();
@@ -150,7 +161,20 @@ public class DialogUtility {
 		panel.add(new JLabel("Notes: "));
 		panel.add(notes);
 
-		JDialog dialog = new JDialog();
+		final JDialog dialog = new JDialog();
+
+		Button ok = new Button("Ok");
+		ok.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				dialog.dispose();
+				callback.completed(new ShabadMetaData(name.getText(), taal
+						.getText(), raag.getText(), ang.getText(), notes
+						.getText()));
+			}
+		});
+		panel.add(ok);
+
 		dialog.setContentPane(panel);
 		dialog.setLocation(400, 200); // TODO
 		dialog.pack();

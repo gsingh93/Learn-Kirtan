@@ -3,6 +3,7 @@ package gsingh.learnkirtan.ui.menu.controller;
 import gsingh.learnkirtan.FileManager;
 import gsingh.learnkirtan.FileManager.SaveResult;
 import gsingh.learnkirtan.shabad.Shabad;
+import gsingh.learnkirtan.shabad.ShabadMetaData;
 import gsingh.learnkirtan.ui.shabadeditor.ShabadEditor;
 import gsingh.learnkirtan.ui.shabadeditor.SwingShabadEditor;
 import gsingh.learnkirtan.utility.DialogUtility;
@@ -79,6 +80,14 @@ public class FileMenuController {
 	}
 
 	public void properties() {
-		DialogUtility.showMetaDataDialog(shabadEditor.getMetaData());
+		DialogUtility.showMetaDataDialog(shabadEditor.getMetaData(),
+				new MetaDataDialogCallback());
+	}
+
+	public class MetaDataDialogCallback {
+		public void completed(ShabadMetaData data) {
+			shabadEditor.setMetaData(data);
+			// TODO set modified
+		}
 	}
 }

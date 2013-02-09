@@ -271,4 +271,9 @@ public class TextAreaShabadEditor extends SwingShabadEditor implements
 		// TODO Auto-generated method stub
 		return null;
 	}
+
+	@Override
+	public void setMetaData(ShabadMetaData metaData) {
+		// TODO Auto-generated method stub
+	}
 }
