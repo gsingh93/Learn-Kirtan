@@ -1,6 +1,7 @@
 package gsingh.learnkirtan.ui.shabadeditor.tableeditor;
 
 import gsingh.learnkirtan.ui.WindowTitleManager;
+import gsingh.learnkirtan.ui.shabadeditor.tableeditor.EditUndoManager.UndoEventListener;
 import gsingh.learnkirtan.validation.Validator;
 
 import java.awt.Color;
@@ -26,7 +27,7 @@ import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 import javax.swing.text.JTextComponent;
 
-public class ShabadTable extends JTable {
+public class ShabadTable extends JTable implements UndoEventListener {
 	
 	private EditUndoManager undoManager;
 	
@@ -38,10 +39,18 @@ public class ShabadTable extends JTable {
 	private boolean isSelectAllForActionEvent = false;
 	private boolean isSelectAllForKeyEvent = false;
 
+	@SuppressWarnings("serial")
+	private Action emptyAction = new AbstractAction() {
+		@Override
+		public void actionPerformed(ActionEvent e) {
+		}
+	};
+
 	public ShabadTable(int rows, int cols, WindowTitleManager titleManager) {
 		super(new UndoTableModel());
 		
 		undoManager = new EditUndoManager(titleManager);
+		undoManager.addListener(this);
 		
 		UndoTableModel model = (UndoTableModel) getModel();
 		model.addUndoableEditListener(undoManager);
@@ -68,22 +77,28 @@ public class ShabadTable extends JTable {
 			column.setCellRenderer(renderer);
 		}
 
-		@SuppressWarnings("serial")
-		Action emptyAction = new AbstractAction() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-			}
-		};
-
 		getInputMap().put(
 				KeyStroke.getKeyStroke(KeyEvent.VK_Z, KeyEvent.CTRL_DOWN_MASK),
 				"undo");
-		getActionMap().put("undo", getUndoAction());
-
 		getInputMap().put(
 				KeyStroke.getKeyStroke(KeyEvent.VK_Y, KeyEvent.CTRL_DOWN_MASK),
 				"redo");
-		getActionMap().put("redo", getRedoAction());
+
+		setUndoActions();
+	}
+
+	private void setUndoActions() {
+		if (undoManager.canRedo()) {
+			getActionMap().put("redo", getRedoAction());
+		} else {
+			getActionMap().put("redo", emptyAction);
+		}
+
+		if (undoManager.canUndo()) {
+			getActionMap().put("undo", getUndoAction());
+		} else {
+			getActionMap().put("undo", emptyAction);
+		}
 	}
 
 	/*
@@ -241,5 +256,10 @@ public class ShabadTable extends JTable {
 
 	public Action getRedoAction() {
 		return undoManager.getRedoAction();
+	}
+
+	@Override
+	public void undoEventOccurred() {
+		setUndoActions();
 	}
 }
