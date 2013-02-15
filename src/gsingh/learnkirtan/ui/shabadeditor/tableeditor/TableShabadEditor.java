@@ -7,48 +7,25 @@ import gsingh.learnkirtan.shabad.ShabadNotes;
 import gsingh.learnkirtan.ui.WindowTitleManager;
 import gsingh.learnkirtan.ui.shabadeditor.SwingShabadEditor;
 
-import java.awt.Font;
 import java.awt.GridLayout;
 
 import javax.swing.Action;
 import javax.swing.JScrollPane;
-import javax.swing.SwingConstants;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
-import javax.swing.table.DefaultTableCellRenderer;
-import javax.swing.table.TableColumn;
 
 @SuppressWarnings("serial")
 public class TableShabadEditor extends SwingShabadEditor {
 
-	private AlternatingRowColorTable table;
+	private ShabadTable table;
 
 	private UndoTableModel model;
 
 	private ShabadMetaData metaData;
 
 	public TableShabadEditor(final WindowTitleManager titleManager) {
-		table = new AlternatingRowColorTable(16, 16, titleManager);
+		table = new ShabadTable(16, 16, titleManager);
 		model = (UndoTableModel) table.getModel();
-		Integer[] headers = new Integer[16];
-		for (int i = 0; i < 16; i++) {
-			headers[i] = i + 1;
-		}
-
-		table.setSelectAllForEdit(true);
-		table.setCellSelectionEnabled(true);
-		table.setRowHeight(20);
-		table.setFont(new Font("Arial", Font.PLAIN, 20));
-		model.setColumnIdentifiers(headers);
-		table.getTableHeader().setReorderingAllowed(false);
-
-		DefaultTableCellRenderer renderer = new DefaultTableCellRenderer();
-		renderer.setHorizontalAlignment(SwingConstants.CENTER);
-
-		for (int i = 0; i < 16; i++) {
-			TableColumn column = table.getColumnModel().getColumn(i);
-			column.setCellRenderer(renderer);
-		}
 
 		setLayout(new GridLayout());
 		add(new JScrollPane(table));

@@ -14,15 +14,19 @@ import java.util.EventObject;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.JTable;
 import javax.swing.KeyStroke;
+import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableCellRenderer;
+import javax.swing.table.TableColumn;
 import javax.swing.text.JTextComponent;
 
-public class AlternatingRowColorTable extends JTable {
+public class ShabadTable extends JTable {
 	
 	private EditUndoManager undoManager;
 	
@@ -34,7 +38,7 @@ public class AlternatingRowColorTable extends JTable {
 	private boolean isSelectAllForActionEvent = false;
 	private boolean isSelectAllForKeyEvent = false;
 
-	public AlternatingRowColorTable(int rows, int cols, WindowTitleManager titleManager) {
+	public ShabadTable(int rows, int cols, WindowTitleManager titleManager) {
 		super(new UndoTableModel());
 		
 		undoManager = new EditUndoManager(titleManager);
@@ -43,6 +47,33 @@ public class AlternatingRowColorTable extends JTable {
 		model.addUndoableEditListener(undoManager);
 		model.setRowCount(rows);
 		model.setColumnCount(cols);
+		
+		Integer[] headers = new Integer[cols];
+		for (int i = 0; i < 16; i++) {
+			headers[i] = i + 1;
+		}
+
+		setSelectAllForEdit(true);
+		setCellSelectionEnabled(true);
+		setRowHeight(20);
+		setFont(new Font("Arial", Font.PLAIN, 20));
+		model.setColumnIdentifiers(headers);
+		getTableHeader().setReorderingAllowed(false);
+
+		DefaultTableCellRenderer renderer = new DefaultTableCellRenderer();
+		renderer.setHorizontalAlignment(SwingConstants.CENTER);
+
+		for (int i = 0; i < 16; i++) {
+			TableColumn column = getColumnModel().getColumn(i);
+			column.setCellRenderer(renderer);
+		}
+
+		@SuppressWarnings("serial")
+		Action emptyAction = new AbstractAction() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+			}
+		};
 
 		getInputMap().put(
 				KeyStroke.getKeyStroke(KeyEvent.VK_Z, KeyEvent.CTRL_DOWN_MASK),
