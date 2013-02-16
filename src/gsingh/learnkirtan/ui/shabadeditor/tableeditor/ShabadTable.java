@@ -9,15 +9,21 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Font;
 import java.awt.Point;
+import java.awt.Toolkit;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.StringSelection;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.util.EventObject;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.StringTokenizer;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
+import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.KeyStroke;
 import javax.swing.SwingConstants;
@@ -28,19 +34,19 @@ import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 import javax.swing.text.JTextComponent;
 
+@SuppressWarnings("serial")
 public class ShabadTable extends JTable implements UndoEventListener {
-	
+
 	private EditUndoManager undoManager;
-	
+
 	private Set<Point> invalidCells = new HashSet<Point>();
-	
+
 	private static final Font font = new Font("Arial", Font.PLAIN, 20);
-	
+
 	private boolean isSelectAllForMouseEvent = false;
 	private boolean isSelectAllForActionEvent = false;
 	private boolean isSelectAllForKeyEvent = false;
 
-	@SuppressWarnings("serial")
 	private Action emptyAction = new AbstractAction() {
 		@Override
 		public void actionPerformed(ActionEvent e) {
@@ -50,15 +56,15 @@ public class ShabadTable extends JTable implements UndoEventListener {
 	public ShabadTable(int rows, int cols, WindowTitleManager titleManager,
 			ActionFactory actionFactory) {
 		super(new UndoTableModel());
-		
+
 		undoManager = new EditUndoManager(titleManager);
 		undoManager.addListener(this);
-		
+
 		UndoTableModel model = (UndoTableModel) getModel();
 		model.addUndoableEditListener(undoManager);
 		model.setRowCount(rows);
 		model.setColumnCount(cols);
-		
+
 		Integer[] headers = new Integer[cols];
 		for (int i = 0; i < 16; i++) {
 			headers[i] = i + 1;
@@ -79,6 +85,10 @@ public class ShabadTable extends JTable implements UndoEventListener {
 			column.setCellRenderer(renderer);
 		}
 
+		setActions(actionFactory);
+	}
+
+	private void setActions(ActionFactory actionFactory) {
 		getInputMap().put(
 				KeyStroke.getKeyStroke(KeyEvent.VK_Z, KeyEvent.CTRL_DOWN_MASK),
 				"undo");
@@ -92,12 +102,20 @@ public class ShabadTable extends JTable implements UndoEventListener {
 				KeyStroke.getKeyStroke(KeyEvent.VK_O, KeyEvent.CTRL_DOWN_MASK),
 				"open");
 		getInputMap().put(
-				KeyStroke.getKeyStroke(KeyEvent.VK_C, KeyEvent.CTRL_DOWN_MASK),
+				KeyStroke.getKeyStroke(KeyEvent.VK_N, KeyEvent.CTRL_DOWN_MASK),
 				"create");
+		getInputMap().put(
+				KeyStroke.getKeyStroke(KeyEvent.VK_C, KeyEvent.CTRL_DOWN_MASK),
+				"copy");
+		getInputMap().put(
+				KeyStroke.getKeyStroke(KeyEvent.VK_P, KeyEvent.CTRL_DOWN_MASK),
+				"paste");
 
 		getActionMap().put("save", actionFactory.newSaveAction());
 		getActionMap().put("open", actionFactory.newOpenAction());
 		getActionMap().put("create", actionFactory.newCreateAction());
+		getActionMap().put("copy", new CopyAction());
+		getActionMap().put("paste", new PasteAction());
 
 		setUndoActions();
 	}
@@ -249,7 +267,7 @@ public class ShabadTable extends JTable implements UndoEventListener {
 
 		return c;
 	}
-	
+
 	@Override
 	public Component prepareEditor(TableCellEditor editor, int row, int col) {
 		Component c = super.prepareEditor(editor, row, col);
@@ -276,5 +294,69 @@ public class ShabadTable extends JTable implements UndoEventListener {
 	@Override
 	public void undoEventOccurred() {
 		setUndoActions();
+	}
+
+	/**
+	 * @see "http://www.javaworld.com/javatips/jw-javatip77.html"
+	 */
+	private class CopyAction extends AbstractAction {
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			JTable jTable = ShabadTable.this;
+			StringBuffer sbf = new StringBuffer();
+			// Check to ensure we have selected only a contiguous block of cells
+			int numcols = jTable.getSelectedColumnCount();
+			int numrows = jTable.getSelectedRowCount();
+			int[] rowsselected = jTable.getSelectedRows();
+			int[] colsselected = jTable.getSelectedColumns();
+			if (!((numrows - 1 == rowsselected[rowsselected.length - 1]
+					- rowsselected[0] && numrows == rowsselected.length) && (numcols - 1 == colsselected[colsselected.length - 1]
+					- colsselected[0] && numcols == colsselected.length))) {
+
+				JOptionPane.showMessageDialog(null, "Invalid Copy Selection",
+						"Invalid Copy Selection", JOptionPane.ERROR_MESSAGE);
+				return;
+			}
+			for (int i = 0; i < numrows; i++) {
+				for (int j = 0; j < numcols; j++) {
+					sbf.append(jTable.getValueAt(rowsselected[i],
+							colsselected[j]));
+					if (j < numcols - 1)
+						sbf.append("\t");
+				}
+				sbf.append("\n");
+			}
+			StringSelection stsel = new StringSelection(sbf.toString());
+			Clipboard system = Toolkit.getDefaultToolkit().getSystemClipboard();
+			system.setContents(stsel, stsel);
+		}
+	}
+
+	private class PasteAction extends AbstractAction {
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			JTable jTable = ShabadTable.this;
+			Clipboard system = Toolkit.getDefaultToolkit().getSystemClipboard();
+
+			int startRow = (jTable.getSelectedRows())[0];
+			int startCol = (jTable.getSelectedColumns())[0];
+			try {
+				String trstring = (String) (system.getContents(this)
+						.getTransferData(DataFlavor.stringFlavor));
+				StringTokenizer st1 = new StringTokenizer(trstring, "\n");
+				for (int i = 0; st1.hasMoreTokens(); i++) {
+					String rowstring = st1.nextToken();
+					StringTokenizer st2 = new StringTokenizer(rowstring, "\t");
+					for (int j = 0; st2.hasMoreTokens(); j++) {
+						String value = (String) st2.nextToken();
+						if (startRow + i < jTable.getRowCount()
+								&& startCol + j < jTable.getColumnCount())
+							jTable.setValueAt(value, startRow + i, startCol + j);
+					}
+				}
+			} catch (Exception ex) {
+				ex.printStackTrace();
+			}
+		}
 	}
 }
