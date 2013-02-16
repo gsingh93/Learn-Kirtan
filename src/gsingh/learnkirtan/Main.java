@@ -13,12 +13,12 @@ import gsingh.learnkirtan.settings.SettingsManager;
 import gsingh.learnkirtan.ui.ControlPanel;
 import gsingh.learnkirtan.ui.PianoPanel;
 import gsingh.learnkirtan.ui.WindowTitleManager;
+import gsingh.learnkirtan.ui.action.ActionFactory;
 import gsingh.learnkirtan.ui.menu.EditMenu;
 import gsingh.learnkirtan.ui.menu.FileMenu;
 import gsingh.learnkirtan.ui.menu.HelpMenu;
 import gsingh.learnkirtan.ui.menu.KeyboardMenu;
 import gsingh.learnkirtan.ui.menu.OptionsMenu;
-import gsingh.learnkirtan.ui.menu.controller.FileMenuController;
 import gsingh.learnkirtan.ui.menu.controller.HelpMenuController;
 import gsingh.learnkirtan.ui.menu.controller.KeyboardMenuController;
 import gsingh.learnkirtan.ui.menu.controller.OptionsMenuController;
@@ -128,7 +128,8 @@ public class Main {
 		frame = new JFrame(BASETITLE + "Untitled Shabad");
 		titleManager = new WindowTitleManager(frame);
 
-		shabadEditor = new TableShabadEditor(titleManager);
+		// TODO: Shouldn't need to pass these two managers
+		shabadEditor = new TableShabadEditor(titleManager, fileManager);
 
 		frame.setJMenuBar(createMenuBar());
 
@@ -178,8 +179,7 @@ public class Main {
 
 	private JMenuBar createMenuBar() {
 		JMenuBar menuBar = new JMenuBar();
-		menuBar.add(new FileMenu(new FileMenuController(fileManager,
-				shabadEditor)));
+		menuBar.add(new FileMenu(new ActionFactory(shabadEditor, fileManager)));
 		menuBar.add(new EditMenu(shabadEditor.getUndoAction(),
 				shabadEditor.getRedoAction()));
 		menuBar.add(new KeyboardMenu(new KeyboardMenuController(shabadEditor)));

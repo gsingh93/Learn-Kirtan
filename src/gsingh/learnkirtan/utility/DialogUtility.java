@@ -2,7 +2,7 @@ package gsingh.learnkirtan.utility;
 
 import static gsingh.learnkirtan.Constants.VERSION;
 import gsingh.learnkirtan.shabad.ShabadMetaData;
-import gsingh.learnkirtan.ui.menu.controller.FileMenuController.MetaDataDialogCallback;
+import gsingh.learnkirtan.ui.action.ActionFactory.PropertiesAction.MetaDataDialogCallback;
 
 import java.awt.Button;
 import java.awt.Insets;

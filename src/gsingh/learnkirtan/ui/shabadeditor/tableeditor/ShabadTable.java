@@ -1,6 +1,7 @@
 package gsingh.learnkirtan.ui.shabadeditor.tableeditor;
 
 import gsingh.learnkirtan.ui.WindowTitleManager;
+import gsingh.learnkirtan.ui.action.ActionFactory;
 import gsingh.learnkirtan.ui.shabadeditor.tableeditor.EditUndoManager.UndoEventListener;
 import gsingh.learnkirtan.validation.Validator;
 
@@ -46,7 +47,8 @@ public class ShabadTable extends JTable implements UndoEventListener {
 		}
 	};
 
-	public ShabadTable(int rows, int cols, WindowTitleManager titleManager) {
+	public ShabadTable(int rows, int cols, WindowTitleManager titleManager,
+			ActionFactory actionFactory) {
 		super(new UndoTableModel());
 		
 		undoManager = new EditUndoManager(titleManager);
@@ -83,6 +85,19 @@ public class ShabadTable extends JTable implements UndoEventListener {
 		getInputMap().put(
 				KeyStroke.getKeyStroke(KeyEvent.VK_Y, KeyEvent.CTRL_DOWN_MASK),
 				"redo");
+		getInputMap().put(
+				KeyStroke.getKeyStroke(KeyEvent.VK_S, KeyEvent.CTRL_DOWN_MASK),
+				"save");
+		getInputMap().put(
+				KeyStroke.getKeyStroke(KeyEvent.VK_O, KeyEvent.CTRL_DOWN_MASK),
+				"open");
+		getInputMap().put(
+				KeyStroke.getKeyStroke(KeyEvent.VK_C, KeyEvent.CTRL_DOWN_MASK),
+				"create");
+
+		getActionMap().put("save", actionFactory.newSaveAction());
+		getActionMap().put("open", actionFactory.newOpenAction());
+		getActionMap().put("create", actionFactory.newCreateAction());
 
 		setUndoActions();
 	}

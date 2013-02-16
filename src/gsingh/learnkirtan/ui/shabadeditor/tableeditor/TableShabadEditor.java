@@ -1,10 +1,12 @@
 package gsingh.learnkirtan.ui.shabadeditor.tableeditor;
 
+import gsingh.learnkirtan.FileManager;
 import gsingh.learnkirtan.parser.Parser;
 import gsingh.learnkirtan.shabad.Shabad;
 import gsingh.learnkirtan.shabad.ShabadMetaData;
 import gsingh.learnkirtan.shabad.ShabadNotes;
 import gsingh.learnkirtan.ui.WindowTitleManager;
+import gsingh.learnkirtan.ui.action.ActionFactory;
 import gsingh.learnkirtan.ui.shabadeditor.SwingShabadEditor;
 
 import java.awt.GridLayout;
@@ -23,8 +25,10 @@ public class TableShabadEditor extends SwingShabadEditor {
 
 	private ShabadMetaData metaData;
 
-	public TableShabadEditor(final WindowTitleManager titleManager) {
-		table = new ShabadTable(16, 16, titleManager);
+	public TableShabadEditor(final WindowTitleManager titleManager,
+			FileManager fileManager) {
+		table = new ShabadTable(16, 16, titleManager, new ActionFactory(this,
+				fileManager));
 		model = (UndoTableModel) table.getModel();
 
 		setLayout(new GridLayout());
