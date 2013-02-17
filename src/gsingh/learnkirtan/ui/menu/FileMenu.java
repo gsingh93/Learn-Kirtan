@@ -26,16 +26,20 @@ public class FileMenu extends JMenu {
 		createItem.setAction(actionFactory.newCreateAction());
 		createItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_N,
 				ActionEvent.CTRL_MASK));
+		createItem.setText("New");
 		openItem.setAction(actionFactory.newOpenAction());
 		openItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O,
 				ActionEvent.CTRL_MASK));
+		openItem.setText("Open");
 		saveItem.setAction(actionFactory.newSaveAction());
 		saveItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S,
 				ActionEvent.CTRL_MASK));
+		saveItem.setText("Save");
 
 		propertiesItem.setAction(actionFactory.newPropertiesAction());
 		propertiesItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER,
 				ActionEvent.ALT_MASK));
+		propertiesItem.setText("Properties");
 
 		setMnemonic(KeyEvent.VK_F);
 		add(createItem);
