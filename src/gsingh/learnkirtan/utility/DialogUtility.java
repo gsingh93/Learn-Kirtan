@@ -9,12 +9,12 @@ import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
@@ -138,14 +138,14 @@ public class DialogUtility {
 		final JTextField taal = new JTextField(15);
 		final JTextField raag = new JTextField(15); // TODO Dropdown
 		final JTextField ang = new JTextField(15); // TODO Spinner
-		final JTextArea notes = new JTextArea(3, 15);
+		final JTextArea notes = new JTextArea(4, 15);
+		final JScrollPane sp = new JScrollPane(notes);
 		
 		name.setText(data.getName());
 		taal.setText(data.getTaal());
 		raag.setText(data.getRaag());
 		ang.setText(data.getAng());
 		notes.setText(data.getNotes());
-		notes.setBorder(BorderFactory.createBevelBorder(1));
 
 		JPanel panel = new JPanel();
 		panel.setBorder(new EmptyBorder(new Insets(10, 10, 10, 10)));
@@ -159,7 +159,7 @@ public class DialogUtility {
 		panel.add(new JLabel("Ang: "));
 		panel.add(ang);
 		panel.add(new JLabel("Notes: "));
-		panel.add(notes);
+		panel.add(sp);
 
 		final JDialog dialog = new JDialog();
 
