@@ -18,16 +18,12 @@ public class Shabad implements Serializable {
 	public Shabad(String shabadText, String words) {
 		this.shabadText = shabadText;
 		this.words = words;
-		metaData = new ShabadMetaData();
+		metaData = new ShabadMetaData("", "", "", "", "");
 		notes = new Parser().parse(shabadText);
 	}
 
 	public Shabad(String shabadText) {
 		this(shabadText, "");
-	}
-
-	public void setMetaData() {
-
 	}
 
 	public ShabadMetaData getMetaData() {

@@ -92,7 +92,7 @@ public class Main {
 	 * Constructs the GUI, installs the sound bank, and checks for updates
 	 */
 	public void init() {
-		final SplashScreen screen = SplashScreen.getSplashScreen();
+		SplashScreen.getSplashScreen();
 
 		// SettingsManager persists settings so it needs access to a FileManager
 		// However it is a singleton, so this must be set through a method
@@ -108,10 +108,6 @@ public class Main {
 			public void run() {
 				// Initialize GUI
 				createAndShowGui();
-
-				// Throws an exception, but this seems like a JDK bug, so ignore
-				// it
-				screen.close();
 
 				// Install soundbank if necessary
 				SoundBankInstaller installer = new SoundBankInstaller();

@@ -25,8 +25,12 @@ public class TableShabadEditor extends SwingShabadEditor {
 
 	private ShabadMetaData metaData;
 
+	private WindowTitleManager titleManager;
+
 	public TableShabadEditor(final WindowTitleManager titleManager,
 			FileManager fileManager) {
+		this.titleManager = titleManager;
+
 		table = new ShabadTable(16, 16, titleManager, new ActionFactory(this,
 				fileManager));
 		model = (UndoTableModel) table.getModel();
@@ -42,7 +46,7 @@ public class TableShabadEditor extends SwingShabadEditor {
 			}
 		});
 
-		metaData = new ShabadMetaData();
+		metaData = new ShabadMetaData("", "", "", "", "");
 	}
 
 	@Override
@@ -200,6 +204,10 @@ public class TableShabadEditor extends SwingShabadEditor {
 
 	@Override
 	public void setMetaData(ShabadMetaData metaData) {
+		if (!this.metaData.equals(metaData)) {
+			modified = true;
+			titleManager.setDocumentModifiedTitle();
+		}
 		this.metaData = metaData;
 	}
 }
