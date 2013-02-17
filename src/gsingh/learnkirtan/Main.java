@@ -39,6 +39,8 @@ import javax.swing.JFrame;
 import javax.swing.JMenuBar;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
 
 /**
  * The main entry point for the program. Responsible for initializing the GUI,
@@ -93,6 +95,18 @@ public class Main {
 	 */
 	public void init() {
 		SplashScreen.getSplashScreen();
+
+		// TODO
+		if (System.getProperty("os.name").startsWith("Windows")) {
+			try {
+				UIManager.setLookAndFeel(UIManager
+						.getSystemLookAndFeelClassName());
+			} catch (UnsupportedLookAndFeelException e) {
+			} catch (ClassNotFoundException e) {
+			} catch (InstantiationException e) {
+			} catch (IllegalAccessException e) {
+			}
+		}
 
 		// SettingsManager persists settings so it needs access to a FileManager
 		// However it is a singleton, so this must be set through a method
