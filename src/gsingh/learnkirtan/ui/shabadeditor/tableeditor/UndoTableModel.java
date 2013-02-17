@@ -15,6 +15,11 @@ public class UndoTableModel extends DefaultTableModel {
 		}
 
 		Object oldValue = getValueAt(row, column);
+
+		if (oldValue == null && value.equals("")) {
+			return;
+		}
+
 		super.setValueAt(value, row, column);
 		CellEdit cellEdit = new CellEdit(this, oldValue, value, row, column);
 		UndoableEditEvent editEvent = new UndoableEditEvent(this, cellEdit);
