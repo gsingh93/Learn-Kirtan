@@ -3,6 +3,7 @@ package gsingh.learnkirtan.ui.shabadeditor;
 import javax.swing.Action;
 import javax.swing.JComponent;
 
+@SuppressWarnings("serial")
 public abstract class SwingShabadEditor extends JComponent implements
 		ShabadEditor {
 

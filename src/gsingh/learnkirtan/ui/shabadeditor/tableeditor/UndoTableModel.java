@@ -4,6 +4,7 @@ import javax.swing.event.UndoableEditEvent;
 import javax.swing.event.UndoableEditListener;
 import javax.swing.table.DefaultTableModel;
 
+@SuppressWarnings("serial")
 public class UndoTableModel extends DefaultTableModel {
 
 	public void setValueAt(Object value, int row, int column, boolean undoable) {

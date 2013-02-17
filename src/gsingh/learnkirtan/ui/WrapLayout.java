@@ -12,8 +12,8 @@ import javax.swing.SwingUtilities;
 /**
  * FlowLayout subclass that fully supports wrapping of components.
  */
+@SuppressWarnings("serial")
 public class WrapLayout extends FlowLayout {
-	private Dimension preferredLayoutSize;
 
 	/**
 	 * Constructs a new <code>WrapLayout</code> with a left alignment and a

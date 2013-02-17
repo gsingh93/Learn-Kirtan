@@ -29,7 +29,7 @@ public class Utility {
 	 * Converts the letter from a keyboard mapping to key ID
 	 * 
 	 * @param letter
-	 * @return
+	 * @return the key ID the letter corresponds to
 	 */
 	public static int letterToKeyId(String letter, Octave octave) {
 		letter = letter.toUpperCase();

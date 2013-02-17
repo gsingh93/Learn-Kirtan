@@ -4,6 +4,7 @@ import gsingh.learnkirtan.keys.LabelManager.Octave;
 
 import java.io.Serializable;
 
+@SuppressWarnings("serial")
 public class Note implements Serializable {
 
 	public enum Modifier {

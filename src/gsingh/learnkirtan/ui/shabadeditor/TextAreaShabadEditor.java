@@ -5,7 +5,6 @@ import gsingh.learnkirtan.keys.KeyMapper;
 import gsingh.learnkirtan.keys.LabelManager;
 import gsingh.learnkirtan.note.Note;
 import gsingh.learnkirtan.note.NoteList;
-import gsingh.learnkirtan.parser.Parser;
 import gsingh.learnkirtan.player.ShabadPlayer;
 import gsingh.learnkirtan.shabad.Shabad;
 import gsingh.learnkirtan.shabad.ShabadMetaData;
@@ -65,7 +64,6 @@ public class TextAreaShabadEditor extends SwingShabadEditor implements
 
 	@Override
 	public Shabad getShabad() {
-		Parser parser = new Parser();
 		return new Shabad(getText());
 	}
 

@@ -3,6 +3,7 @@ package gsingh.learnkirtan.ui.shabadeditor.tableeditor;
 import javax.swing.undo.AbstractUndoableEdit;
 import javax.swing.undo.CannotUndoException;
 
+@SuppressWarnings("serial")
 public class CellEdit extends AbstractUndoableEdit {
 	protected UndoTableModel tableModel;
 	protected Object oldValue;
