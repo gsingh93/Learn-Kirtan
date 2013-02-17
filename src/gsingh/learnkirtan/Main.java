@@ -28,6 +28,7 @@ import gsingh.learnkirtan.utility.NetworkUtility;
 
 import java.awt.Dimension;
 import java.awt.GridBagLayout;
+import java.awt.SplashScreen;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.IOException;
@@ -91,6 +92,8 @@ public class Main {
 	 * Constructs the GUI, installs the sound bank, and checks for updates
 	 */
 	public void init() {
+		final SplashScreen screen = SplashScreen.getSplashScreen();
+
 		// SettingsManager persists settings so it needs access to a FileManager
 		// However it is a singleton, so this must be set through a method
 		settingsManager.setFileManager(fileManager);
@@ -105,6 +108,10 @@ public class Main {
 			public void run() {
 				// Initialize GUI
 				createAndShowGui();
+
+				// Throws an exception, but this seems like a JDK bug, so ignore
+				// it
+				screen.close();
 
 				// Install soundbank if necessary
 				SoundBankInstaller installer = new SoundBankInstaller();
