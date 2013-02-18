@@ -17,7 +17,7 @@ public class UndoTableModel extends DefaultTableModel {
 
 		Object oldValue = getValueAt(row, column);
 
-		if (oldValue == null && value.equals("")) {
+		if (oldValue == null && value != null && value.equals("")) {
 			return;
 		}
 

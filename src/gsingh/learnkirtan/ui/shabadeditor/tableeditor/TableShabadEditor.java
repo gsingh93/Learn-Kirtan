@@ -8,32 +8,42 @@ import gsingh.learnkirtan.shabad.ShabadNotes;
 import gsingh.learnkirtan.ui.WindowTitleManager;
 import gsingh.learnkirtan.ui.action.ActionFactory;
 import gsingh.learnkirtan.ui.shabadeditor.SwingShabadEditor;
+import gsingh.learnkirtan.ui.shabadeditor.tableeditor.EditUndoManager.UndoEventListener;
 
 import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
 
+import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.JScrollPane;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 
 @SuppressWarnings("serial")
-public class TableShabadEditor extends SwingShabadEditor {
+public class TableShabadEditor extends SwingShabadEditor implements
+		UndoEventListener {
 
 	private ShabadTable table;
-
 	private UndoTableModel model;
+
+	private EditUndoManager undoManager = new EditUndoManager();;
 
 	private ShabadMetaData metaData;
 
 	private WindowTitleManager titleManager;
 
+	private boolean metaModified = false;
+
 	public TableShabadEditor(final WindowTitleManager titleManager,
 			FileManager fileManager) {
 		this.titleManager = titleManager;
 
+		undoManager.addUndoEventListener(this);
+
 		table = new ShabadTable(16, 16, titleManager, new ActionFactory(this,
 				fileManager));
 		model = (UndoTableModel) table.getModel();
+		model.addUndoableEditListener(undoManager);
 
 		setLayout(new GridLayout());
 		add(new JScrollPane(table));
@@ -49,14 +59,12 @@ public class TableShabadEditor extends SwingShabadEditor {
 		metaData = new ShabadMetaData("", "", "", "", "");
 	}
 
-	@Override
 	public Action getUndoAction() {
-		return table.getUndoAction();
+		return undoManager.getUndoAction();
 	}
 
-	@Override
 	public Action getRedoAction() {
-		return table.getRedoAction();
+		return undoManager.getRedoAction();
 	}
 
 	@Override
@@ -146,6 +154,26 @@ public class TableShabadEditor extends SwingShabadEditor {
 		}
 	}
 
+	private Action emptyAction = new AbstractAction() {
+		@Override
+		public void actionPerformed(ActionEvent e) {
+		}
+	};
+
+	private void setUndoActions() {
+		if (undoManager.canRedo()) {
+			table.getActionMap().put("redo", getRedoAction());
+		} else {
+			table.getActionMap().put("redo", emptyAction);
+		}
+
+		if (undoManager.canUndo()) {
+			table.getActionMap().put("undo", getUndoAction());
+		} else {
+			table.getActionMap().put("undo", emptyAction);
+		}
+	}
+
 	@Override
 	public void setEditable(boolean bool) {
 		setEditable(bool);
@@ -154,7 +182,8 @@ public class TableShabadEditor extends SwingShabadEditor {
 	@Override
 	public void reset() {
 		modified = false;
-		table.reset();
+		metaModified = false;
+		undoManager.discardAllEdits();
 	}
 
 	/**
@@ -164,6 +193,7 @@ public class TableShabadEditor extends SwingShabadEditor {
 	 *            the row to insert the pair above
 	 */
 	public void addRowAbove(int row) {
+		// TODO Make sure we don't split rows
 		model.insertRow(row, new Object[] {});
 		model.insertRow(row, new Object[] {});
 	}
@@ -206,8 +236,22 @@ public class TableShabadEditor extends SwingShabadEditor {
 	public void setMetaData(ShabadMetaData metaData) {
 		if (!this.metaData.equals(metaData)) {
 			modified = true;
+			metaModified = true;
 			titleManager.setDocumentModifiedTitle();
 		}
 		this.metaData = metaData;
+	}
+
+	@Override
+	public void undoEventOccurred() {
+		if (!undoManager.canUndo() && !metaModified) {
+			titleManager.setDocumentUnmodifiedTitle();
+			modified = false;
+			metaModified = false;
+		} else {
+			titleManager.setDocumentModifiedTitle();
+		}
+
+		setUndoActions();
 	}
 }
