@@ -46,10 +46,13 @@ public class ActionFactory {
 		public void actionPerformed(ActionEvent event) {
 			try {
 				if (shabadEditor.isModified()) {
-					fileManager.saveShabad(shabadEditor.getShabad());
-					if (shabadEditor instanceof SwingShabadEditor) {
-						SwingShabadEditor editor = (SwingShabadEditor) shabadEditor;
-						editor.reset();
+					SaveResult result = fileManager.saveShabad(shabadEditor
+							.getShabad());
+					if (result != SaveResult.NOTSAVEDCANCELLED) {
+						if (shabadEditor instanceof SwingShabadEditor) {
+							SwingShabadEditor editor = (SwingShabadEditor) shabadEditor;
+							editor.reset();
+						}
 					}
 				}
 			} catch (IOException e) {
