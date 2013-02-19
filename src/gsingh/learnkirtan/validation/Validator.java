@@ -23,12 +23,16 @@ public class Validator {
 	private static String wrongTheevraRegex = ".*(sa|re|ga|pa|dha|ni).*'.*";
 	private static String wrongKomalRegex = ".*'.*(sa|ma|pa).*";
 	
-	private static Pattern doublePeriod = Pattern.compile(doublePeriodRegex);
-	private static Pattern doubleApostrophe = Pattern
-			.compile(doubleApostropheRegex);
-	private static Pattern wrongTheevra = Pattern.compile(wrongTheevraRegex);
-	private static Pattern wrongKomal = Pattern.compile(wrongKomalRegex);
-	private static Pattern notePattern = Pattern.compile(noteRegex);
+	private static Pattern doublePeriod = Pattern.compile(doublePeriodRegex,
+			Pattern.CASE_INSENSITIVE);
+	private static Pattern doubleApostrophe = Pattern.compile(
+			doubleApostropheRegex, Pattern.CASE_INSENSITIVE);
+	private static Pattern wrongTheevra = Pattern.compile(wrongTheevraRegex,
+			Pattern.CASE_INSENSITIVE);
+	private static Pattern wrongKomal = Pattern.compile(wrongKomalRegex,
+			Pattern.CASE_INSENSITIVE);
+	private static Pattern notePattern = Pattern.compile(noteRegex,
+			Pattern.CASE_INSENSITIVE);
 	
 	/**
 	 * Checks if the shabad is well-formed
