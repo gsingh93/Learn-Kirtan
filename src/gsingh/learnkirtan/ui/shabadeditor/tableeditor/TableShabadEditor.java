@@ -1,6 +1,7 @@
 package gsingh.learnkirtan.ui.shabadeditor.tableeditor;
 
 import gsingh.learnkirtan.FileManager;
+import gsingh.learnkirtan.note.Note;
 import gsingh.learnkirtan.parser.Parser;
 import gsingh.learnkirtan.shabad.Shabad;
 import gsingh.learnkirtan.shabad.ShabadMetaData;
@@ -86,14 +87,9 @@ public class TableShabadEditor extends SwingShabadEditor implements
 		for (int i = 1; i < numRows; i += 2) {
 			for (int j = 0; j < 16; j++) {
 				int index = i / 2 * 16 + j;
-				String word;
-				if (index >= notes.size())
-					word = "null";
-				else
-					word = notes.get(index).getNoteText();
-				if (!word.equalsIgnoreCase("null")) {
-					// TODO: Titlecase word
-					table.setValueAt(word, i, j);
+				Note note = notes.get(index);
+				if (note != null) {
+					table.setValueAt(note.getNoteText(), i, j);
 				} else {
 					table.setValueAt(null, i, j);
 				}
@@ -145,7 +141,6 @@ public class TableShabadEditor extends SwingShabadEditor implements
 				else
 					word = words[index];
 				if (!word.equalsIgnoreCase("null")) {
-					// TODO: Titlecase word
 					table.setValueAt(word, i, j);
 				} else {
 					table.setValueAt(null, i, j);
