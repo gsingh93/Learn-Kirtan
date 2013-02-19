@@ -52,7 +52,7 @@ public class TextAreaShabadEditor extends SwingShabadEditor implements
 	private LabelManager labelManager;
 
 	public TextAreaShabadEditor(WindowTitleManager titleManager,
-			LabelManager labelManager) {
+			LabelManager labelManager) throws Exception {
 		this.titleManager = titleManager;
 		this.labelManager = labelManager;
 
@@ -60,22 +60,14 @@ public class TextAreaShabadEditor extends SwingShabadEditor implements
 		Document document = textArea.getDocument();
 		document.addDocumentListener(this);
 		document.addUndoableEditListener(this);
+
+		throw new Exception("This class is not fully implemented yet");
 	}
 
 	@Override
 	public Shabad getShabad() {
 		return new Shabad(getText());
 	}
-
-	// @Override
-	// public String getText() {
-	// return super.getText();
-	// }
-	//
-	// @Override
-	// public void setText(String text) {
-	// super.setText(text);
-	// }
 
 	@Override
 	public void changedUpdate(DocumentEvent arg0) {
@@ -93,7 +85,7 @@ public class TextAreaShabadEditor extends SwingShabadEditor implements
 	}
 
 	public boolean isValidShabad() {
-		return true; // TODO
+		return true;
 	}
 
 	@Override
@@ -169,37 +161,30 @@ public class TextAreaShabadEditor extends SwingShabadEditor implements
 	}
 
 	private String getText() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public void setEnabled(boolean bool) {
-		// TODO Auto-generated method stub
 
 	}
 
 	@Override
 	public void setEditable(boolean bool) {
-		// TODO Auto-generated method stub
 
 	}
 
 	@Override
 	public void setShabad(Shabad shabad) {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
 	public ShabadNotes getNotes() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public String getWords() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -265,12 +250,10 @@ public class TextAreaShabadEditor extends SwingShabadEditor implements
 
 	@Override
 	public ShabadMetaData getMetaData() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public void setMetaData(ShabadMetaData metaData) {
-		// TODO Auto-generated method stub
 	}
 }
