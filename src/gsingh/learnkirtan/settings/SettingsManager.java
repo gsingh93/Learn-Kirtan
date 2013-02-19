@@ -136,7 +136,7 @@ public class SettingsManager {
 		listeners.add(l);
 	}
 
-	// TODO: Look into retrieving each setting as a Node and then casting
+	// TODO: Look into a better way to get XML settings
 	/**
 	 * Initializes the settings variables by reading the config file
 	 * 

@@ -4,12 +4,6 @@ import gsingh.learnkirtan.ui.shabadeditor.SwingShabadEditor;
 
 public class KeyboardMenuController {
 
-	// private static enum Mode {
-	// EDIT, COMPOSE
-	// }
-
-	// TODO: Mode is not used?
-	// private Mode mode;
 	private SwingShabadEditor shabadEditor;
 
 	public KeyboardMenuController(SwingShabadEditor shabadEditor) {
@@ -17,12 +11,10 @@ public class KeyboardMenuController {
 	}
 
 	public void setComposeMode() {
-		// mode = Mode.COMPOSE;
 		shabadEditor.setEditable(false);
 	}
 
 	public void setEditMode() {
-		// mode = Mode.EDIT;
 		shabadEditor.setEditable(true);
 	}
 

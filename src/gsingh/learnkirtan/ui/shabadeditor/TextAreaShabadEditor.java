@@ -47,6 +47,7 @@ public class TextAreaShabadEditor extends SwingShabadEditor implements
 	private UndoAction undoAction = new UndoAction();
 	private RedoAction redoAction = new RedoAction();
 
+	@SuppressWarnings("unused")
 	private boolean modified = false;
 
 	private LabelManager labelManager;

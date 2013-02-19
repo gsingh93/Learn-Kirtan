@@ -287,7 +287,7 @@ public class ShabadTable extends JTable {
 					String rowstring = st1.nextToken();
 					StringTokenizer st2 = new StringTokenizer(rowstring, "\t");
 					for (int j = 0; st2.hasMoreTokens(); j++) {
-						String value = (String) st2.nextToken();
+						String value = st2.nextToken();
 						if (startRow + i < jTable.getRowCount()
 								&& startCol + j < jTable.getColumnCount())
 							jTable.setValueAt(value, startRow + i, startCol + j);

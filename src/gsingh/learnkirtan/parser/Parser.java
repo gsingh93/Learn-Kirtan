@@ -33,13 +33,12 @@ public class Parser {
 			"(?:(%s?)(sa|re|ga|ma|pa|dha|ni)(%s?))", modifierRegex,
 			modifierRegex);
 
-	// TODO: Rename
 	/** The regex defining a shabad */
-	private static final String shabadRegex = String.format("(?:%s(?:-%s)? ?)",
+	private static final String completeNoteRegex = String.format("(?:%s(?:-%s)? ?)",
 			noteRegex, noteRegex);
 
 	/** The pattern defining a shabad */
-	private static final Pattern shabadPattern = Pattern.compile(shabadRegex,
+	private static final Pattern completeNotePattern = Pattern.compile(completeNoteRegex,
 			Pattern.CASE_INSENSITIVE);
 
 	/**
@@ -64,7 +63,7 @@ public class Parser {
 				continue;
 			}
 
-			Matcher matcher = shabadPattern.matcher(word);
+			Matcher matcher = completeNotePattern.matcher(word);
 			
 			if (word.equals("null")) {
 				shabad.addNote(null);
@@ -114,7 +113,7 @@ public class Parser {
 	public Note parseNote(String noteText) {
 		Note note = null;
 
-		Matcher matcher = shabadPattern.matcher(noteText);
+		Matcher matcher = completeNotePattern.matcher(noteText);
 		if (matcher.matches()) {
 			String prefix = matcher.group(1);
 			String name = matcher.group(2);
