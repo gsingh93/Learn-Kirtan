@@ -1,5 +1,6 @@
 package gsingh.learnkirtan.ui.shabadeditor.tableeditor;
 
+import gsingh.learnkirtan.Keys;
 import gsingh.learnkirtan.ui.WindowTitleManager;
 import gsingh.learnkirtan.ui.action.ActionFactory;
 import gsingh.learnkirtan.validation.Validator;
@@ -23,7 +24,6 @@ import java.util.StringTokenizer;
 import javax.swing.AbstractAction;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
-import javax.swing.KeyStroke;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.table.DefaultTableCellRenderer;
@@ -75,27 +75,13 @@ public class ShabadTable extends JTable {
 	}
 
 	private void setActions(ActionFactory actionFactory) {
-		getInputMap().put(
-				KeyStroke.getKeyStroke(KeyEvent.VK_Z, KeyEvent.CTRL_DOWN_MASK),
-				"undo");
-		getInputMap().put(
-				KeyStroke.getKeyStroke(KeyEvent.VK_Y, KeyEvent.CTRL_DOWN_MASK),
-				"redo");
-		getInputMap().put(
-				KeyStroke.getKeyStroke(KeyEvent.VK_S, KeyEvent.CTRL_DOWN_MASK),
-				"save");
-		getInputMap().put(
-				KeyStroke.getKeyStroke(KeyEvent.VK_O, KeyEvent.CTRL_DOWN_MASK),
-				"open");
-		getInputMap().put(
-				KeyStroke.getKeyStroke(KeyEvent.VK_N, KeyEvent.CTRL_DOWN_MASK),
-				"create");
-		getInputMap().put(
-				KeyStroke.getKeyStroke(KeyEvent.VK_C, KeyEvent.CTRL_DOWN_MASK),
-				"copy");
-		getInputMap().put(
-				KeyStroke.getKeyStroke(KeyEvent.VK_P, KeyEvent.CTRL_DOWN_MASK),
-				"paste");
+		getInputMap().put(Keys.UNDO_KEY, "undo");
+		getInputMap().put(Keys.REDO_KEY, "redo");
+		getInputMap().put(Keys.SAVE_KEY, "save");
+		getInputMap().put(Keys.OPEN_KEY, "open");
+		getInputMap().put(Keys.NEW_KEY, "create");
+		getInputMap().put(Keys.COPY_KEY, "copy");
+		getInputMap().put(Keys.PASTE_KEY, "paste");
 
 		getActionMap().put("save", actionFactory.newSaveAction());
 		getActionMap().put("open", actionFactory.newOpenAction());
