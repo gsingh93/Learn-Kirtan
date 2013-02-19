@@ -5,5 +5,4 @@ log*
 build
 config
 .project
-.classpath
 .lint4jprefs

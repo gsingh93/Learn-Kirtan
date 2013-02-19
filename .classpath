@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="src" path="test"/>
+	<classpathentry kind="src" path="resource"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="lib/commons-io-2.1-bin/commons-io-2.1/commons-io-2.1.jar"/>
+	<classpathentry kind="lib" path="lib/jh/javahelp/bin/jhindexer.jar"/>
+	<classpathentry kind="lib" path="lib/jh/javahelp/bin/jhsearch.jar"/>
+	<classpathentry kind="lib" path="lib/jh/javahelp/lib/jh.jar"/>
+	<classpathentry kind="lib" path="lib/jh/javahelp/lib/jhall.jar"/>
+	<classpathentry kind="lib" path="lib/jh/javahelp/lib/jhbasic.jar"/>
+	<classpathentry kind="lib" path="lib/jh/javahelp/lib/jsearch.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>
