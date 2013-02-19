@@ -124,7 +124,6 @@ public class ActionFactory {
 		public class MetaDataDialogCallback {
 			public void completed(ShabadMetaData data) {
 				shabadEditor.setMetaData(data);
-				// TODO set modified
 			}
 		}
 	}

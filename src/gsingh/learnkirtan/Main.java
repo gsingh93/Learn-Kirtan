@@ -7,6 +7,7 @@ import gsingh.learnkirtan.FileManager.SaveResult;
 import gsingh.learnkirtan.installer.SoundBankInstaller;
 import gsingh.learnkirtan.keys.KeyMapper;
 import gsingh.learnkirtan.keys.LabelManager;
+import gsingh.learnkirtan.listener.SettingsChangedListener;
 import gsingh.learnkirtan.note.NoteList;
 import gsingh.learnkirtan.player.ShabadPlayer;
 import gsingh.learnkirtan.settings.SettingsManager;
@@ -156,8 +157,8 @@ public class Main {
 				shabadEditor);
 		JComponent pianoPanel = new PianoPanel(labelManager);
 
-		// TODO Is casting the right thing to do here?
-		settingsManager.addSettingsChangedListener((PianoPanel) pianoPanel);
+		settingsManager
+				.addSettingsChangedListener((SettingsChangedListener) pianoPanel);
 		fileManager.addFileEventListener((ControlPanel) controlPanel);
 		fileManager.addFileEventListener(titleManager);
 
