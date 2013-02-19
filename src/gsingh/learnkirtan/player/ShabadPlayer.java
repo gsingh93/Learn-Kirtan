@@ -43,7 +43,7 @@ public class ShabadPlayer {
 		}
 	}
 
-	public void playNote(Note note, double tempo) {
+	public static void playNote(Note note, double tempo) {
 		Key key = KeyMapper.getInstance().getKeyFromNote(note);
 		MidiPlayer.play(key, (int) (note.getLength() / tempo));
 	}
