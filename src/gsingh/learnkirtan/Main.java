@@ -24,6 +24,7 @@ import gsingh.learnkirtan.ui.menu.controller.KeyboardMenuController;
 import gsingh.learnkirtan.ui.menu.controller.OptionsMenuController;
 import gsingh.learnkirtan.ui.shabadeditor.SwingShabadEditor;
 import gsingh.learnkirtan.ui.shabadeditor.tableeditor.TableShabadEditor;
+import gsingh.learnkirtan.utility.DialogUtility;
 import gsingh.learnkirtan.utility.NetworkUtility;
 
 import java.awt.Dimension;
@@ -144,6 +145,7 @@ public class Main {
 	public void createAndShowGui() {
 		frame = new JFrame(BASETITLE + "Untitled Shabad");
 		titleManager = new WindowTitleManager(frame);
+		DialogUtility.setFrame(frame);
 
 		// TODO: Shouldn't need to pass these two managers
 		shabadEditor = new TableShabadEditor(titleManager, fileManager);

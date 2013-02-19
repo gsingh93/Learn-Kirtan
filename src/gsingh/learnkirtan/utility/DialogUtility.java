@@ -4,13 +4,14 @@ import static gsingh.learnkirtan.Constants.VERSION;
 import gsingh.learnkirtan.shabad.ShabadMetaData;
 import gsingh.learnkirtan.ui.action.ActionFactory.PropertiesAction.MetaDataDialogCallback;
 
-import java.awt.Button;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.BoxLayout;
+import javax.swing.JButton;
 import javax.swing.JDialog;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -28,15 +29,21 @@ import javax.swing.border.EmptyBorder;
  */
 public class DialogUtility {
 
+	private static JFrame frame = null;
+
+	public static void setFrame(JFrame frame) {
+		DialogUtility.frame = frame;
+	}
+
 	public static int showSaveDialog() {
-		return JOptionPane.showConfirmDialog(null,
+		return JOptionPane.showConfirmDialog(frame,
 				"Would you like to save before proceeding?");
 	}
 
 	public static int showAboutDialog() {
 		return JOptionPane
 				.showConfirmDialog(
-						null,
+						frame,
 						"This software was written by Gulshan Singh (gulshan@umich.edu) and is free \n"
 								+ "and opensource under the Apache License. Please contact me if you would like to contribute.\n"
 								+ "\n Version " + VERSION, "About",
@@ -45,7 +52,7 @@ public class DialogUtility {
 	}
 
 	public static int showUpToDateDialog() {
-		return JOptionPane.showConfirmDialog(null,
+		return JOptionPane.showConfirmDialog(frame,
 				"The software is up to date.", "No Updates",
 				JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE);
 	}
@@ -57,33 +64,33 @@ public class DialogUtility {
 	}
 
 	public static int showOverwriteDialog() {
-		return JOptionPane.showConfirmDialog(null, "Overwrite existing file?",
+		return JOptionPane.showConfirmDialog(frame, "Overwrite existing file?",
 				"Confirm Overwrite", JOptionPane.OK_CANCEL_OPTION,
 				JOptionPane.QUESTION_MESSAGE);
 	}
 
 	public static void showFileDoesntExistDialog() {
-		JOptionPane.showMessageDialog(null, "Error: File doesn't exist.",
+		JOptionPane.showMessageDialog(frame, "Error: File doesn't exist.",
 				"Error", JOptionPane.ERROR_MESSAGE);
 	}
 
 	public static void showInvalidShabadDialog() {
 		JOptionPane
 				.showMessageDialog(
-						null,
+						frame,
 						"The shabad contains errors. Please fix all red colored cells.",
 						"Error", JOptionPane.ERROR_MESSAGE);
 	}
 
 	public static int showChangeSaDialog(JPanel panel) {
-		return JOptionPane.showConfirmDialog(null, panel, "Change Sa Key",
+		return JOptionPane.showConfirmDialog(frame, panel, "Change Sa Key",
 				JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
 	}
 
 	public static void showDashFirstNoteDialog() {
 		JOptionPane
 				.showMessageDialog(
-						null,
+						frame,
 						"Error: The first note found was a dash, which is not allowed.",
 						"Error", JOptionPane.ERROR_MESSAGE);
 	}
@@ -91,7 +98,7 @@ public class DialogUtility {
 	public static void showNoStartLabelDialog() {
 		JOptionPane
 				.showMessageDialog(
-						null,
+						frame,
 						"Error: You specified that playback should start at a label, "
 								+ "but that label could not be found. Make sure there is a "
 								+ "'#' before the label.", "Error",
@@ -99,7 +106,7 @@ public class DialogUtility {
 	}
 
 	public static void showNoteOutOfBoundsDialog(String invalidNote) {
-		JOptionPane.showMessageDialog(null, "Error: Invalid note '"
+		JOptionPane.showMessageDialog(frame, "Error: Invalid note '"
 				+ invalidNote + "' is too low or too high", "Error",
 				JOptionPane.ERROR_MESSAGE);
 	}
@@ -129,7 +136,7 @@ public class DialogUtility {
 	}
 
 	public static void showMessage(String message) {
-		JOptionPane.showMessageDialog(null, message);
+		JOptionPane.showMessageDialog(frame, message);
 	}
 
 	public static void showMetaDataDialog(ShabadMetaData data,
@@ -161,9 +168,9 @@ public class DialogUtility {
 		panel.add(new JLabel("Notes: "));
 		panel.add(sp);
 
-		final JDialog dialog = new JDialog();
+		final JDialog dialog = new JDialog(frame);
 
-		Button ok = new Button("Ok");
+		JButton ok = new JButton("Ok");
 		ok.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -176,8 +183,8 @@ public class DialogUtility {
 		panel.add(ok);
 
 		dialog.setContentPane(panel);
-		dialog.setLocation(400, 200); // TODO
 		dialog.pack();
+		dialog.setLocationRelativeTo(frame);
 		dialog.setVisible(true);
 	}
 }
