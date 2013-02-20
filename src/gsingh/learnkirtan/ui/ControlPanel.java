@@ -21,7 +21,6 @@ import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSpinner;
-import javax.swing.JTextField;
 import javax.swing.SpinnerNumberModel;
 
 @SuppressWarnings("serial")
@@ -41,16 +40,6 @@ public class ControlPanel extends JPanel implements ActionListener,
 	 * If checked, the selected playback lines will repeat when finished
 	 */
 	private JCheckBox repeat;
-
-	/**
-	 * If not empty, the playback will start here
-	 */
-	private JTextField startField;
-
-	/**
-	 * If not empty, the playback will end here
-	 */
-	private JTextField endField;
 
 	JButton playButton = new JButton("Play");
 	JButton pauseButton = new JButton("Pause");
@@ -92,27 +81,19 @@ public class ControlPanel extends JPanel implements ActionListener,
 		repeat = new JCheckBox("Repeat");
 		repeat.addItemListener(this);
 
-		JLabel startLabel = new JLabel("Start Label:");
-		JLabel endLabel = new JLabel("End Label:");
-		startField = new JTextField(7);
-		endField = new JTextField(7);
-
 		setLayout(new WrapLayout(FlowLayout.LEFT));
 		add(playButton);
 		add(pauseButton);
 		add(stopButton);
 		add(tempoLabel);
 		add(tempoControl);
-		add(repeat);
-		add(startLabel);
-		add(startField);
-		add(endLabel);
-		add(endField);
 
-		Dimension size = getPreferredSize();
+		// Uncomment the following line if control panel overflows
+		// Dimension size = getPreferredSize();
 
 		if (shabadEditor instanceof TableShabadEditor) {
 			JButton addRowButton = new JButton("+");
+			addRowButton.setToolTipText("Adds a row group");
 			addRowButton.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
@@ -123,6 +104,7 @@ public class ControlPanel extends JPanel implements ActionListener,
 			});
 
 			JButton deleteRowButton = new JButton("-");
+			deleteRowButton.setToolTipText("Deletes a row group");
 			deleteRowButton.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
@@ -148,13 +130,14 @@ public class ControlPanel extends JPanel implements ActionListener,
 				}
 			});
 
-			add(addRowButton);
-			add(deleteRowButton);
 			add(taalLabel);
 			add(taalComboBox);
+			add(addRowButton);
+			add(deleteRowButton);
 		}
 
-		setSize(size);
+		// Uncomment the following line if control panel overflows
+		// setSize(size);
 	}
 
 	@Override
@@ -197,8 +180,6 @@ public class ControlPanel extends JPanel implements ActionListener,
 			stopButton.setEnabled(true);
 			tempoControl.setEnabled(false);
 			repeat.setEnabled(false);
-			startField.setEnabled(false);
-			endField.setEnabled(false);
 			shabadEditor.setEnabled(false);
 		} else if (e == PlayEvent.PAUSE) {
 			playButton.setEnabled(true);
@@ -206,8 +187,6 @@ public class ControlPanel extends JPanel implements ActionListener,
 			stopButton.setEnabled(true);
 			tempoControl.setEnabled(false);
 			repeat.setEnabled(false);
-			startField.setEnabled(false);
-			endField.setEnabled(false);
 			shabadEditor.setEnabled(false);
 		} else if (e == PlayEvent.STOP) {
 			playButton.setEnabled(true);
@@ -215,19 +194,12 @@ public class ControlPanel extends JPanel implements ActionListener,
 			stopButton.setEnabled(false);
 			tempoControl.setEnabled(true);
 			repeat.setEnabled(true);
-			startField.setEnabled(true);
-			endField.setEnabled(true);
 			shabadEditor.setEnabled(true);
 		}
 	}
 
 	@Override
 	public void onFileEvent(FileEvent e) {
-		if (e == FileEvent.OPEN) {
-			startField.setText("");
-			endField.setText("");
-			startField.setEnabled(false);
-		}
+		// Nothing to be done yet
 	}
-
 }

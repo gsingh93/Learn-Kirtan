@@ -146,15 +146,15 @@ public class DialogUtility {
 			final MetaDataDialogCallback callback) {
 		final JTextField name = new JTextField(15);
 		final JTextField taal = new JTextField(15);
-		final JTextField raag = new JTextField(15); // TODO Dropdown
-		final JTextField ang = new JTextField(15); // TODO Spinner
+		final JTextField raag = new JTextField(15);
+		final JTextField page = new JTextField(15);
 		final JTextArea notes = new JTextArea(4, 15);
 		final JScrollPane sp = new JScrollPane(notes);
 		
 		name.setText(data.getName());
 		taal.setText(data.getTaal());
 		raag.setText(data.getRaag());
-		ang.setText(data.getAng());
+		page.setText(data.getAng());
 		notes.setText(data.getNotes());
 
 		JPanel panel = new JPanel();
@@ -169,9 +169,9 @@ public class DialogUtility {
 		panel.add(new JLabel("Raag: "));
 		panel.add(raag);
 		raag.setAlignmentX(Component.LEFT_ALIGNMENT);
-		panel.add(new JLabel("Ang: "));
-		panel.add(ang);
-		ang.setAlignmentX(Component.LEFT_ALIGNMENT);
+		panel.add(new JLabel("Page: "));
+		panel.add(page);
+		page.setAlignmentX(Component.LEFT_ALIGNMENT);
 		panel.add(new JLabel("Notes: "));
 		panel.add(sp);
 		sp.setAlignmentX(Component.LEFT_ALIGNMENT);
@@ -184,7 +184,7 @@ public class DialogUtility {
 			public void actionPerformed(ActionEvent e) {
 				dialog.dispose();
 				callback.completed(new ShabadMetaData(name.getText(), taal
-						.getText(), raag.getText(), ang.getText(), notes
+						.getText(), raag.getText(), page.getText(), notes
 						.getText()));
 			}
 		});
