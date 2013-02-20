@@ -4,6 +4,9 @@ import static gsingh.learnkirtan.Constants.VERSION;
 import gsingh.learnkirtan.shabad.ShabadMetaData;
 import gsingh.learnkirtan.ui.action.ActionFactory.PropertiesAction.MetaDataDialogCallback;
 
+import java.awt.BorderLayout;
+import java.awt.Component;
+import java.awt.FlowLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -159,14 +162,19 @@ public class DialogUtility {
 		panel.setLayout(new BoxLayout(panel, BoxLayout.PAGE_AXIS));
 		panel.add(new JLabel("Name: "));
 		panel.add(name);
+		name.setAlignmentX(Component.LEFT_ALIGNMENT);
 		panel.add(new JLabel("Taal: "));
 		panel.add(taal);
+		taal.setAlignmentX(Component.LEFT_ALIGNMENT);
 		panel.add(new JLabel("Raag: "));
 		panel.add(raag);
+		raag.setAlignmentX(Component.LEFT_ALIGNMENT);
 		panel.add(new JLabel("Ang: "));
 		panel.add(ang);
+		ang.setAlignmentX(Component.LEFT_ALIGNMENT);
 		panel.add(new JLabel("Notes: "));
 		panel.add(sp);
+		sp.setAlignmentX(Component.LEFT_ALIGNMENT);
 
 		final JDialog dialog = new JDialog(frame);
 
@@ -180,9 +188,16 @@ public class DialogUtility {
 						.getText()));
 			}
 		});
-		panel.add(ok);
+		JPanel mainPanel = new JPanel();
+		mainPanel.setLayout(new BorderLayout());
+		JPanel buttonPanel = new JPanel(new FlowLayout());
+		buttonPanel.add(ok);
+		panel.add(buttonPanel);
 
-		dialog.setContentPane(panel);
+		mainPanel.add(panel, BorderLayout.NORTH);
+		mainPanel.add(buttonPanel, BorderLayout.SOUTH);
+
+		dialog.setContentPane(mainPanel);
 		dialog.pack();
 		dialog.setLocationRelativeTo(frame);
 		dialog.setVisible(true);
