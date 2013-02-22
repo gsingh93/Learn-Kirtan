@@ -20,5 +20,9 @@ public interface ShabadEditor {
 
 	public boolean isValidShabad();
 
+	public void setRepeating(boolean bool);
+
+	public boolean getRepeating();
+
 	void setMetaData(ShabadMetaData metaData);
 }

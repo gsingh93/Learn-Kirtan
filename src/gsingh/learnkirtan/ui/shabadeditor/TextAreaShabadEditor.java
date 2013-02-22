@@ -257,4 +257,13 @@ public class TextAreaShabadEditor extends SwingShabadEditor implements
 	@Override
 	public void setMetaData(ShabadMetaData metaData) {
 	}
+
+	@Override
+	public void setRepeating(boolean bool) {
+	}
+
+	@Override
+	public boolean getRepeating() {
+		return false;
+	}
 }

@@ -6,6 +6,7 @@ import gsingh.learnkirtan.listener.PlayEventListener;
 import gsingh.learnkirtan.listener.PlayEventListener.PlayEvent;
 import gsingh.learnkirtan.note.Note;
 import gsingh.learnkirtan.shabad.Shabad;
+import gsingh.learnkirtan.shabad.ShabadNotes;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -17,26 +18,36 @@ public class ShabadPlayer {
 	
 	private List<PlayEventListener> listeners = new LinkedList<PlayEventListener>();
 
-	public void play(Shabad shabad, double tempo) {
+	public void play(Shabad shabad, double tempo, boolean repeat) {
 		for (PlayEventListener l : listeners) {
 			l.onPlayEvent(PlayEvent.PLAY);
 		}
-		for (Note note : shabad.getNotes()) {
-			if (note != null) {
-				while (pause) {
+
+		boolean finished = false;
+		ShabadNotes notes = shabad.getNotes();
+		do {
+			for (Note note : notes) {
+				if (note != null) {
+					while (pause) {
+						if (stop) {
+							finished = true;
+							break;
+						}
+						sleep(500);
+					}
 					if (stop) {
+						finished = true;
+						stop = false;
+						pause = false;
 						break;
 					}
-					sleep(500);
+					playNote(note, tempo);
 				}
-				if (stop) {
-					stop = false;
-					pause = false;
-					break;
-				}
-				playNote(note, tempo);
 			}
-		}
+			if (finished) {
+				break;
+			}
+		} while (repeat);
 
 		for (PlayEventListener l : listeners) {
 			l.onPlayEvent(PlayEvent.STOP);

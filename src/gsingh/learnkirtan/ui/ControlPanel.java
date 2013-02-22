@@ -48,6 +48,12 @@ public class ControlPanel extends JPanel implements ActionListener,
 	private ShabadPlayer shabadPlayer;
 	private SwingShabadEditor shabadEditor;
 
+	private JButton addRowButton;
+
+	private JButton deleteRowButton;
+
+	private JComboBox taalComboBox;
+
 	public ControlPanel(ShabadPlayer shabadPlayer,
 			final SwingShabadEditor shabadEditor) {
 		this.shabadPlayer = shabadPlayer;
@@ -87,12 +93,13 @@ public class ControlPanel extends JPanel implements ActionListener,
 		add(stopButton);
 		add(tempoLabel);
 		add(tempoControl);
+		add(repeat);
 
 		// Uncomment the following line if control panel overflows
 		// Dimension size = getPreferredSize();
 
 		if (shabadEditor instanceof TableShabadEditor) {
-			JButton addRowButton = new JButton("+");
+			addRowButton = new JButton("+");
 			addRowButton.setToolTipText("Adds a row group");
 			addRowButton.addActionListener(new ActionListener() {
 				@Override
@@ -103,7 +110,7 @@ public class ControlPanel extends JPanel implements ActionListener,
 				}
 			});
 
-			JButton deleteRowButton = new JButton("-");
+			deleteRowButton = new JButton("-");
 			deleteRowButton.setToolTipText("Deletes a row group");
 			deleteRowButton.addActionListener(new ActionListener() {
 				@Override
@@ -119,7 +126,7 @@ public class ControlPanel extends JPanel implements ActionListener,
 					"Roopak (7 Beats)", "Keherva (8 Beats)",
 					"Jap Taal (10 Beats)", "Ek Taal (12 Beats)",
 					"Deepchandi (14 Beats)", "Teen Taal (16 Beats)" };
-			final JComboBox taalComboBox = new JComboBox(taalNames);
+			taalComboBox = new JComboBox(taalNames);
 			taalComboBox.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
@@ -142,7 +149,7 @@ public class ControlPanel extends JPanel implements ActionListener,
 
 	@Override
 	public void itemStateChanged(ItemEvent e) {
-
+		shabadEditor.setRepeating(e.getStateChange() == ItemEvent.SELECTED);
 	}
 
 	@Override
@@ -158,7 +165,8 @@ public class ControlPanel extends JPanel implements ActionListener,
 					public void run() {
 						if (shabadEditor.isValidShabad()) {
 							shabadPlayer.play(shabadEditor.getShabad(),
-									(Double) tempoControl.getValue());
+									(Double) tempoControl.getValue(),
+									shabadEditor.getRepeating());
 						} else {
 							DialogUtility.showInvalidShabadDialog();
 						}
@@ -181,6 +189,9 @@ public class ControlPanel extends JPanel implements ActionListener,
 			tempoControl.setEnabled(false);
 			repeat.setEnabled(false);
 			shabadEditor.setEnabled(false);
+			addRowButton.setEnabled(false);
+			deleteRowButton.setEnabled(false);
+			taalComboBox.setEnabled(false);
 		} else if (e == PlayEvent.PAUSE) {
 			playButton.setEnabled(true);
 			pauseButton.setEnabled(false);
@@ -188,6 +199,9 @@ public class ControlPanel extends JPanel implements ActionListener,
 			tempoControl.setEnabled(false);
 			repeat.setEnabled(false);
 			shabadEditor.setEnabled(false);
+			addRowButton.setEnabled(false);
+			deleteRowButton.setEnabled(false);
+			taalComboBox.setEnabled(false);
 		} else if (e == PlayEvent.STOP) {
 			playButton.setEnabled(true);
 			pauseButton.setEnabled(false);
@@ -195,6 +209,9 @@ public class ControlPanel extends JPanel implements ActionListener,
 			tempoControl.setEnabled(true);
 			repeat.setEnabled(true);
 			shabadEditor.setEnabled(true);
+			addRowButton.setEnabled(true);
+			deleteRowButton.setEnabled(true);
+			taalComboBox.setEnabled(true);
 		}
 	}
 

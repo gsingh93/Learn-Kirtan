@@ -202,4 +202,12 @@ public class DialogUtility {
 		dialog.setLocationRelativeTo(frame);
 		dialog.setVisible(true);
 	}
+
+	public static void nothingSelected() {
+		JOptionPane
+				.showMessageDialog(
+						frame,
+						"No shabad to play. Type a shabad, or if you have the repeat box checked, make sure a shabad is selected.",
+						"Warning", JOptionPane.WARNING_MESSAGE);
+	}
 }

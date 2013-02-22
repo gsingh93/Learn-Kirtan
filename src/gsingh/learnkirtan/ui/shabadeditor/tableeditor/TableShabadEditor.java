@@ -36,6 +36,8 @@ public class TableShabadEditor extends SwingShabadEditor implements
 
 	private boolean metaModified = false;
 
+	private boolean repeating = false;
+
 	private int numRows = 16;
 	private int numCols = 16;
 
@@ -63,6 +65,14 @@ public class TableShabadEditor extends SwingShabadEditor implements
 		});
 
 		metaData = new ShabadMetaData("", "", "", "", "");
+	}
+
+	public void setRepeating(boolean bool) {
+		repeating = bool;
+	}
+
+	public boolean getRepeating() {
+		return repeating;
 	}
 
 	public Action getUndoAction() {
@@ -109,29 +119,33 @@ public class TableShabadEditor extends SwingShabadEditor implements
 	}
 
 	private String getNotesString() {
-		int firstCol = table.getSelectedColumn();
-		int firstRow = table.getSelectedRow();
+		int firstCol, firstRow;
 		int colCount, rowCount;
 
-		if (firstCol == -1) {
+		if (repeating) {
+			firstCol = table.getSelectedColumn();
+			firstRow = table.getSelectedRow();
+			colCount = table.getSelectedColumnCount();
+			rowCount = table.getSelectedRowCount();
+		} else {
 			firstCol = 0;
 			firstRow = 0;
 			colCount = numCols;
 			rowCount = model.getRowCount();
-		} else {
-			colCount = table.getSelectedColumnCount();
-			rowCount = table.getSelectedRowCount();
 		}
 
+		// Only start on shabad rows, not wording rows
 		if (firstRow % 2 == 0) {
 			firstRow++;
 		}
+
 		StringBuilder sb = new StringBuilder();
 		for (int i = firstRow; i < firstRow + rowCount; i += 2) {
 			for (int j = firstCol; j < firstCol + colCount; j++) {
 				sb.append(model.getValueAt(i, j)).append(" ");
 			}
 		}
+
 		return sb.toString();
 	}
 
