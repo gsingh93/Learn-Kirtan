@@ -17,6 +17,7 @@ import java.awt.event.ActionEvent;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.JScrollPane;
+import javax.swing.ListSelectionModel;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 
@@ -35,16 +36,20 @@ public class TableShabadEditor extends SwingShabadEditor implements
 
 	private boolean metaModified = false;
 
+	private int numRows = 16;
+	private int numCols = 16;
+
 	public TableShabadEditor(final WindowTitleManager titleManager,
 			FileManager fileManager) {
 		this.titleManager = titleManager;
 
 		undoManager.addUndoEventListener(this);
 
-		table = new ShabadTable(16, 16, titleManager, new ActionFactory(this,
-				fileManager));
+		table = new ShabadTable(numRows, numCols, titleManager,
+				new ActionFactory(this, fileManager));
 		model = (UndoTableModel) table.getModel();
 		model.addUndoableEditListener(undoManager);
+		table.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
 
 		setLayout(new GridLayout());
 		add(new JScrollPane(table));
@@ -104,10 +109,26 @@ public class TableShabadEditor extends SwingShabadEditor implements
 	}
 
 	private String getNotesString() {
-		int numRows = model.getRowCount();
+		int firstCol = table.getSelectedColumn();
+		int firstRow = table.getSelectedRow();
+		int colCount, rowCount;
+
+		if (firstCol == -1) {
+			firstCol = 0;
+			firstRow = 0;
+			colCount = numCols;
+			rowCount = model.getRowCount();
+		} else {
+			colCount = table.getSelectedColumnCount();
+			rowCount = table.getSelectedRowCount();
+		}
+
+		if (firstRow % 2 == 0) {
+			firstRow++;
+		}
 		StringBuilder sb = new StringBuilder();
-		for (int i = 1; i < numRows; i += 2) {
-			for (int j = 0; j < 16; j++) {
+		for (int i = firstRow; i < firstRow + rowCount; i += 2) {
+			for (int j = firstCol; j < firstCol + colCount; j++) {
 				sb.append(model.getValueAt(i, j)).append(" ");
 			}
 		}
