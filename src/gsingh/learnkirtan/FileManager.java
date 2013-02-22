@@ -43,6 +43,8 @@ public class FileManager {
 
 	private List<FileEventListener> listeners = new LinkedList<FileEventListener>();
 
+	private static final int VERSION = 2;
+
 	/** The file extension of Shabad files */
 	private static final String EXTENSION = ".sbd";
 
@@ -210,6 +212,7 @@ public class FileManager {
 		FileOutputStream fileOut = new FileOutputStream(curFile);
 		ObjectOutputStream out = new ObjectOutputStream(fileOut);
 		try {
+			out.writeInt(VERSION);
 			out.writeObject(shabad);
 		} finally {
 			out.close();
@@ -240,13 +243,15 @@ public class FileManager {
 				ObjectInputStream in = new ObjectInputStream(fileIn);
 				Shabad shabad = null;
 				try {
+					int version = in.readInt();
+					System.out.println("Version: " + version);
 					shabad = (Shabad) in.readObject();
 				} catch (ClassNotFoundException e) {
 					// Programmer error: should never happen
 					e.printStackTrace();
 				} finally {
-					fileIn.close();
 					in.close();
+					fileIn.close();
 				}
 
 				shabadEditor.setShabad(shabad);
