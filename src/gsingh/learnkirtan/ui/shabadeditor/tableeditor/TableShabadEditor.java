@@ -188,9 +188,13 @@ public class TableShabadEditor extends SwingShabadEditor implements
 	 *            the row to insert the pair above
 	 */
 	public void addRowAbove(int row) {
-		// TODO Make sure we don't split rows
-		model.insertRow(row, new Object[] {});
-		model.insertRow(row, new Object[] {});
+		if (row % 2 == 0) {
+			model.insertRow(row, new Object[] {});
+			model.insertRow(row, new Object[] {});
+		} else {
+			model.insertRow(row - 1, new Object[] {});
+			model.insertRow(row - 1, new Object[] {});
+		}
 	}
 
 	public void addRowBelow(int row) {
