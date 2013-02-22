@@ -20,7 +20,9 @@ public class ShabadNotes implements Iterable<Note>, Serializable {
 	}
 
 	public void addNote(Note note) {
-		notes.add(note);
+		if (note != null) {
+			notes.add(note);
+		}
 	}
 
 	public Note get(int index) {
@@ -62,5 +64,9 @@ public class ShabadNotes implements Iterable<Note>, Serializable {
 				// Not implemented
 			}
 		};
+	}
+
+	public boolean empty() {
+		return size() == 0;
 	}
 }

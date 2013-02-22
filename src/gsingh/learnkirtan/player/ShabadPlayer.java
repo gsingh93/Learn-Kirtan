@@ -7,6 +7,7 @@ import gsingh.learnkirtan.listener.PlayEventListener.PlayEvent;
 import gsingh.learnkirtan.note.Note;
 import gsingh.learnkirtan.shabad.Shabad;
 import gsingh.learnkirtan.shabad.ShabadNotes;
+import gsingh.learnkirtan.utility.DialogUtility;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -26,6 +27,10 @@ public class ShabadPlayer {
 		boolean finished = false;
 		ShabadNotes notes = shabad.getNotes();
 		do {
+			if (notes.empty()) {
+				DialogUtility.nothingSelected();
+				break;
+			}
 			for (Note note : notes) {
 				if (note != null) {
 					while (pause) {
