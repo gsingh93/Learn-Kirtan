@@ -1,5 +1,6 @@
 package gsingh.learnkirtan;
 
+// TODO Move these to correct location
 public final class Constants {
 	private Constants() {
 	}
@@ -18,7 +19,7 @@ public final class Constants {
 	public static final int BLACK_KEY_WIDTH = 20;
 	public static final int BLACK_KEY_HEIGHT = 120;
 
-	public static final String VERSION = "0.4";
+	public static final String VERSION = "0.5";
 	public static final int STARTING_MIDI_NOTE_ID = 40;
 
 }
