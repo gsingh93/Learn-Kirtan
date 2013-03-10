@@ -13,6 +13,7 @@ import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.StringSelection;
+import java.awt.datatransfer.Transferable;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
@@ -215,7 +216,7 @@ public class ShabadTable extends JTable {
 																	// Red
 				}
 				invalidCells.add(point);
-					} else {
+			} else {
 				if (invalidCells.contains(point)) {
 					invalidCells.remove(point);
 				}
@@ -307,19 +308,24 @@ public class ShabadTable extends JTable {
 			int startRow = (jTable.getSelectedRows())[0];
 			int startCol = (jTable.getSelectedColumns())[0];
 			try {
-				String trstring = (String) (system.getContents(this)
-						.getTransferData(DataFlavor.stringFlavor));
-				StringTokenizer st1 = new StringTokenizer(trstring, "\n");
-				for (int i = 0; st1.hasMoreTokens(); i++) {
-					String rowstring = st1.nextToken();
-					StringTokenizer st2 = new StringTokenizer(rowstring, "\t ");
-					for (int j = 0; st2.hasMoreTokens(); j++) {
-						String value = st2.nextToken();
-						if (!value.equals("null")) {
-							if (startRow + i < jTable.getRowCount()
-									&& startCol + j < jTable.getColumnCount())
-								jTable.setValueAt(value, startRow + i, startCol
-										+ j);
+				Transferable t = system.getContents(this);
+				if (t.isDataFlavorSupported(DataFlavor.stringFlavor)) {
+					String trstring = (String) t
+							.getTransferData(DataFlavor.stringFlavor);
+					StringTokenizer st1 = new StringTokenizer(trstring, "\n");
+					for (int i = 0; st1.hasMoreTokens(); i++) {
+						String rowstring = st1.nextToken();
+						StringTokenizer st2 = new StringTokenizer(rowstring,
+								"\t ");
+						for (int j = 0; st2.hasMoreTokens(); j++) {
+							String value = st2.nextToken();
+							if (!value.equals("null")) {
+								if (startRow + i < jTable.getRowCount()
+										&& startCol + j < jTable
+												.getColumnCount())
+									jTable.setValueAt(value, startRow + i,
+											startCol + j);
+							}
 						}
 					}
 				}
