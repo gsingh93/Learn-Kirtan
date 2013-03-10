@@ -203,20 +203,19 @@ public class ShabadTable extends JTable {
 
 		if (row % 2 == 1) {
 			String value = (String) getValueAt(row, col);
-			if (value != null && !value.equals("")) {
-				Point point = new Point(row, col);
-				if (!Validator.validate(value)) {
-					if (!c.getBackground().equals(getSelectionBackground())) {
-						c.setBackground(new Color(0xFF, 0x30, 0x30)); // Red
-					} else {
-						c.setBackground(new Color(0xFF, 0x70, 0x70)); // Light
-																		// Red
-					}
-					invalidCells.add(point);
+			Point point = new Point(row, col);
+			if (value != null && !value.equals("")
+					&& !Validator.validate(value)) {
+				if (!c.getBackground().equals(getSelectionBackground())) {
+					c.setBackground(new Color(0xFF, 0x30, 0x30)); // Red
 				} else {
-					if (invalidCells.contains(point)) {
-						invalidCells.remove(point);
-					}
+					c.setBackground(new Color(0xFF, 0x70, 0x70)); // Light
+																	// Red
+				}
+				invalidCells.add(point);
+					} else {
+				if (invalidCells.contains(point)) {
+					invalidCells.remove(point);
 				}
 			}
 		}
