@@ -18,10 +18,8 @@ import gsingh.learnkirtan.ui.action.ActionFactory;
 import gsingh.learnkirtan.ui.menu.EditMenu;
 import gsingh.learnkirtan.ui.menu.FileMenu;
 import gsingh.learnkirtan.ui.menu.HelpMenu;
-import gsingh.learnkirtan.ui.menu.KeyboardMenu;
 import gsingh.learnkirtan.ui.menu.OptionsMenu;
 import gsingh.learnkirtan.ui.menu.controller.HelpMenuController;
-import gsingh.learnkirtan.ui.menu.controller.KeyboardMenuController;
 import gsingh.learnkirtan.ui.menu.controller.OptionsMenuController;
 import gsingh.learnkirtan.ui.shabadeditor.SwingShabadEditor;
 import gsingh.learnkirtan.ui.shabadeditor.tableeditor.TableShabadEditor;
@@ -201,7 +199,9 @@ public class Main {
 		menuBar.add(new EditMenu(shabadEditor.getUndoAction(), shabadEditor
 				.getRedoAction(), shabadEditor.getCutAction(), shabadEditor
 				.getCopyAction(), shabadEditor.getPasteAction()));
-		menuBar.add(new KeyboardMenu(new KeyboardMenuController(shabadEditor)));
+		// TODO Add the keyboard mode menu back in
+		// menuBar.add(new KeyboardMenu(new
+		// KeyboardMenuController(shabadEditor)));
 		menuBar.add(new OptionsMenu(new OptionsMenuController(notes,
 				labelManager)));
 		menuBar.add(new HelpMenu(new HelpMenuController()));
