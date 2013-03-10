@@ -80,12 +80,14 @@ public class ShabadTable extends JTable {
 		getInputMap().put(Keys.SAVE_KEY, "save");
 		getInputMap().put(Keys.OPEN_KEY, "open");
 		getInputMap().put(Keys.NEW_KEY, "create");
+		getInputMap().put(Keys.CUT_KEY, "cut");
 		getInputMap().put(Keys.COPY_KEY, "copy");
 		getInputMap().put(Keys.PASTE_KEY, "paste");
 
 		getActionMap().put("save", actionFactory.newSaveAction());
 		getActionMap().put("open", actionFactory.newOpenAction());
 		getActionMap().put("create", actionFactory.newCreateAction());
+		getActionMap().put("cut", new CutAction());
 		getActionMap().put("copy", new CopyAction());
 		getActionMap().put("paste", new PasteAction());
 	}
@@ -234,10 +236,34 @@ public class ShabadTable extends JTable {
 		return invalidCells.isEmpty();
 	}
 
+	public class CutAction extends AbstractAction {
+
+		private CopyAction copyAction = new CopyAction();
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			JTable jTable = ShabadTable.this;
+			copyAction.actionPerformed(e);
+			if (copyAction.success) {
+				int[] rowsselected = jTable.getSelectedRows();
+				int[] colsselected = jTable.getSelectedColumns();
+
+				for (int row : rowsselected) {
+					for (int col : colsselected) {
+						jTable.setValueAt("", row, col);
+					}
+				}
+			}
+		}
+	}
+
 	/**
 	 * @see "http://www.javaworld.com/javatips/jw-javatip77.html"
 	 */
 	public class CopyAction extends AbstractAction {
+
+		public boolean success = false;
+
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			JTable jTable = ShabadTable.this;
@@ -253,6 +279,7 @@ public class ShabadTable extends JTable {
 
 				JOptionPane.showMessageDialog(null, "Invalid Copy Selection",
 						"Invalid Copy Selection", JOptionPane.ERROR_MESSAGE);
+				success = false;
 				return;
 			}
 			for (int i = 0; i < numrows; i++) {
@@ -267,6 +294,7 @@ public class ShabadTable extends JTable {
 			StringSelection stsel = new StringSelection(sbf.toString());
 			Clipboard system = Toolkit.getDefaultToolkit().getSystemClipboard();
 			system.setContents(stsel, stsel);
+			success = true;
 		}
 	}
 

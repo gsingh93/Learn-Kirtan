@@ -1,12 +1,12 @@
 package gsingh.learnkirtan.ui.menu;
 
-import java.awt.event.ActionEvent;
+import gsingh.learnkirtan.Keys;
+
 import java.awt.event.KeyEvent;
 
 import javax.swing.Action;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
-import javax.swing.KeyStroke;
 
 @SuppressWarnings("serial")
 public class EditMenu extends JMenu {
@@ -22,20 +22,15 @@ public class EditMenu extends JMenu {
 		JMenuItem pasteItem = new JMenuItem(pasteAction);
 
 		undoItem.setMnemonic(KeyEvent.VK_U);
-		undoItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Z,
-				ActionEvent.CTRL_MASK));
+		undoItem.setAccelerator(Keys.UNDO_KEY);
 		undoItem.setMnemonic(KeyEvent.VK_R);
-		redoItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Y,
-				ActionEvent.CTRL_MASK));
+		redoItem.setAccelerator(Keys.REDO_KEY);
 		cutItem.setText("Cut");
-		cutItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_X,
-				ActionEvent.CTRL_MASK));
+		cutItem.setAccelerator(Keys.CUT_KEY);
 		copyItem.setText("Copy");
-		copyItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_C,
-				ActionEvent.CTRL_MASK));
+		copyItem.setAccelerator(Keys.COPY_KEY);
 		pasteItem.setText("Paste");
-		pasteItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_V,
-				ActionEvent.CTRL_MASK));
+		pasteItem.setAccelerator(Keys.PASTE_KEY);
 
 		setMnemonic(KeyEvent.VK_D);
 		add(undoItem);

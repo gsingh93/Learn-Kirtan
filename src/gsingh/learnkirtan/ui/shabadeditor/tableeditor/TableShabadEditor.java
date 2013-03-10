@@ -84,8 +84,7 @@ public class TableShabadEditor extends SwingShabadEditor implements
 	}
 
 	public Action getCutAction() {
-		// return table.new CutAction(); // TODO
-		return null;
+		return table.new CutAction();
 	}
 
 	public Action getCopyAction() {

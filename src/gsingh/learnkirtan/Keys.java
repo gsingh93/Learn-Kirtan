@@ -18,6 +18,9 @@ public class Keys {
 	public static final KeyStroke PROPERTIES_KEY = KeyStroke.getKeyStroke(
 			KeyEvent.VK_ENTER, ActionEvent.ALT_MASK);
 
+	public static final KeyStroke CUT_KEY = KeyStroke.getKeyStroke(
+			KeyEvent.VK_X, ActionEvent.CTRL_MASK);
+
 	public static final KeyStroke COPY_KEY = KeyStroke.getKeyStroke(
 			KeyEvent.VK_C, KeyEvent.CTRL_DOWN_MASK);
 
