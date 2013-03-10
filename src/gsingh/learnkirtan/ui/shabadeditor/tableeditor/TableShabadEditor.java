@@ -83,6 +83,19 @@ public class TableShabadEditor extends SwingShabadEditor implements
 		return undoManager.getRedoAction();
 	}
 
+	public Action getCutAction() {
+		// return table.new CutAction(); // TODO
+		return null;
+	}
+
+	public Action getCopyAction() {
+		return table.new CopyAction();
+	}
+
+	public Action getPasteAction() {
+		return table.new PasteAction();
+	}
+
 	@Override
 	public Shabad getShabad() {
 		Shabad shabad = new Shabad(getNotesString(), getWords());

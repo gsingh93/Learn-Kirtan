@@ -41,8 +41,6 @@ import javax.swing.JFrame;
 import javax.swing.JMenuBar;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
-import javax.swing.UIManager;
-import javax.swing.UnsupportedLookAndFeelException;
 
 /**
  * The main entry point for the program. Responsible for initializing the GUI,
@@ -99,16 +97,16 @@ public class Main {
 		SplashScreen.getSplashScreen();
 
 		// TODO
-		if (System.getProperty("os.name").startsWith("Windows")) {
-			try {
-				UIManager.setLookAndFeel(UIManager
-						.getSystemLookAndFeelClassName());
-			} catch (UnsupportedLookAndFeelException e) {
-			} catch (ClassNotFoundException e) {
-			} catch (InstantiationException e) {
-			} catch (IllegalAccessException e) {
-			}
-		}
+		// if (System.getProperty("os.name").startsWith("Windows")) {
+		// try {
+		// // UIManager.setLookAndFeel(UIManager
+		// // .getSystemLookAndFeelClassName());
+		// } catch (UnsupportedLookAndFeelException e) {
+		// } catch (ClassNotFoundException e) {
+		// } catch (InstantiationException e) {
+		// } catch (IllegalAccessException e) {
+		// }
+		// }
 
 		// SettingsManager persists settings so it needs access to a FileManager
 		// However it is a singleton, so this must be set through a method
@@ -200,8 +198,9 @@ public class Main {
 	private JMenuBar createMenuBar() {
 		JMenuBar menuBar = new JMenuBar();
 		menuBar.add(new FileMenu(new ActionFactory(shabadEditor, fileManager)));
-		menuBar.add(new EditMenu(shabadEditor.getUndoAction(),
-				shabadEditor.getRedoAction()));
+		menuBar.add(new EditMenu(shabadEditor.getUndoAction(), shabadEditor
+				.getRedoAction(), shabadEditor.getCutAction(), shabadEditor
+				.getCopyAction(), shabadEditor.getPasteAction()));
 		menuBar.add(new KeyboardMenu(new KeyboardMenuController(shabadEditor)));
 		menuBar.add(new OptionsMenu(new OptionsMenuController(notes,
 				labelManager)));

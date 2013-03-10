@@ -15,9 +15,16 @@ public abstract class SwingShabadEditor extends JComponent implements
 
 	public abstract void reset();
 	
+	// TODO maybe just return an action factory?
 	public abstract Action getUndoAction();
 
 	public abstract Action getRedoAction();
+
+	public abstract Action getCutAction();
+
+	public abstract Action getCopyAction();
+
+	public abstract Action getPasteAction();
 
 	public boolean isModified() {
 		return modified;

@@ -266,4 +266,19 @@ public class TextAreaShabadEditor extends SwingShabadEditor implements
 	public boolean getRepeating() {
 		return false;
 	}
+
+	@Override
+	public Action getCutAction() {
+		return null;
+	}
+
+	@Override
+	public Action getCopyAction() {
+		return null;
+	}
+
+	@Override
+	public Action getPasteAction() {
+		return null;
+	}
 }

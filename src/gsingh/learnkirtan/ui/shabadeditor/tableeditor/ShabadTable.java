@@ -238,7 +238,7 @@ public class ShabadTable extends JTable {
 	/**
 	 * @see "http://www.javaworld.com/javatips/jw-javatip77.html"
 	 */
-	private class CopyAction extends AbstractAction {
+	public class CopyAction extends AbstractAction {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			JTable jTable = ShabadTable.this;
@@ -271,7 +271,7 @@ public class ShabadTable extends JTable {
 		}
 	}
 
-	private class PasteAction extends AbstractAction {
+	public class PasteAction extends AbstractAction {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			JTable jTable = ShabadTable.this;

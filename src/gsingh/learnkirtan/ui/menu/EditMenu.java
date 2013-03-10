@@ -7,19 +7,19 @@ import javax.swing.Action;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.KeyStroke;
-import javax.swing.text.DefaultEditorKit;
 
 @SuppressWarnings("serial")
 public class EditMenu extends JMenu {
 
-	public EditMenu(Action undoAction, Action redoAction) {
+	public EditMenu(Action undoAction, Action redoAction, Action cutAction,
+			Action copyAction, Action pasteAction) {
 		super("Edit");
 
 		JMenuItem undoItem = new JMenuItem(undoAction);
 		JMenuItem redoItem = new JMenuItem(redoAction);
-		JMenuItem cutItem = new JMenuItem(new DefaultEditorKit.CutAction());
-		JMenuItem copyItem = new JMenuItem(new DefaultEditorKit.CopyAction());
-		JMenuItem pasteItem = new JMenuItem(new DefaultEditorKit.PasteAction());
+		JMenuItem cutItem = new JMenuItem(cutAction);
+		JMenuItem copyItem = new JMenuItem(copyAction);
+		JMenuItem pasteItem = new JMenuItem(pasteAction);
 
 		undoItem.setMnemonic(KeyEvent.VK_U);
 		undoItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Z,
@@ -28,8 +28,14 @@ public class EditMenu extends JMenu {
 		redoItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Y,
 				ActionEvent.CTRL_MASK));
 		cutItem.setText("Cut");
+		cutItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_X,
+				ActionEvent.CTRL_MASK));
 		copyItem.setText("Copy");
+		copyItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_C,
+				ActionEvent.CTRL_MASK));
 		pasteItem.setText("Paste");
+		pasteItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_V,
+				ActionEvent.CTRL_MASK));
 
 		setMnemonic(KeyEvent.VK_D);
 		add(undoItem);
