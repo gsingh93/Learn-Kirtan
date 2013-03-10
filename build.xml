@@ -1,6 +1,6 @@
 <project name="LearnKirtan" basedir="." default="main">
 
-	<property name="version" value="0.4" />
+	<property name="version" value="0.5" />
 
 	<property name="src.dir" value="src" />
 	<property name="lib.dir" value="lib" />
