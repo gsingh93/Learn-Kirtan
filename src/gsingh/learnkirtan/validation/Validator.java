@@ -1,5 +1,6 @@
 package gsingh.learnkirtan.validation;
 
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
@@ -13,15 +14,19 @@ public class Validator {
 	/** The regex defining a modifier */
 	private static final String modifierRegex = "(?:\\.|'|\\.'|'\\.)";
 
-	/** The regex defining a note */
-	private static final String noteRegex = String
+	/** The regex partially defining a note */
+	private static final String partialNoteRegex = String
 			.format("(?:%s?(?:sa|re|ga|ma|pa|dha|ni)%s?)", modifierRegex,
 					modifierRegex);
 
+	/** The regex defining a note */
+	private static final String noteRegex = String.format("(%s)(?:-(%s))?",
+			partialNoteRegex, partialNoteRegex);
+
 	private static String doublePeriodRegex = "'?\\.'?sa'?\\.'?";
 	private static String doubleApostropheRegex = "\\.?'\\.?sa\\.?'\\.?";
-	private static String wrongTheevraRegex = ".*(sa|re|ga|pa|dha|ni).*'.*";
-	private static String wrongKomalRegex = ".*'.*(sa|ma|pa).*";
+	private static String wrongTheevraRegex = ".*(?:sa|re|ga|pa|dha|ni).*'.*";
+	private static String wrongKomalRegex = ".*'.*(?:sa|ma|pa).*";
 	
 	private static Pattern doublePeriod = Pattern.compile(doublePeriodRegex,
 			Pattern.CASE_INSENSITIVE);
@@ -42,9 +47,29 @@ public class Validator {
 	 * @return a {@link ValidationErrors} object
 	 */
 	public static boolean validate(String note) {
-		if (!notePattern.matcher(note).matches()) {
+		Matcher m = notePattern.matcher(note);
+		if (m.matches()) {
+			String note1 = m.group(1);
+			String note2 = m.group(2);
+
+			if (!validateSingleNote(note1)) {
+				return false;
+			}
+
+			if (note2 != null) {
+				if (!validateSingleNote(note2)) {
+					return false;
+				}
+			}
+		} else {
 			return false;
-		} else if (doublePeriod.matcher(note).matches()) {
+		}
+
+		return true;
+	}
+
+	private static boolean validateSingleNote(String note) {
+		if (doublePeriod.matcher(note).matches()) {
 			return false;
 		} else if (doubleApostrophe.matcher(note).matches()) {
 			return false;
@@ -53,6 +78,7 @@ public class Validator {
 		} else if (wrongKomal.matcher(note).matches()) {
 			return false;
 		}
+
 		return true;
 	}
 }
