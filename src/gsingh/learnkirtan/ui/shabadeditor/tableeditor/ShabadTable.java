@@ -315,9 +315,12 @@ public class ShabadTable extends JTable {
 					StringTokenizer st2 = new StringTokenizer(rowstring, "\t ");
 					for (int j = 0; st2.hasMoreTokens(); j++) {
 						String value = st2.nextToken();
-						if (startRow + i < jTable.getRowCount()
-								&& startCol + j < jTable.getColumnCount())
-							jTable.setValueAt(value, startRow + i, startCol + j);
+						if (!value.equals("null")) {
+							if (startRow + i < jTable.getRowCount()
+									&& startCol + j < jTable.getColumnCount())
+								jTable.setValueAt(value, startRow + i, startCol
+										+ j);
+						}
 					}
 				}
 			} catch (Exception ex) {
