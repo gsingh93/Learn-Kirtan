@@ -6,8 +6,9 @@ import static org.junit.Assert.fail;
 import gsingh.learnkirtan.Constants;
 import gsingh.learnkirtan.keys.LabelManager.Octave;
 import gsingh.learnkirtan.note.Note;
-import gsingh.learnkirtan.note.NoteList;
 import gsingh.learnkirtan.note.Note.Modifier;
+import gsingh.learnkirtan.note.NoteList;
+import gsingh.learnkirtan.parser.exceptions.NoteOutOfBoundsException;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -30,29 +31,53 @@ public class KeyMapperTest {
 
 	@Test
 	public void getKeyFromName_ShudLowerOctaveNote_ReturnCorrectKey() {
-		Key key = km.getKeyFromNote(new Note("ma", Octave.LOWER,
-				Modifier.THEEVRA, 0));
+		Key key = null;
+		try {
+			key = km.getKeyFromNote(new Note("ma", Octave.LOWER,
+					Modifier.THEEVRA, 0));
+		} catch (NoteOutOfBoundsException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		assertEquals(44, key.getMidiNoteId());
 	}
 
 	@Test
 	public void getKeyFromName_ShudMiddleOctaveNote_ReturnCorrectKey() {
-		Key key = km.getKeyFromNote(new Note("sa", Octave.MIDDLE,
-				Modifier.NONE, 0));
+		Key key = null;
+		try {
+			key = km.getKeyFromNote(new Note("sa", Octave.MIDDLE,
+					Modifier.NONE, 0));
+		} catch (NoteOutOfBoundsException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		assertEquals(50, key.getMidiNoteId());
 	}
 
 	@Test
 	public void getKeyFromName_ShudUpperOctaveNote_ReturnCorrectKey() {
-		Key key = km.getKeyFromNote(new Note("re", Octave.UPPER,
-				Modifier.KOMAL, 0));
+		Key key = null;
+		try {
+			key = km.getKeyFromNote(new Note("re", Octave.UPPER,
+					Modifier.KOMAL, 0));
+		} catch (NoteOutOfBoundsException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		assertEquals(63, key.getMidiNoteId());
 	}
 
 	@Test
 	public void getKeyFromName_OutOfBoundsNote_ReturnNull() {
-		Key key = km.getKeyFromNote(new Note("sa", Octave.LOWER,
-				Modifier.THEEVRA, 0));
+		Key key = null;
+		try {
+			key = km.getKeyFromNote(new Note("sa", Octave.LOWER,
+					Modifier.THEEVRA, 0));
+		} catch (NoteOutOfBoundsException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		assertNull(key);
 	}
 

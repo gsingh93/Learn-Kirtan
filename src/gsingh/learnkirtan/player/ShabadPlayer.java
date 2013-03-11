@@ -5,6 +5,7 @@ import gsingh.learnkirtan.keys.KeyMapper;
 import gsingh.learnkirtan.listener.PlayEventListener;
 import gsingh.learnkirtan.listener.PlayEventListener.PlayEvent;
 import gsingh.learnkirtan.note.Note;
+import gsingh.learnkirtan.parser.exceptions.NoteOutOfBoundsException;
 import gsingh.learnkirtan.shabad.Shabad;
 import gsingh.learnkirtan.shabad.ShabadNotes;
 import gsingh.learnkirtan.utility.DialogUtility;
@@ -46,7 +47,12 @@ public class ShabadPlayer {
 						pause = false;
 						break;
 					}
-					playNote(note, tempo);
+					try {
+						playNote(note, tempo);
+					} catch (NoteOutOfBoundsException e) {
+						stop = true;
+						DialogUtility.showNoteOutOfBoundsDialog(e.getNote());
+					}
 				}
 			}
 			if (finished) {
@@ -59,7 +65,8 @@ public class ShabadPlayer {
 		}
 	}
 
-	public static void playNote(Note note, double tempo) {
+	public static void playNote(Note note, double tempo)
+			throws NoteOutOfBoundsException {
 		Key key = KeyMapper.getInstance().getKeyFromNote(note);
 		MidiPlayer.play(key, (int) (note.getLength() / tempo));
 	}

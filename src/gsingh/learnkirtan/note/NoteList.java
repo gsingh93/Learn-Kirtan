@@ -2,6 +2,7 @@ package gsingh.learnkirtan.note;
 
 import gsingh.learnkirtan.Constants;
 import gsingh.learnkirtan.parser.Parser;
+import gsingh.learnkirtan.parser.exceptions.NoteOutOfBoundsException;
 
 import java.util.Arrays;
 import java.util.LinkedList;
@@ -108,8 +109,9 @@ public class NoteList {
 	 * @param note
 	 *            the note to get the index of
 	 * @return the index of the note
+	 * @throws NoteOutOfBoundsException
 	 */
-	public int getLowerNoteIndex(Note note) {
+	public int getLowerNoteIndex(Note note) throws NoteOutOfBoundsException {
 		return getNoteIndex(note, lowerStart, middleStart);
 	}
 
@@ -120,8 +122,9 @@ public class NoteList {
 	 * @param note
 	 *            the note to get the index of
 	 * @return the index of the note
+	 * @throws NoteOutOfBoundsException
 	 */
-	public int getMiddleNoteIndex(Note note) {
+	public int getMiddleNoteIndex(Note note) throws NoteOutOfBoundsException {
 		return getNoteIndex(note, middleStart, upperStart);
 	}
 
@@ -132,8 +135,9 @@ public class NoteList {
 	 * @param note
 	 *            the note to get the index of
 	 * @return the index of the note
+	 * @throws NoteOutOfBoundsException
 	 */
-	public int getUpperNoteIndex(Note note) {
+	public int getUpperNoteIndex(Note note) throws NoteOutOfBoundsException {
 		return getNoteIndex(note, upperStart, notes.size() - 1);
 	}
 
@@ -148,10 +152,17 @@ public class NoteList {
 	 * @param end
 	 *            the ending index to look for the note
 	 * @return the index of the note
+	 * @throws NoteOutOfBoundsException
 	 */
-	private int getNoteIndex(Note note, int start, int end) {
+	private int getNoteIndex(Note note, int start, int end)
+			throws NoteOutOfBoundsException {
 		String name = getName(note);
+		start = start < 0 ? 0 : start;
+		end = end > notes.size() ? notes.size() : end;
 		int index = notes.subList(start, end).indexOf(name);
+
+		if (index == -1)
+			throw new NoteOutOfBoundsException(note.getNoteText());
 
 		return index + start;
 	}

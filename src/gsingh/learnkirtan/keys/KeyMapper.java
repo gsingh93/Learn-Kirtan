@@ -3,6 +3,7 @@ package gsingh.learnkirtan.keys;
 import gsingh.learnkirtan.Constants;
 import gsingh.learnkirtan.note.Note;
 import gsingh.learnkirtan.note.NoteList;
+import gsingh.learnkirtan.parser.exceptions.NoteOutOfBoundsException;
 
 import java.util.Arrays;
 
@@ -71,14 +72,30 @@ public class KeyMapper {
 	 * @param note
 	 *            the note to search for
 	 * @return the corresponding key
+	 * @throws NoteOutOfBoundsException
 	 */
-	public Key getKeyFromNote(Note note) {
+	public Key getKeyFromNote(Note note) throws NoteOutOfBoundsException {
 		if (note.isUpperOctave()) {
-			return keys[notes.getUpperNoteIndex(note)];
+			int index = notes.getUpperNoteIndex(note);
+			if (index >= 0 && index < keys.length) {
+				return keys[index];
+			} else {
+				throw new NoteOutOfBoundsException(note.getNoteText());
+			}
 		} else if (note.isLowerOctave()) {
-			return keys[notes.getLowerNoteIndex(note)];
+			int index = notes.getLowerNoteIndex(note);
+			if (index >= 0 && index < keys.length) {
+				return keys[index];
+			} else {
+				throw new NoteOutOfBoundsException(note.getNoteText());
+			}
 		} else {
-			return keys[notes.getMiddleNoteIndex(note)];
+			int index = notes.getMiddleNoteIndex(note);
+			if (index >= 0 && index < keys.length) {
+				return keys[index];
+			} else {
+				throw new NoteOutOfBoundsException(note.getNoteText());
+			}
 		}
 	}
 }

@@ -5,6 +5,7 @@ import gsingh.learnkirtan.keys.KeyMapper;
 import gsingh.learnkirtan.keys.LabelManager;
 import gsingh.learnkirtan.note.Note;
 import gsingh.learnkirtan.note.NoteList;
+import gsingh.learnkirtan.parser.exceptions.NoteOutOfBoundsException;
 import gsingh.learnkirtan.player.ShabadPlayer;
 import gsingh.learnkirtan.shabad.Shabad;
 import gsingh.learnkirtan.shabad.ShabadMetaData;
@@ -141,7 +142,11 @@ public class TextAreaShabadEditor extends SwingShabadEditor implements
 							textArea.getCaretPosition());
 					new Thread(new Runnable() {
 						public void run() {
-							ShabadPlayer.playNote(note, 1);
+							try {
+								ShabadPlayer.playNote(note, 1);
+							} catch (NoteOutOfBoundsException e) {
+								// Do nothing
+							}
 						}
 					}).start();
 				}
