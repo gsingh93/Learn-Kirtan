@@ -12,6 +12,7 @@
 	<property name="release.dir" value="${build.dir}/release" />
 
 	<property name="main-class" value="gsingh.learnkirtan.Main" />
+	<property name="splash-screen-image" value="splash.png" />
 
 	<path id="classpath">
 		<fileset dir="${lib.dir}" includes="**/*.jar" />
@@ -31,6 +32,7 @@
 		<jar destfile="${jar.dir}/${ant.project.name} - v${version}.jar" basedir="${classes.dir}">
 			<manifest>
 				<attribute name="Main-Class" value="${main-class}" />
+				<attribute name="SplashScreen-Image" value="${splash-screen-image}" />
 			</manifest>
 			<fileset dir="${resource.dir}" />
 			<zipgroupfileset dir="${lib.dir}" includes="**/*.jar" />
