@@ -49,9 +49,9 @@
 	</target>
 
 	<target name="release" depends="clean,jar">
-		<mkdir dir="${release.dir}/log" />
-		<copy file="${jar.dir}/${ant.project.name} - v${version}.jar" todir="${release.dir}" />
-		<copy todir="${release.dir}/Sample Shabads">
+		<mkdir dir="${release.dir}/LearnKirtan" />
+		<copy file="${jar.dir}/${ant.project.name} - v${version}.jar" todir="${release.dir}/LearnKirtan" />
+		<copy todir="${release.dir}/LearnKirtan/Sample Shabads">
 			<fileset dir="Shabad Files" />
 		</copy>
 		<zip basedir="${release.dir}" destfile="${release.dir}/LearnKirtan${version}.zip" />
