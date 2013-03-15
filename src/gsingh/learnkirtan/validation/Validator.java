@@ -61,11 +61,12 @@ public class Validator {
 					return false;
 				}
 			}
+			return true;
+		} else if (note.equals("-")) {
+			return true;
 		} else {
 			return false;
 		}
-
-		return true;
 	}
 
 	private static boolean validateSingleNote(String note) {
