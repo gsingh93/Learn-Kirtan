@@ -131,14 +131,13 @@ public class ControlPanel extends JPanel implements ActionListener,
 				@Override
 				public void actionPerformed(ActionEvent e) {
 					String taal = (String) taalComboBox.getSelectedItem();
-					if (taal.equals("Dadra (6 Beats)")) {
-						System.out.println("Taal set to Dadra");
-					}
 				}
 			});
 
-			add(taalLabel);
-			add(taalComboBox);
+			// TODO Comment the following two lines in once we have support for
+			// change the number of columns
+			// add(taalLabel);
+			// add(taalComboBox);
 			add(addRowButton);
 			add(deleteRowButton);
 		}
