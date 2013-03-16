@@ -10,7 +10,9 @@ public class UndoTableModel extends DefaultTableModel {
 	public void setValueAt(Object value, int row, int column, boolean undoable) {
 		UndoableEditListener listeners[] = getListeners(UndoableEditListener.class);
 
-		value = ((String) value).trim();
+		if (value != null) {
+			value = ((String) value).trim();
+		}
 
 		if (undoable == false || listeners == null) {
 			super.setValueAt(value, row, column);
