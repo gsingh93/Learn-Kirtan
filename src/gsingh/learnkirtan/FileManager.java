@@ -244,7 +244,6 @@ public class FileManager {
 				Shabad shabad = null;
 				try {
 					int version = in.readInt();
-					System.out.println("Version: " + version);
 					shabad = (Shabad) in.readObject();
 				} catch (ClassNotFoundException e) {
 					// Programmer error: should never happen

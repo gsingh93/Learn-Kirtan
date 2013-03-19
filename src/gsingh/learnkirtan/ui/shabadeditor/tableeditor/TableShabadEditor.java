@@ -2,6 +2,7 @@ package gsingh.learnkirtan.ui.shabadeditor.tableeditor;
 
 import gsingh.learnkirtan.FileManager;
 import gsingh.learnkirtan.note.Note;
+import gsingh.learnkirtan.note.Note.Length;
 import gsingh.learnkirtan.parser.Parser;
 import gsingh.learnkirtan.shabad.Shabad;
 import gsingh.learnkirtan.shabad.ShabadMetaData;
@@ -111,15 +112,24 @@ public class TableShabadEditor extends SwingShabadEditor implements
 
 	private void setNotes(ShabadNotes notes) {
 		int numRows = model.getRowCount();
+		int index = 0;
 		for (int i = 1; i < numRows; i += 2) {
 			for (int j = 0; j < 16; j++) {
-				int index = i / 2 * 16 + j;
-				Note note = null;
 				if (index < notes.size()) {
-					note = notes.get(index);
-				}
-				if (note != null) {
-					table.setValueAt(note.getNoteText(), i, j);
+					Note note = notes.get(index);
+					if (note.getLength() == Length.LONG) {
+						table.setValueAt(note.getNoteText(), i, j);
+						if (j == 15) {
+							j = 0;
+							i++;
+						} else {
+							j++;
+						}
+						table.setValueAt("-", i, j);
+					} else {
+						table.setValueAt(note.getNoteText(), i, j);
+					}
+					index++;
 				} else {
 					table.setValueAt(null, i, j);
 				}

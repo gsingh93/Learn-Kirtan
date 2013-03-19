@@ -2,6 +2,7 @@ package gsingh.learnkirtan.parser;
 
 import gsingh.learnkirtan.keys.LabelManager.Octave;
 import gsingh.learnkirtan.note.Note;
+import gsingh.learnkirtan.note.Note.Length;
 import gsingh.learnkirtan.note.Note.Modifier;
 import gsingh.learnkirtan.shabad.Shabad;
 import gsingh.learnkirtan.shabad.ShabadNotes;
@@ -18,12 +19,6 @@ import java.util.regex.Pattern;
  * 
  */
 public class Parser {
-
-	/** The length of time a full note is played in milliseconds */
-	private static final int FULL_NOTE = 1000;
-
-	/** The length of time a half note is played in milliseconds */
-	private static final int HALF_NOTE = 500;
 
 	/** The regex defining a modifier */
 	private static final String modifierRegex = "(?:\\.|'|\\.'|'\\.)";
@@ -83,13 +78,13 @@ public class Parser {
 				// If the second note was supplied, add two half notes,
 				// else add one full note
 				if (name2 != null) {
-					Note note1 = buildNote(prefix1, name1, suffix1, HALF_NOTE);
-					Note note2 = buildNote(prefix2, name2, suffix2, HALF_NOTE);
+					Note note1 = buildNote(prefix1, name1, suffix1, Length.HALF);
+					Note note2 = buildNote(prefix2, name2, suffix2, Length.HALF);
 
 					shabad.addNote(note1);
 					shabad.addNote(note2);
 				} else {
-					Note note1 = buildNote(prefix1, name1, suffix1, FULL_NOTE);
+					Note note1 = buildNote(prefix1, name1, suffix1, Length.FULL);
 
 					shabad.addNote(note1);
 				}
@@ -119,7 +114,7 @@ public class Parser {
 			String name = matcher.group(2);
 			String suffix = matcher.group(3);
 
-			note = buildNote(prefix, name, suffix, HALF_NOTE);
+			note = buildNote(prefix, name, suffix, Length.HALF);
 		}
 
 		return note;
@@ -138,7 +133,8 @@ public class Parser {
 	 *            the length the note should be played in milliseconds
 	 * @return a {@link Note} object built from the parameters
 	 */
-	private Note buildNote(String prefix, String name, String suffix, int length) {
+	private Note buildNote(String prefix, String name, String suffix,
+			Length length) {
 		Octave octave = Octave.MIDDLE;
 		Modifier modifier = Modifier.NONE;
 		if (prefix.contains("."))

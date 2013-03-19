@@ -1,6 +1,7 @@
 package gsingh.learnkirtan.shabad;
 
 import gsingh.learnkirtan.note.Note;
+import gsingh.learnkirtan.note.Note.Length;
 
 import java.io.Serializable;
 import java.util.Iterator;
@@ -16,7 +17,7 @@ public class ShabadNotes implements Iterable<Note>, Serializable {
 
 	public void addLongNote() {
 		Note note = notes.get(notes.size() - 1);
-		note.setLength(note.getLength() + 1000);
+		note.setLength(Length.LONG);
 	}
 
 	public void addNote(Note note) {

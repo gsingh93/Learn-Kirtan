@@ -7,8 +7,11 @@ import java.io.Serializable;
 @SuppressWarnings("serial")
 public class Note implements Serializable {
 
+	public enum Length {
+		HALF, FULL, LONG
+	}
 	public enum Modifier {
-		NONE, KOMAL, THEEVRA;
+		NONE, KOMAL, THEEVRA
 	}
 
 	/**
@@ -27,9 +30,9 @@ public class Note implements Serializable {
 	private Modifier modifier;
 
 	/** The length that the note should be played in milliseconds */
-	private int length;
+	private Length length;
 
-	public Note(String name, Octave octave, Modifier modifier, int length) {
+	public Note(String name, Octave octave, Modifier modifier, Length length) {
 		this.name = name;
 		this.octave = octave;
 		this.modifier = modifier;
@@ -49,8 +52,8 @@ public class Note implements Serializable {
 		this.noteText = noteText;
 	}
 
-	/** @return the length the note should be played in milliseconds */
-	public int getLength() {
+	/** @return the length of the note */
+	public Length getLength() {
 		return length;
 	}
 
@@ -58,9 +61,9 @@ public class Note implements Serializable {
 	 * Sets the length that the note should be played
 	 * 
 	 * @param length
-	 *            the length in milliseconds
+	 *            the length
 	 */
-	public void setLength(int length) {
+	public void setLength(Length length) {
 		this.length = length;
 	}
 

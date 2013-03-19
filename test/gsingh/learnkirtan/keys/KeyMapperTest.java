@@ -6,6 +6,7 @@ import static org.junit.Assert.fail;
 import gsingh.learnkirtan.Constants;
 import gsingh.learnkirtan.keys.LabelManager.Octave;
 import gsingh.learnkirtan.note.Note;
+import gsingh.learnkirtan.note.Note.Length;
 import gsingh.learnkirtan.note.Note.Modifier;
 import gsingh.learnkirtan.note.NoteList;
 import gsingh.learnkirtan.parser.exceptions.NoteOutOfBoundsException;
@@ -34,7 +35,7 @@ public class KeyMapperTest {
 		Key key = null;
 		try {
 			key = km.getKeyFromNote(new Note("ma", Octave.LOWER,
-					Modifier.THEEVRA, 0));
+					Modifier.THEEVRA, Length.FULL));
 		} catch (NoteOutOfBoundsException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -47,7 +48,7 @@ public class KeyMapperTest {
 		Key key = null;
 		try {
 			key = km.getKeyFromNote(new Note("sa", Octave.MIDDLE,
-					Modifier.NONE, 0));
+					Modifier.NONE, Length.FULL));
 		} catch (NoteOutOfBoundsException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -60,7 +61,7 @@ public class KeyMapperTest {
 		Key key = null;
 		try {
 			key = km.getKeyFromNote(new Note("re", Octave.UPPER,
-					Modifier.KOMAL, 0));
+					Modifier.KOMAL, Length.FULL));
 		} catch (NoteOutOfBoundsException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -73,7 +74,7 @@ public class KeyMapperTest {
 		Key key = null;
 		try {
 			key = km.getKeyFromNote(new Note("sa", Octave.LOWER,
-					Modifier.THEEVRA, 0));
+					Modifier.THEEVRA, Length.FULL));
 		} catch (NoteOutOfBoundsException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
