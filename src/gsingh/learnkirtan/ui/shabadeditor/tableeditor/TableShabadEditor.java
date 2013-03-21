@@ -126,6 +126,11 @@ public class TableShabadEditor extends SwingShabadEditor implements
 							j++;
 						}
 						table.setValueAt("-", i, j);
+					} else if (note.getLength() == Length.HALF) {
+						Note note2 = notes.get(++index);
+						table.setValueAt(
+								note.getNoteText() + "-" + note2.getNoteText(),
+								i, j);
 					} else {
 						table.setValueAt(note.getNoteText(), i, j);
 					}
