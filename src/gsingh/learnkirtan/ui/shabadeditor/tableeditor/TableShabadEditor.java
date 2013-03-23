@@ -39,7 +39,7 @@ public class TableShabadEditor extends SwingShabadEditor implements
 
 	private boolean repeating = false;
 
-	private int numRows = 16;
+	private int numRows = 32;
 	private int numCols = 16;
 
 	public TableShabadEditor(final WindowTitleManager titleManager,
@@ -114,7 +114,7 @@ public class TableShabadEditor extends SwingShabadEditor implements
 		int numRows = model.getRowCount();
 		int index = 0;
 		for (int i = 1; i < numRows; i += 2) {
-			for (int j = 0; j < 16; j++) {
+			for (int j = 0; j < numCols; j++) {
 				if (index < notes.size()) {
 					Note note = notes.get(index);
 					if (note == null) {
@@ -187,7 +187,7 @@ public class TableShabadEditor extends SwingShabadEditor implements
 		int numRows = model.getRowCount();
 		StringBuilder sb = new StringBuilder();
 		for (int i = 0; i < numRows; i += 2) {
-			for (int j = 0; j < 16; j++) {
+			for (int j = 0; j < numCols; j++) {
 				sb.append(model.getValueAt(i, j)).append(" ");
 			}
 		}
@@ -202,8 +202,8 @@ public class TableShabadEditor extends SwingShabadEditor implements
 		String[] words = text.split("\\s+");
 		int numRows = model.getRowCount();
 		for (int i = 0; i < numRows; i += 2) {
-			for (int j = 0; j < 16; j++) {
-				int index = i / 2 * 16 + j;
+			for (int j = 0; j < numCols; j++) {
+				int index = i / 2 * numCols + j;
 				String word;
 				if (index >= words.length)
 					word = "null";

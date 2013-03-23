@@ -141,6 +141,15 @@ public class Main {
 	 */
 	public void createAndShowGui() {
 		frame = new JFrame(BASETITLE + "Untitled Shabad");
+		// frame.addComponentListener(new ComponentAdapter() {
+		// @Override
+		// public void componentResized(ComponentEvent e) {
+		// frame.setSize(new Dimension(frame.getPreferredSize().width,
+		// frame.getHeight()));
+		// super.componentResized(e);
+		// }
+		// });
+
 		titleManager = new WindowTitleManager(frame);
 		DialogUtility.setFrame(frame);
 
@@ -149,8 +158,7 @@ public class Main {
 
 		frame.setJMenuBar(createMenuBar());
 
-		JPanel controlPanel = new ControlPanel(new ShabadPlayer(),
-				shabadEditor);
+		JPanel controlPanel = new ControlPanel(new ShabadPlayer(), shabadEditor);
 		JComponent pianoPanel = new PianoPanel(labelManager);
 
 		settingsManager
@@ -205,7 +213,7 @@ public class Main {
 		menuBar.add(new OptionsMenu(new OptionsMenuController(notes,
 				labelManager)));
 		menuBar.add(new HelpMenu(new HelpMenuController()));
-		
+
 		return menuBar;
 	}
 
