@@ -117,11 +117,14 @@ public class TableShabadEditor extends SwingShabadEditor implements
 			for (int j = 0; j < 16; j++) {
 				if (index < notes.size()) {
 					Note note = notes.get(index);
+					if (note == null) {
+						continue;
+					}
 					if (note.getLength() == Length.LONG) {
 						table.setValueAt(note.getNoteText(), i, j);
 						if (j == 15) {
 							j = 0;
-							i++;
+							i += 2;
 						} else {
 							j++;
 						}

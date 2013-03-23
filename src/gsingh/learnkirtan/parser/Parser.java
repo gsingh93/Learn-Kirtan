@@ -48,22 +48,15 @@ public class Parser {
 		shabadText = shabadText.trim();
 		ShabadNotes shabad = new ShabadNotes();
 
-		List<String> tokenList = Arrays.asList(shabadText.split("\\s+"));
+		List<String> tokenList = Arrays.asList(shabadText.split("\\s"));
 
 		for (int i = 0; i < tokenList.size(); i++) {
 			String word = tokenList.get(i);
 
-			// Ideally there shouldn't be empty strings but it happens
-			if (word.equals("")) {
-				continue;
-			}
-
 			Matcher matcher = completeNotePattern.matcher(word);
 			
-			if (word.equals("null")) {
+			if (word.equals("null") || word.equals("")) {
 				shabad.addNote(null);
-			} else if (isLabel(word)) {
-				shabad.addLabel(word, i);
 			} else if (matcher.matches()) {
 				// Get the captured groups of the first note
 				String prefix1 = matcher.group(1);
@@ -92,6 +85,7 @@ public class Parser {
 				shabad.addLongNote();
 			} else {
 				// TODO An unknown note was found
+				System.out.println("Unknown note");
 			}
 		}
 
@@ -146,30 +140,5 @@ public class Parser {
 		else if (suffix.contains("'"))
 			modifier = Modifier.THEEVRA;
 		return new Note(name, octave, modifier, length);
-	}
-
-	/**
-	 * Checks if {@code word} is a label
-	 * 
-	 * @param word
-	 *            the word to check
-	 * @return true if {@code word} is a label, false otherwise
-	 */
-	private boolean isLabel(String word) {
-		if (word.charAt(0) == '#')
-			return true;
-		else
-			return false;
-	}
-
-	/**
-	 * Checks if {@code word} is a note
-	 * 
-	 * @param word
-	 *            the word to check
-	 * @return true if {@code word} is a note, false otherwise
-	 */
-	private boolean isNote(String word) {
-		return true; // TODO
 	}
 }
