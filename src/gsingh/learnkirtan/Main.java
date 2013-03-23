@@ -11,6 +11,7 @@ import gsingh.learnkirtan.listener.SettingsChangedListener;
 import gsingh.learnkirtan.note.NoteList;
 import gsingh.learnkirtan.player.ShabadPlayer;
 import gsingh.learnkirtan.settings.SettingsManager;
+import gsingh.learnkirtan.shabad.Shabad;
 import gsingh.learnkirtan.ui.ControlPanel;
 import gsingh.learnkirtan.ui.PianoPanel;
 import gsingh.learnkirtan.ui.WindowTitleManager;
@@ -218,14 +219,41 @@ public class Main {
 	}
 
 	private class MyWindowAdapter extends WindowAdapter {
+		/**
+		 * Prompts the user if they would like to save and saves if accepted
+		 * 
+		 * @return a {@code SaveResult} describing the action taken
+		 * @throws IOException
+		 */
+		private SaveResult safeSave(Shabad shabad) throws IOException {
+
+			int result = DialogUtility.showSaveDialog();
+			if (DialogUtility.isCancelledOrClosed(result))
+				return SaveResult.NOT_SAVED_CANCELLED;
+
+			if (DialogUtility.isYes(result)) {
+				if (shabadEditor.isValidShabad()) {
+					return fileManager.saveShabad(shabad);
+				} else {
+					return SaveResult.NOT_SAVED_INVALID_SHABAD;
+				}
+			}
+
+			return SaveResult.NOT_SAVED;
+		}
+
 		public void windowClosing(WindowEvent ev) {
 			try {
 				SaveResult result = null;
 				if (shabadEditor.isModified()) {
-					result = fileManager.safeSave(shabadEditor.getShabad());
+					result = safeSave(shabadEditor.getShabad());
 				}
-				if (result != SaveResult.NOTSAVEDCANCELLED) {
-					System.exit(0);
+				if (result != SaveResult.NOT_SAVED_INVALID_SHABAD) {
+					if (result != SaveResult.NOT_SAVED_CANCELLED) {
+						System.exit(0);
+					}
+				} else {
+					DialogUtility.showInvalidShabadDialog();
 				}
 			} catch (IOException e) {
 				e.printStackTrace();

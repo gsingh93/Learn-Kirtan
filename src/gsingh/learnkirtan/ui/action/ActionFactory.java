@@ -35,7 +35,7 @@ public class ActionFactory {
 	public Action newCreateAction() {
 		return new CreateAction();
 	}
-	
+
 	public Action newPropertiesAction() {
 		return new PropertiesAction();
 	}
@@ -44,21 +44,48 @@ public class ActionFactory {
 	private class SaveAction extends AbstractAction {
 		@Override
 		public void actionPerformed(ActionEvent event) {
-			try {
-				if (shabadEditor.isModified()) {
-					SaveResult result = fileManager.saveShabad(shabadEditor
-							.getShabad());
-					if (result != SaveResult.NOTSAVEDCANCELLED) {
-						if (shabadEditor instanceof SwingShabadEditor) {
-							SwingShabadEditor editor = (SwingShabadEditor) shabadEditor;
-							editor.reset();
+			if (shabadEditor.isValidShabad()) {
+				try {
+					if (shabadEditor.isModified()) {
+						SaveResult result = fileManager.saveShabad(shabadEditor
+								.getShabad());
+						if (result != SaveResult.NOT_SAVED_CANCELLED) {
+							if (shabadEditor instanceof SwingShabadEditor) {
+								SwingShabadEditor editor = (SwingShabadEditor) shabadEditor;
+								editor.reset();
+							}
 						}
 					}
+				} catch (IOException e) {
+					e.printStackTrace();
 				}
-			} catch (IOException e) {
-				e.printStackTrace();
+			} else {
+				DialogUtility.showInvalidShabadDialog();
 			}
 		}
+	}
+
+	/**
+	 * Prompts the user if they would like to save and saves if accepted
+	 * 
+	 * @return a {@code SaveResult} describing the action taken
+	 * @throws IOException
+	 */
+	private SaveResult safeSave(Shabad shabad) throws IOException {
+
+		int result = DialogUtility.showSaveDialog();
+		if (DialogUtility.isCancelledOrClosed(result))
+			return SaveResult.NOT_SAVED_CANCELLED;
+
+		if (DialogUtility.isYes(result)) {
+			if (shabadEditor.isValidShabad()) {
+				return fileManager.saveShabad(shabad);
+			} else {
+				return SaveResult.NOT_SAVED_INVALID_SHABAD;
+			}
+		}
+
+		return SaveResult.NOT_SAVED;
 	}
 
 	@SuppressWarnings("serial")
@@ -69,17 +96,21 @@ public class ActionFactory {
 				// Save file if modified
 				SaveResult result = null;
 				if (shabadEditor.isModified()) {
-					result = fileManager.safeSave(shabadEditor.getShabad());
+					result = safeSave(shabadEditor.getShabad());
 				}
 
-				// Open file if not cancelled
-				if (result != SaveResult.NOTSAVEDCANCELLED) {
-					if (fileManager.openFile(shabadEditor)) {
-						if (shabadEditor instanceof SwingShabadEditor) {
-							SwingShabadEditor editor = (SwingShabadEditor) shabadEditor;
-							editor.reset();
+				if (result != SaveResult.NOT_SAVED_INVALID_SHABAD) {
+					// Open file if not cancelled
+					if (result != SaveResult.NOT_SAVED_CANCELLED) {
+						if (fileManager.openFile(shabadEditor)) {
+							if (shabadEditor instanceof SwingShabadEditor) {
+								SwingShabadEditor editor = (SwingShabadEditor) shabadEditor;
+								editor.reset();
+							}
 						}
 					}
+				} else {
+					DialogUtility.showInvalidShabadDialog();
 				}
 			} catch (IOException e) {
 				e.printStackTrace();
@@ -95,17 +126,21 @@ public class ActionFactory {
 				// Save file if modified
 				SaveResult result = null;
 				if (shabadEditor.isModified()) {
-					result = fileManager.safeSave(shabadEditor.getShabad());
+					result = safeSave(shabadEditor.getShabad());
 				}
 
-				// Create new file if not cancelled
-				if (result != SaveResult.NOTSAVEDCANCELLED) {
-					shabadEditor.setShabad(new Shabad(""));
-					fileManager.newFile();
-					if (shabadEditor instanceof SwingShabadEditor) {
-						SwingShabadEditor editor = (SwingShabadEditor) shabadEditor;
-						editor.reset();
+				if (result != SaveResult.NOT_SAVED_INVALID_SHABAD) {
+					// Create new file if not cancelled
+					if (result != SaveResult.NOT_SAVED_CANCELLED) {
+						shabadEditor.setShabad(new Shabad(""));
+						fileManager.newFile();
+						if (shabadEditor instanceof SwingShabadEditor) {
+							SwingShabadEditor editor = (SwingShabadEditor) shabadEditor;
+							editor.reset();
+						}
 					}
+				} else {
+					DialogUtility.showInvalidShabadDialog();
 				}
 			} catch (IOException e) {
 				e.printStackTrace();

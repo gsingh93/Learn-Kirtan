@@ -38,7 +38,7 @@ import org.w3c.dom.Document;
 public class FileManager {
 
 	public enum SaveResult {
-		NOTSAVEDCANCELLED, NOTSAVED, SAVEDEXISTING, SAVEDNEW, OVERWRITE
+		NOT_SAVED_CANCELLED, NOT_SAVED, SAVEDEXISTING, SAVED_NEW, OVERWRITE, NOT_SAVED_INVALID_SHABAD
 	}
 
 	private List<FileEventListener> listeners = new LinkedList<FileEventListener>();
@@ -93,25 +93,6 @@ public class FileManager {
 	}
 
 	/**
-	 * Prompts the user if they would like to save and saves if accepted
-	 * 
-	 * @return a {@code SaveResult} describing the action taken
-	 * @throws IOException
-	 */
-	public SaveResult safeSave(Shabad shabad) throws IOException {
-
-		int result = DialogUtility.showSaveDialog();
-		if (DialogUtility.isCancelledOrClosed(result))
-			return SaveResult.NOTSAVEDCANCELLED;
-
-		if (DialogUtility.isYes(result)) {
-			return saveShabad(shabad);
-		}
-
-		return SaveResult.NOTSAVED;
-	}
-
-	/**
 	 * Sets the invariants for a new file
 	 */
 	public void newFile() {
@@ -149,14 +130,14 @@ public class FileManager {
 						write(shabad);
 						return SaveResult.OVERWRITE;
 					} else {
-						return SaveResult.NOTSAVEDCANCELLED;
+						return SaveResult.NOT_SAVED_CANCELLED;
 					}
 				} else {
 					write(shabad);
-					return SaveResult.SAVEDNEW;
+					return SaveResult.SAVED_NEW;
 				}
 			} else {
-				return SaveResult.NOTSAVEDCANCELLED;
+				return SaveResult.NOT_SAVED_CANCELLED;
 			}
 		} else {
 			write(shabad);
