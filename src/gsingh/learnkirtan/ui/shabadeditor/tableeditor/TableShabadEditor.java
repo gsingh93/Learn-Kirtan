@@ -114,6 +114,11 @@ public class TableShabadEditor extends SwingShabadEditor implements
 
 	private void setNotes(ShabadNotes notes) {
 		int numRows = model.getRowCount();
+		if (numRows < 2 * notes.size() / numCols) {
+			numRows = 2 * notes.size() / numCols;
+			this.numRows = numRows;
+			model.setRowCount(numRows);
+		}
 
 		int index = 0;
 		for (int i = 1; i < numRows; i += 2) {
@@ -201,6 +206,11 @@ public class TableShabadEditor extends SwingShabadEditor implements
 
 	public void setWords(List<String> words) {
 		int numRows = model.getRowCount();
+		if (numRows < 2 * words.size() / numCols) {
+			numRows = 2 * words.size() / numCols;
+			this.numRows = numRows;
+			model.setRowCount(numRows);
+		}
 		for (int i = 0; i < numRows; i += 2) {
 			for (int j = 0; j < numCols; j++) {
 				int index = i / 2 * numCols + j;
