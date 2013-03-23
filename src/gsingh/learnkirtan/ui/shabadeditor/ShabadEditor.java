@@ -4,6 +4,8 @@ import gsingh.learnkirtan.shabad.Shabad;
 import gsingh.learnkirtan.shabad.ShabadMetaData;
 import gsingh.learnkirtan.shabad.ShabadNotes;
 
+import java.util.List;
+
 public interface ShabadEditor {
 
 	public Shabad getShabad();
@@ -14,7 +16,7 @@ public interface ShabadEditor {
 
 	public ShabadMetaData getMetaData();
 
-	public String getWords();
+	public List<String> getWords();
 
 	public boolean isModified();
 

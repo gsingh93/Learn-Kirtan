@@ -4,18 +4,20 @@ import gsingh.learnkirtan.note.Note;
 import gsingh.learnkirtan.parser.Parser;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.List;
 
 public class Shabad implements Serializable {
 
 	private static final long serialVersionUID = 6657996411815529195L;
 
 	private String shabadText;
-	private String words;
+	private List<String> words;
 	private ShabadNotes notes;
 	private ShabadMetaData metaData;
 
-	public Shabad(String shabadText, String words) {
+	public Shabad(String shabadText, List<String> words) {
 		this.shabadText = shabadText;
 		this.words = words;
 		metaData = new ShabadMetaData("", "", "", "", "");
@@ -23,7 +25,7 @@ public class Shabad implements Serializable {
 	}
 
 	public Shabad(String shabadText) {
-		this(shabadText, "");
+		this(shabadText, new ArrayList<String>());
 	}
 
 	public ShabadMetaData getMetaData() {
@@ -34,11 +36,11 @@ public class Shabad implements Serializable {
 		this.metaData = metaData;
 	}
 
-	public String getWords() {
+	public List<String> getWords() {
 		return words;
 	}
 
-	public void setWords(String words) {
+	public void setWords(List<String> words) {
 		this.words = words;
 	}
 

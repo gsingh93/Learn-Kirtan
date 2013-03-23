@@ -14,6 +14,8 @@ import gsingh.learnkirtan.ui.shabadeditor.tableeditor.EditUndoManager.UndoEventL
 
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -183,33 +185,32 @@ public class TableShabadEditor extends SwingShabadEditor implements
 		return sb.toString();
 	}
 
-	public String getWords() {
+	public List<String> getWords() {
+		List<String> l = new ArrayList<String>();
 		int numRows = model.getRowCount();
-		StringBuilder sb = new StringBuilder();
 		for (int i = 0; i < numRows; i += 2) {
 			for (int j = 0; j < numCols; j++) {
-				sb.append(model.getValueAt(i, j)).append(" ");
+				l.add((String) model.getValueAt(i, j));
 			}
 		}
-		return sb.toString();
+		return l;
 	}
 
 	public boolean isValidShabad() {
 		return table.isValidShabad();
 	}
 
-	public void setWords(String text) {
-		String[] words = text.split("\\s+");
+	public void setWords(List<String> words) {
 		int numRows = model.getRowCount();
 		for (int i = 0; i < numRows; i += 2) {
 			for (int j = 0; j < numCols; j++) {
 				int index = i / 2 * numCols + j;
 				String word;
-				if (index >= words.length)
+				if (index >= words.size())
 					word = "null";
 				else
-					word = words[index];
-				if (!word.equalsIgnoreCase("null")) {
+					word = words.get(index);
+				if (word != null && !word.equalsIgnoreCase("null")) {
 					table.setValueAt(word, i, j);
 				} else {
 					table.setValueAt(null, i, j);
