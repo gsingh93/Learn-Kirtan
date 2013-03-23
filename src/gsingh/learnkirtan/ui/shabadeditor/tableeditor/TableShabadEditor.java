@@ -118,6 +118,7 @@ public class TableShabadEditor extends SwingShabadEditor implements
 				if (index < notes.size()) {
 					Note note = notes.get(index);
 					if (note == null) {
+						table.setValueAt(null, i, j);
 						continue;
 					}
 					if (note.getLength() == Length.LONG) {
