@@ -106,7 +106,9 @@ public class ControlPanel extends JPanel implements ActionListener,
 				public void actionPerformed(ActionEvent e) {
 					TableShabadEditor editor = (TableShabadEditor) shabadEditor;
 					int row = editor.getSelectedRow();
-					editor.addRowAbove(row);
+					if (row != -1) {
+						editor.addRowAbove(row);
+					}
 				}
 			});
 
@@ -117,7 +119,9 @@ public class ControlPanel extends JPanel implements ActionListener,
 				public void actionPerformed(ActionEvent e) {
 					TableShabadEditor editor = (TableShabadEditor) shabadEditor;
 					int row = editor.getSelectedRow();
-					editor.deleteRow(row);
+					if (row != -1) {
+						editor.deleteRow(row);
+					}
 				}
 			});
 

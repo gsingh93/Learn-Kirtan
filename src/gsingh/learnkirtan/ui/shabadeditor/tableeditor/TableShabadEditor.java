@@ -114,6 +114,7 @@ public class TableShabadEditor extends SwingShabadEditor implements
 
 	private void setNotes(ShabadNotes notes) {
 		int numRows = model.getRowCount();
+
 		int index = 0;
 		for (int i = 1; i < numRows; i += 2) {
 			for (int j = 0; j < numCols; j++) {
@@ -121,9 +122,7 @@ public class TableShabadEditor extends SwingShabadEditor implements
 					Note note = notes.get(index);
 					if (note == null) {
 						table.setValueAt(null, i, j);
-						continue;
-					}
-					if (note.getLength() == Length.LONG) {
+					} else if (note.getLength() == Length.LONG) {
 						table.setValueAt(note.getNoteText(), i, j);
 						if (j == 15) {
 							j = 0;
