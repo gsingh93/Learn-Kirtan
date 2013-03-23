@@ -84,6 +84,7 @@ public class ShabadTable extends JTable {
 		getInputMap().put(Keys.CUT_KEY, "cut");
 		getInputMap().put(Keys.COPY_KEY, "copy");
 		getInputMap().put(Keys.PASTE_KEY, "paste");
+		getInputMap().put(Keys.DELETE_KEY, "delete");
 
 		getActionMap().put("save", actionFactory.newSaveAction());
 		getActionMap().put("open", actionFactory.newOpenAction());
@@ -91,6 +92,7 @@ public class ShabadTable extends JTable {
 		getActionMap().put("cut", new CutAction());
 		getActionMap().put("copy", new CopyAction());
 		getActionMap().put("paste", new PasteAction());
+		getActionMap().put("delete", new DeleteAction());
 	}
 
 	/*
@@ -253,6 +255,23 @@ public class ShabadTable extends JTable {
 					for (int col : colsselected) {
 						jTable.setValueAt("", row, col);
 					}
+				}
+			}
+		}
+	}
+
+	public class DeleteAction extends AbstractAction {
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			JTable jTable = ShabadTable.this;
+
+			int[] rowsselected = jTable.getSelectedRows();
+			int[] colsselected = jTable.getSelectedColumns();
+
+			for (int row : rowsselected) {
+				for (int col : colsselected) {
+					jTable.setValueAt("", row, col);
 				}
 			}
 		}

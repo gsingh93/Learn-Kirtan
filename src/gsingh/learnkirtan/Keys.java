@@ -32,4 +32,7 @@ public class Keys {
 
 	public static final KeyStroke REDO_KEY = KeyStroke.getKeyStroke(
 			KeyEvent.VK_Y, KeyEvent.CTRL_DOWN_MASK);
+
+	public static final KeyStroke DELETE_KEY = KeyStroke.getKeyStroke(
+			KeyEvent.VK_DELETE, 0);
 }
