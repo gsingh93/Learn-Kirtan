@@ -1,64 +1,62 @@
 <project name="LearnKirtan" basedir="." default="main">
 
-	<property name="version" value="0.5" />
+  <property file="build.properties"/>
+  <property name="version" value="${build.major.number}.${build.minor.number}.${build.revision.number}"/>
 
-	<property name="src.dir" value="src" />
-	<property name="lib.dir" value="lib" />
-	<property name="resource.dir" value="resource" />
+  <path id="classpath">
+	<fileset dir="${lib.dir}" includes="**/*.jar" />
+  </path>
 
-	<property name="build.dir" value="build" />
-	<property name="classes.dir" value="${build.dir}/classes" />
-	<property name="jar.dir" value="${build.dir}/jar" />
-	<property name="release.dir" value="${build.dir}/release" />
+  <!-- Targets -->
 
-	<property name="main-class" value="gsingh.learnkirtan.Main" />
-	<property name="splash-screen-image" value="splash.png" />
+  <target name="main" depends="jar" />
 
-	<path id="classpath">
-		<fileset dir="${lib.dir}" includes="**/*.jar" />
-	</path>
+  <target name="jar" depends="compile">
+	<mkdir dir="${jar.dir}" />
+	<jar destfile="${jar.dir}/${ant.project.name} - v${version}.jar" basedir="${classes.dir}">
+	  <manifest>
+		<attribute name="Main-Class" value="${main-class}" />
+		<attribute name="SplashScreen-Image" value="${splash-screen-image}" />
+		<attribute name="Implementation-Version" value="${version}" />
+	  </manifest>
+	  <fileset dir="${resource.dir}" />
+	  <zipgroupfileset dir="${lib.dir}" includes="**/*.jar" />
+	</jar>
+  </target>
 
-	<target name="clean">
-		<delete dir="${build.dir}" />
-	</target>
+  <target name="compile">
+	<mkdir dir="${classes.dir}" />
+	<javac srcdir="${src.dir}" destdir="${classes.dir}" includeantruntime="false" classpathref="classpath" />
+  </target>
 
-	<target name="compile">
-		<mkdir dir="${classes.dir}" />
-		<javac srcdir="${src.dir}" destdir="${classes.dir}" includeantruntime="false" classpathref="classpath" />
-	</target>
+  <target name="run" depends="jar">
+	<java classname="${main-class}" fork="true">
+	  <classpath>
+		<path refid="classpath" />
+		<path location="${jar.dir}/${ant.project.name} - v${version}.jar" />
+	  </classpath>
+	</java>
+  </target>
 
-	<target name="jar" depends="compile">
-		<mkdir dir="${jar.dir}" />
-		<jar destfile="${jar.dir}/${ant.project.name} - v${version}.jar" basedir="${classes.dir}">
-			<manifest>
-				<attribute name="Main-Class" value="${main-class}" />
-				<attribute name="SplashScreen-Image" value="${splash-screen-image}" />
-			</manifest>
-			<fileset dir="${resource.dir}" />
-			<zipgroupfileset dir="${lib.dir}" includes="**/*.jar" />
-		</jar>
-	</target>
+  <target name="release" depends="revision,clean,jar">
+	<mkdir dir="${release.dir}/LearnKirtan" />
+	<copy file="${jar.dir}/${ant.project.name} - v${version}.jar" todir="${release.dir}/LearnKirtan" />
+	<copy todir="${release.dir}/LearnKirtan/Sample Shabads">
+	  <fileset dir="Shabad Files" />
+	</copy>
+	<zip basedir="${release.dir}" destfile="${release.dir}/LearnKirtan${version}.zip" />
+  </target>
 
-	<target name="run" depends="jar">
-		<java classname="${main-class}" fork="true">
-			<classpath>
-				<path refid="classpath" />
-				<path location="${jar.dir}/${ant.project.name} - v${version}.jar" />
-			</classpath>
-		</java>
-	</target>
+  <target name="revision">
+    <propertyfile  file="build.properties">
+	  <entry key="build.revision.number" type="int" operation="+" value="1" pattern="0"/>
+    </propertyfile>
+  </target>
 
-	<target name="release" depends="clean,jar">
-		<mkdir dir="${release.dir}/LearnKirtan" />
-		<copy file="${jar.dir}/${ant.project.name} - v${version}.jar" todir="${release.dir}/LearnKirtan" />
-		<copy todir="${release.dir}/LearnKirtan/Sample Shabads">
-			<fileset dir="Shabad Files" />
-		</copy>
-		<zip basedir="${release.dir}" destfile="${release.dir}/LearnKirtan${version}.zip" />
-	</target>
+  <target name="clean-build" depends="clean,jar" />
 
-	<target name="clean-build" depends="clean,jar" />
-
-	<target name="main" depends="jar" />
+  <target name="clean">
+	<delete dir="${build.dir}"/>
+  </target>
 
 </project>
