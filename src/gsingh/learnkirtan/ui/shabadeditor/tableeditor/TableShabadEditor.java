@@ -12,6 +12,7 @@ import gsingh.learnkirtan.ui.action.ActionFactory;
 import gsingh.learnkirtan.ui.shabadeditor.SwingShabadEditor;
 import gsingh.learnkirtan.ui.shabadeditor.tableeditor.EditUndoManager.UndoEventListener;
 
+import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.util.ArrayList;
@@ -20,9 +21,13 @@ import java.util.List;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.JScrollPane;
+import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
+import javax.swing.SwingConstants;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
+import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.DefaultTableModel;
 
 @SuppressWarnings("serial")
 public class TableShabadEditor extends SwingShabadEditor implements
@@ -44,6 +49,8 @@ public class TableShabadEditor extends SwingShabadEditor implements
 	private int numRows = 32;
 	private int numCols = 16;
 
+	private JTable rowTable = new JTable(numRows, 1);
+
 	public TableShabadEditor(final WindowTitleManager titleManager,
 			FileManager fileManager) {
 		this.titleManager = titleManager;
@@ -56,8 +63,20 @@ public class TableShabadEditor extends SwingShabadEditor implements
 		model.addUndoableEditListener(undoManager);
 		table.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
 
+		rowTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+		rowTable.setPreferredScrollableViewportSize(new Dimension(30, 0));
+		rowTable.getColumnModel().getColumn(0).setPreferredWidth(30);
+		rowTable.setRowHeight(20);
+		rowTable.setEnabled(false);
+		DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
+		centerRenderer.setHorizontalAlignment(SwingConstants.CENTER);
+		rowTable.getColumnModel().getColumn(0).setCellRenderer(centerRenderer);
+		setRowLabels();
+
+		JScrollPane scrollPane = new JScrollPane(table);
+		scrollPane.setRowHeaderView(rowTable);
 		setLayout(new GridLayout());
-		add(new JScrollPane(table));
+		add(scrollPane);
 
 		model.addTableModelListener(new TableModelListener() {
 			@Override
@@ -68,6 +87,12 @@ public class TableShabadEditor extends SwingShabadEditor implements
 		});
 
 		metaData = new ShabadMetaData("", "", "", "", "");
+	}
+
+	private void setRowLabels() {
+		for (int i = 0; i < numRows; i++) {
+			rowTable.setValueAt(i + 1, i, 0);
+		}
 	}
 
 	public void setRepeating(boolean bool) {
@@ -267,6 +292,11 @@ public class TableShabadEditor extends SwingShabadEditor implements
 	 *            the row to insert the pair above
 	 */
 	public void addRowAbove(int row) {
+		numRows += 2;
+
+		DefaultTableModel rowModel = (DefaultTableModel) rowTable.getModel();
+		rowModel.insertRow(row, new Object[] {});
+		rowModel.insertRow(row, new Object[] {});
 		if (row % 2 == 0) {
 			model.insertRow(row, new Object[] {});
 			model.insertRow(row, new Object[] {});
@@ -274,6 +304,7 @@ public class TableShabadEditor extends SwingShabadEditor implements
 			model.insertRow(row - 1, new Object[] {});
 			model.insertRow(row - 1, new Object[] {});
 		}
+		setRowLabels();
 	}
 
 	public void addRowBelow(int row) {
@@ -288,12 +319,18 @@ public class TableShabadEditor extends SwingShabadEditor implements
 	 *            the row number of the row to delete
 	 */
 	public void deleteRow(int row) {
+		numRows -= 2;
+
+		DefaultTableModel rowModel = (DefaultTableModel) rowTable.getModel();
+		rowModel.removeRow(row);
+		rowModel.removeRow(row);
 		model.removeRow(row);
 		if (row % 2 == 0) {
 			model.removeRow(row);
 		} else {
 			model.removeRow(row - 1);
 		}
+		setRowLabels();
 	}
 
 	@Override
