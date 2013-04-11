@@ -1,0 +1,43 @@
+<izpack:installation version="5.0"
+                     xmlns:izpack="http://izpack.org/schema/installation"
+                     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                     xsi:schemaLocation="http://izpack.org/schema/installation http://izpack.org/schema/5.0/izpack-installation-5.0.xsd">
+
+  <resources>
+	<res src="/home/gulshan/Code/izpack/TargetPathUnix.txt" id="TargetPanel.dir.unix" />
+	<res src="/home/gulshan/Code/izpack/TargetPathWindows.txt" id="TargetPanel.dir.windows" />
+	<res src="/home/gulshan/Code/izpack/TargetPathMac.txt" id="TargetPanel.dir.mac" />
+  </resources>
+  
+  <packs>
+	<pack name="Learn Kirtan" required="yes">
+	  <description>Learn Kirtan Program</description>
+	</pack>
+  </packs>
+
+  <info>
+    <appname>Learn Kirtan</appname>
+    <appversion>0.5</appversion>
+    <javaversion>1.6</javaversion>
+    <authors>
+      <author name="Gulshan Singh" email="gulshan@umich.edu"/>
+    </authors>
+	<uninstaller write="no" />
+  </info>
+ 
+  <locale>
+    <langpack iso3="eng"/>
+  </locale>
+ 
+  <guiprefs width="640" height="480" resizable="no">
+    <modifier key="useHeadingPanel" value="yes" />
+  </guiprefs>
+ 
+  <panels>
+    <panel classname="HelloPanel"/>
+    <panel classname="TargetPanel"/>
+    <panel classname="InstallPanel"/>
+    <panel classname="SimpleFinishPanel"/>
+  </panels>
+ 
+</izpack:installation>

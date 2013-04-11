@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<project default="install">
+    <path id="build.classpath">
+        <fileset dir="${user.home}/IzPack5">
+            <include name="lib/*.jar" />
+        </fileset>
+    </path>
+    <taskdef name="izpack" classpathref="build.classpath" classname="com.izforge.izpack.ant.IzPackTask" />
+ 
+    <target name="install">
+        <izpack input="install.xml"
+                output="LearnKirtanInstaller.jar"
+                installerType="standard"
+                basedir="${basedir}"
+                izPackDir="${user.home}/IzPack5/" />
+    </target>
+</project>
