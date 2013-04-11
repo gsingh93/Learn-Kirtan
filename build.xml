@@ -12,6 +12,7 @@
   <target name="main" depends="jar" />
 
   <target name="jar" depends="compile">
+	<delete dir="${jar.dir}" />
 	<mkdir dir="${jar.dir}" />
 	<jar destfile="${jar.dir}/${ant.project.name} - v${version}.jar" basedir="${classes.dir}">
 	  <manifest>
