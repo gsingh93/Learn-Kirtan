@@ -49,6 +49,7 @@
 
   <target name="revision">
     <propertyfile  file="build.properties">
+	  <entry key="build.lastrevision.number" value="${build.revision.number}" />
 	  <entry key="build.revision.number" type="int" operation="+" value="1" pattern="0"/>
     </propertyfile>
   </target>

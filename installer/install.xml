@@ -3,15 +3,30 @@
                      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                      xsi:schemaLocation="http://izpack.org/schema/installation http://izpack.org/schema/5.0/izpack-installation-5.0.xsd">
 
+  <dynamicvariables>
+	<variable name="BUILD_PROPERTIES_FILE" value="../build.properties" />
+    <variable name="major" checkonce="true"
+              file="${BUILD_PROPERTIES_FILE}" type="options"
+              key="build.major.number" />
+    <variable name="minor" checkonce="true"
+              file="${BUILD_PROPERTIES_FILE}" type="options"
+              key="build.minor.number" />
+    <variable name="revision" checkonce="true"
+              file="${BUILD_PROPERTIES_FILE}" type="options"
+              key="build.lastrevision.number" />
+  </dynamicvariables>
+
   <resources>
-	<res src="/home/gulshan/Code/izpack/TargetPathUnix.txt" id="TargetPanel.dir.unix" />
-	<res src="/home/gulshan/Code/izpack/TargetPathWindows.txt" id="TargetPanel.dir.windows" />
-	<res src="/home/gulshan/Code/izpack/TargetPathMac.txt" id="TargetPanel.dir.mac" />
+	<res src="TargetPathUnix.txt" id="TargetPanel.dir.unix" />
+	<res src="TargetPathWindows.txt" id="TargetPanel.dir.windows" />
+	<res src="TargetPathMac.txt" id="TargetPanel.dir.mac" />
   </resources>
   
   <packs>
 	<pack name="Learn Kirtan" required="yes">
 	  <description>Learn Kirtan Program</description>
+	  <fileset dir="../build/release/LearnKirtan/" includes="*.jar" targetdir="${INSTALL_PATH}" />
+	  <executable targetfile="${INSTALL_PATH}/LearnKirtan - v${major}.${minor}.${revision}.jar" stage="never" />
 	</pack>
   </packs>
 
