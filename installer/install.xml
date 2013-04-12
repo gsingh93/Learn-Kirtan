@@ -21,14 +21,6 @@
 	<res src="TargetPathWindows.txt" id="TargetPanel.dir.windows" />
 	<res src="TargetPathMac.txt" id="TargetPanel.dir.mac" />
   </resources>
-  
-  <packs>
-	<pack name="Learn Kirtan" required="yes">
-	  <description>Learn Kirtan Program</description>
-	  <fileset dir="../build/release/LearnKirtan/" includes="*.jar" targetdir="${INSTALL_PATH}" />
-	  <executable targetfile="${INSTALL_PATH}/LearnKirtan - v${major}.${minor}.${revision}.jar" stage="never" />
-	</pack>
-  </packs>
 
   <info>
     <appname>Learn Kirtan</appname>
@@ -38,8 +30,18 @@
       <author name="Gulshan Singh" email="gulshan@umich.edu"/>
     </authors>
 	<uninstaller write="no" />
+	<run-privileged condition="izpack.windowsinstall.7|izpack.windowsinstall.vista" />
+	<writeinstallationinformation>no</writeinstallationinformation>
   </info>
- 
+  
+  <packs>
+	<pack name="Learn Kirtan" required="yes">
+	  <description>Learn Kirtan Program</description>
+	  <fileset dir="../build/release/LearnKirtan/" includes="*.jar" targetdir="${INSTALL_PATH}" />
+	  <executable targetfile="${INSTALL_PATH}/LearnKirtan - v${major}.${minor}.${revision}.jar" stage="never" />
+	</pack>
+  </packs>
+
   <locale>
     <langpack iso3="eng"/>
   </locale>
